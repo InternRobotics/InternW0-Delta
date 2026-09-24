@@ -329,6 +329,7 @@ class MoT(MoTCacheMixin, MoTCompileMixin, nn.Module):
         scale_mlp: torch.Tensor,
         gate_mlp: torch.Tensor,
         context_payload: Optional[dict],
+        context_kv: Optional[tuple[torch.Tensor, torch.Tensor]] = None,
     ) -> torch.Tensor:
         x = block.gate(residual_x, gate_msa, block.self_attn.o(mixed_attn_out))
 
@@ -367,7 +368,17 @@ class MoT(MoTCacheMixin, MoTCompileMixin, nn.Module):
                     if context_row_enabled.dim() == 4:
                         context_row_enabled = context_row_enabled.squeeze(1)
                 context_mask = _finalize_context_mask(raw_mask)
-                cross_out = block.cross_attn(block.norm3(x), context, ctx_mask=context_mask)
+                if context_kv is None:
+                    cross_out = block.cross_attn(
+                        block.norm3(x), context, ctx_mask=context_mask
+                    )
+                else:
+                    cross_out = block.cross_attn.forward_with_kv_cache(
+                        block.norm3(x),
+                        context_kv[0],
+                        context_kv[1],
+                        ctx_mask=context_mask,
+                    )
                 if context_row_enabled is not None:
                     cross_out = cross_out * context_row_enabled.to(dtype=cross_out.dtype)
 
@@ -449,6 +460,7 @@ class MoT(MoTCacheMixin, MoTCompileMixin, nn.Module):
         use_gradient_checkpointing: bool,
         mixed_slice: torch.Tensor,
         context_payload: Optional[dict],
+        context_kv: Optional[tuple[torch.Tensor, torch.Tensor]] = None,
     ) -> torch.Tensor:
         """Apply post-attention computations, with optional checkpointing.
 
@@ -478,6 +490,7 @@ class MoT(MoTCacheMixin, MoTCompileMixin, nn.Module):
             _gate_mlp: torch.Tensor,
             _block=block,
             _context_payload=context_payload,
+            _context_kv=context_kv,
         ) -> torch.Tensor:
             return self._apply_expert_post_block(
                 block=_block,
@@ -488,6 +501,7 @@ class MoT(MoTCacheMixin, MoTCompileMixin, nn.Module):
                 scale_mlp=_scale_mlp,
                 gate_mlp=_gate_mlp,
                 context_payload=_context_payload,
+                context_kv=_context_kv,
             )
 
         if use_gradient_checkpointing and self.training:

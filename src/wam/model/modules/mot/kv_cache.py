@@ -1,5 +1,7 @@
 from typing import Callable, Optional
 
+import os
+
 import torch
 
 
@@ -170,6 +172,7 @@ class MoTCacheMixin:
         video_kv_cache: list[dict[str, torch.Tensor]],
         attention_mask: torch.Tensor,
         video_seq_len: int,
+        video_grouped_kv_cache: Optional[tuple[torch.Tensor, torch.Tensor]] = None,
     ) -> torch.Tensor:
         """Run action branch with cached video K/V instead of recomputing video tokens.
 
@@ -180,9 +183,13 @@ class MoTCacheMixin:
             action_context_payload: Optional dict for action cross-attention.
                 - `context`: encoder states [B, L, D]
                 - `mask`: attention mask [B, Sa, L] or [B, 1, Sa, L]
+                - `kv_cache`: per-layer projected context K/V
+                - `kv_cache_stacked`: stacked projected context K/V
             video_kv_cache: Layer-wise cached video K/V from `prefill_video_cache`.
             attention_mask: Joint [video+action] mask, shape [Sv+Sa, Sv+Sa].
             video_seq_len: Video token count `Sv` in the joint sequence prefix.
+            video_grouped_kv_cache: Optional stacked video K/V with shape
+                `[num_layers, B, Sv, H]`, used to reduce compiled group inputs.
 
         Returns:
             Updated action tokens after all layers, shape [B, Sa, D].
@@ -215,6 +222,46 @@ class MoTCacheMixin:
         action_attention_mask = attention_mask[
             video_seq_len:total_seq_len, :total_seq_len
         ]
+
+        action_context_kv_cache = None
+        action_context_kv_cache_stacked = None
+        if action_context_payload is not None:
+            action_context_kv_cache = action_context_payload.get("kv_cache")
+            action_context_kv_cache_stacked = action_context_payload.get(
+                "kv_cache_stacked"
+            )
+        if action_context_kv_cache is not None:
+            if len(action_context_kv_cache) != self.num_layers:
+                raise ValueError(
+                    "`action_context_payload['kv_cache']` must contain "
+                    f"{self.num_layers} layers, got {len(action_context_kv_cache)}."
+                )
+            for layer_idx, layer_context_kv in enumerate(action_context_kv_cache):
+                if (
+                    not isinstance(layer_context_kv, (tuple, list))
+                    or len(layer_context_kv) != 2
+                ):
+                    raise ValueError(
+                        "`action_context_payload['kv_cache'][%d]` must be a (K, V) pair."
+                        % layer_idx
+                    )
+        if action_context_kv_cache_stacked is not None:
+            if (
+                not isinstance(action_context_kv_cache_stacked, (tuple, list))
+                or len(action_context_kv_cache_stacked) != 2
+                or not all(
+                    isinstance(value, torch.Tensor)
+                    for value in action_context_kv_cache_stacked
+                )
+                or any(
+                    int(value.shape[0]) != self.num_layers
+                    for value in action_context_kv_cache_stacked
+                )
+            ):
+                raise ValueError(
+                    "`action_context_payload['kv_cache_stacked']` must be a "
+                    "(num_layers, B, L, H) K/V pair."
+                )
 
         # Each layer carries video-key validity alongside its cached tensors.
         # Combine it with the current action-key validity for attention.
@@ -266,8 +313,33 @@ class MoTCacheMixin:
             if not force_sdpa:
                 flex_key_mask = None
 
+        compile_mode = str(getattr(self, "compile_mode", "off") or "off")
+        use_compiled_action_cache = (
+            compile_mode != "off"
+            and action_context_payload is not None
+            and action_context_payload.get("context") is not None
+            and action_context_payload.get("mask") is not None
+            and hasattr(self, "_get_compiled_action_cache_layer")
+        )
+        compiled_action_context = None
+        compiled_action_context_mask = None
+        # Projected context K/V is already backend-stable. Padding it here would
+        # inflate every cross-attention lookup; retain padding only for wrappers
+        # that still project raw context inside the layer.
+        if use_compiled_action_cache and action_context_kv_cache is None:
+            (
+                compiled_action_context,
+                compiled_action_context_mask,
+            ) = self._pad_compiled_action_context(
+                action_context_payload["context"],
+                action_context_payload["mask"],
+            )
+        elif use_compiled_action_cache:
+            compiled_action_context = action_context_payload["context"]
+            compiled_action_context_mask = action_context_payload["mask"]
+
         flex_block_mask = None
-        if not force_sdpa:
+        if not use_compiled_action_cache and not force_sdpa:
             flex_block_mask = self._build_flex_block_mask(
                 attention_mask=action_attention_mask,
                 batch_size=int(action_tokens.shape[0]),
@@ -278,9 +350,92 @@ class MoTCacheMixin:
 
         expert = self.mixtures["action"]
         x = action_tokens
+
+        # Per-layer compilation keeps graphs small but still pays Python
+        # dispatch for every MoT layer. Group contiguous layers when requested.
+        action_cache_group_size = max(
+            1, int(os.environ.get("WAM_MOT_ACTION_CACHE_GROUP_SIZE", "1"))
+        )
+        if (
+            use_compiled_action_cache
+            and action_context_kv_cache is not None
+            and action_context_kv_cache_stacked is not None
+            and video_grouped_kv_cache is not None
+            and action_cache_group_size > 1
+        ):
+            if (
+                not isinstance(video_grouped_kv_cache, (tuple, list))
+                or len(video_grouped_kv_cache) != 2
+                or not all(
+                    isinstance(value, torch.Tensor)
+                    for value in video_grouped_kv_cache
+                )
+                or any(
+                    int(value.shape[0]) != self.num_layers
+                    for value in video_grouped_kv_cache
+                )
+            ):
+                raise ValueError(
+                    "`video_grouped_kv_cache` must be a stacked "
+                    "(num_layers, B, L, H) K/V pair."
+                )
+            for start_layer in range(0, self.num_layers, action_cache_group_size):
+                end_layer = min(
+                    self.num_layers, start_layer + action_cache_group_size
+                )
+                video_keys = video_grouped_kv_cache[0][start_layer:end_layer]
+                video_values = video_grouped_kv_cache[1][start_layer:end_layer]
+                context_keys = action_context_kv_cache_stacked[0][
+                    start_layer:end_layer
+                ]
+                context_values = action_context_kv_cache_stacked[1][
+                    start_layer:end_layer
+                ]
+                x = self._get_compiled_action_cache_group(start_layer, end_layer)(
+                    x,
+                    action_freqs,
+                    action_t_mod,
+                    compiled_action_context,
+                    compiled_action_context_mask,
+                    context_keys,
+                    context_values,
+                    video_keys,
+                    video_values,
+                    action_attention_mask,
+                    flex_key_mask,
+                )
+                self._compiled_action_cache_calls += end_layer - start_layer
+            return x
+
         for layer_idx in range(self.num_layers):
             block = expert.blocks[layer_idx]
-            # Action query/key/value are still step-dependent and must be recomputed each step.
+            if use_compiled_action_cache:
+                layer_cache = video_kv_cache[layer_idx]
+                if "k" not in layer_cache or "v" not in layer_cache:
+                    raise ValueError(
+                        f"`video_kv_cache[{layer_idx}]` must contain `k` and `v`."
+                    )
+                x = self._get_compiled_action_cache_layer(layer_idx)(
+                    x,
+                    action_freqs,
+                    action_t_mod,
+                    compiled_action_context,
+                    compiled_action_context_mask,
+                    action_context_kv_cache[layer_idx][0]
+                    if action_context_kv_cache is not None
+                    else None,
+                    action_context_kv_cache[layer_idx][1]
+                    if action_context_kv_cache is not None
+                    else None,
+                    layer_cache["k"],
+                    layer_cache["v"],
+                    action_attention_mask,
+                    flex_key_mask,
+                )
+                self._compiled_action_cache_calls += 1
+                continue
+
+            # Action query/key/value remain step-dependent and are recomputed.
             (
                 q_action,
                 k_action,
@@ -311,7 +466,7 @@ class MoTCacheMixin:
                     f"`video_kv_cache[{layer_idx}]` seq len mismatch, expected {video_seq_len}."
                 )
 
-            # Mixed attention: action queries attend to cached video K/V plus current action K/V.
+            # Action queries attend to cached video K/V plus current action K/V.
             k_cat = torch.cat([k_video, k_action], dim=1)
             v_cat = torch.cat([v_video, v_action], dim=1)
             mixed = self._mixed_attention(
@@ -333,5 +488,10 @@ class MoTCacheMixin:
                 use_gradient_checkpointing=use_gradient_checkpointing,
                 mixed_slice=mixed,
                 context_payload=action_context_payload,
+                context_kv=(
+                    action_context_kv_cache[layer_idx]
+                    if action_context_kv_cache is not None
+                    else None
+                ),
             )
         return x

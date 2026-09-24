@@ -44,6 +44,9 @@ class MoTCompileMixin:
         self._compile_fallback_reasons = set()
         self._compile_context_padding_logged = False
         object.__setattr__(self, "_compiled_groups", {})
+        object.__setattr__(self, "_compiled_action_cache_layers", {})
+        object.__setattr__(self, "_compiled_action_cache_groups", {})
+        object.__setattr__(self, "_compiled_action_cache_calls", 0)
 
     def _compile_group_ranges(
         self,
@@ -122,6 +125,253 @@ class MoTCompileMixin:
             )
             compiled_groups[group_range] = compiled_group
         return compiled_groups[group_range]
+
+    def _get_compiled_action_cache_layer(self, layer_idx: int):
+        """Return the lazily compiled boundary used by online action denoising."""
+
+        layer_idx = int(layer_idx)
+        if not 0 <= layer_idx < self.num_layers:
+            raise IndexError(
+                "MoT action-cache layer out of bounds: "
+                f"{layer_idx} for {self.num_layers} layers."
+            )
+        compiled_layers = self._compiled_action_cache_layers
+        if layer_idx not in compiled_layers:
+            if not hasattr(torch, "compile"):
+                raise RuntimeError(
+                    "MoT compile_mode requires a PyTorch build with torch.compile."
+                )
+            compile_kwargs = {
+                "backend": "inductor",
+                "dynamic": False,
+                "fullgraph": _env_flag("WAM_MOT_COMPILE_FULLGRAPH"),
+                "mode": self.compile_mode,
+            }
+            logger.info(
+                "Compiling MoT online action-cache layer %d/%d: mode=%s "
+                "forward=inductor dynamic=false fullgraph=%s",
+                layer_idx + 1,
+                self.num_layers,
+                self.compile_mode,
+                compile_kwargs["fullgraph"],
+            )
+            compiled_layers[layer_idx] = torch.compile(
+                self._make_compilable_action_cache_layer_callable(layer_idx),
+                **compile_kwargs,
+            )
+        return compiled_layers[layer_idx]
+
+    def _get_compiled_action_cache_group(self, start_layer: int, end_layer: int):
+        """Return one compiled callable for a contiguous action-layer group."""
+
+        start_layer = int(start_layer)
+        end_layer = int(end_layer)
+        if not 0 <= start_layer < end_layer <= self.num_layers:
+            raise IndexError(
+                "MoT action-cache group out of bounds: "
+                f"[{start_layer}, {end_layer}) for {self.num_layers} layers."
+            )
+        group_range = (start_layer, end_layer)
+        compiled_groups = self._compiled_action_cache_groups
+        if group_range not in compiled_groups:
+            if not hasattr(torch, "compile"):
+                raise RuntimeError(
+                    "MoT compile_mode requires a PyTorch build with torch.compile."
+                )
+            compile_kwargs = {
+                "backend": "inductor",
+                "dynamic": False,
+                "fullgraph": _env_flag("WAM_MOT_COMPILE_FULLGRAPH"),
+                "mode": self.compile_mode,
+            }
+            logger.info(
+                "Compiling MoT online action-cache group [%d,%d)/%d: mode=%s",
+                start_layer + 1,
+                end_layer,
+                self.num_layers,
+                self.compile_mode,
+            )
+            compiled_groups[group_range] = torch.compile(
+                self._make_compilable_action_cache_group_callable(
+                    start_layer, end_layer
+                ),
+                **compile_kwargs,
+            )
+        return compiled_groups[group_range]
+
+    @torch.no_grad()
+    def prefill_action_context_kv_cache(
+        self, context: Optional[torch.Tensor]
+    ) -> Optional[tuple[tuple[torch.Tensor, torch.Tensor], ...]]:
+        """Project Action cross-attention context once for the current chunk."""
+
+        if context is None:
+            return None
+        action_expert = self.mixtures["action"]
+        if not bool(getattr(action_expert, "uses_vlm_conditioning", False)):
+            # Match ActionDiT.pre_dit: non-VLM conditioning is embedded before it
+            # reaches the block cross-attention projections.
+            context = action_expert.text_embedding(context)
+        cache = []
+        for block in action_expert.blocks:
+            cross_attn = block.cross_attn
+            context_k = cross_attn.norm_k(cross_attn.k(context))
+            context_v = cross_attn.v(context)
+            cache.append((context_k, context_v))
+        return tuple(cache)
+
+    def _make_compilable_action_cache_group_callable(
+        self,
+        start_layer: int,
+        end_layer: int,
+    ):
+        """Create a fixed multi-layer action-cache compiler boundary."""
+
+        start_layer = int(start_layer)
+        end_layer = int(end_layer)
+
+        def action_cache_group(
+            action_embed: torch.Tensor,
+            action_freqs: torch.Tensor,
+            action_t_mod: torch.Tensor,
+            action_context: Optional[torch.Tensor],
+            action_context_mask: Optional[torch.Tensor],
+            action_context_keys: torch.Tensor,
+            action_context_values: torch.Tensor,
+            video_keys: torch.Tensor,
+            video_values: torch.Tensor,
+            action_attention_mask: torch.Tensor,
+            action_flex_key_mask: Optional[torch.Tensor],
+        ) -> torch.Tensor:
+            x = action_embed
+            for offset, layer_idx in enumerate(range(start_layer, end_layer)):
+                x = self._forward_compilable_action_cache_layer(
+                    layer_idx,
+                    x,
+                    action_freqs,
+                    action_t_mod,
+                    action_context,
+                    action_context_mask,
+                    action_context_keys[offset],
+                    action_context_values[offset],
+                    video_keys[offset],
+                    video_values[offset],
+                    action_attention_mask,
+                    action_flex_key_mask,
+                )
+            return x
+
+        code_name = f"_forward_compilable_action_cache_group_{start_layer}_{end_layer}"
+        action_cache_group.__code__ = action_cache_group.__code__.replace(
+            co_name=code_name
+        )
+        action_cache_group.__name__ = code_name
+        action_cache_group.__qualname__ = f"{type(self).__qualname__}.{code_name}"
+        return action_cache_group
+
+    def _make_compilable_action_cache_layer_callable(self, layer_idx: int):
+        """Create a distinct Dynamo frame for one cached-video action layer."""
+
+        layer_idx = int(layer_idx)
+
+        def action_cache_layer(
+            action_embed: torch.Tensor,
+            action_freqs: torch.Tensor,
+            action_t_mod: torch.Tensor,
+            action_context: Optional[torch.Tensor],
+            action_context_mask: Optional[torch.Tensor],
+            action_context_k: Optional[torch.Tensor],
+            action_context_v: Optional[torch.Tensor],
+            video_k: torch.Tensor,
+            video_v: torch.Tensor,
+            action_attention_mask: torch.Tensor,
+            action_flex_key_mask: Optional[torch.Tensor],
+        ) -> torch.Tensor:
+            return self._forward_compilable_action_cache_layer(
+                layer_idx,
+                action_embed,
+                action_freqs,
+                action_t_mod,
+                action_context,
+                action_context_mask,
+                action_context_k,
+                action_context_v,
+                video_k,
+                video_v,
+                action_attention_mask,
+                action_flex_key_mask,
+            )
+
+        code_name = f"_forward_compilable_action_cache_layer_{layer_idx}"
+        action_cache_layer.__code__ = action_cache_layer.__code__.replace(
+            co_name=code_name
+        )
+        action_cache_layer.__name__ = code_name
+        action_cache_layer.__qualname__ = f"{type(self).__qualname__}.{code_name}"
+        action_cache_layer._mot_layer_idx = layer_idx
+        return action_cache_layer
+
+    def _forward_compilable_action_cache_layer(
+        self,
+        layer_idx: int,
+        action_embed: torch.Tensor,
+        action_freqs: torch.Tensor,
+        action_t_mod: torch.Tensor,
+        action_context: Optional[torch.Tensor],
+        action_context_mask: Optional[torch.Tensor],
+        action_context_k: Optional[torch.Tensor],
+        action_context_v: Optional[torch.Tensor],
+        video_k: torch.Tensor,
+        video_v: torch.Tensor,
+        action_attention_mask: torch.Tensor,
+        action_flex_key_mask: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        """Run one action layer against a precomputed video KV cache."""
+
+        expert = self.mixtures["action"]
+        block = expert.blocks[int(layer_idx)]
+        (
+            q_action,
+            k_action,
+            v_action,
+            residual_x,
+            gate_msa,
+            shift_mlp,
+            scale_mlp,
+            gate_mlp,
+            use_gradient_checkpointing,
+        ) = self._build_expert_attention_io(
+            expert=expert,
+            block=block,
+            x=action_embed,
+            freqs=action_freqs,
+            t_mod=action_t_mod,
+        )
+        mixed = self._mixed_attention(
+            q_cat=q_action,
+            k_cat=torch.cat([video_k, k_action], dim=1),
+            v_cat=torch.cat([video_v, v_action], dim=1),
+            attention_mask=action_attention_mask,
+            flex_key_mask=action_flex_key_mask,
+            force_sdpa=True,
+        )
+        return self._apply_post_with_optional_checkpoint(
+            block=block,
+            residual_x=residual_x,
+            gate_msa=gate_msa,
+            shift_mlp=shift_mlp,
+            scale_mlp=scale_mlp,
+            gate_mlp=gate_mlp,
+            use_gradient_checkpointing=use_gradient_checkpointing,
+            mixed_slice=mixed,
+            context_payload={
+                "context": action_context,
+                "mask": action_context_mask,
+            },
+            context_kv=(action_context_k, action_context_v)
+            if action_context_k is not None and action_context_v is not None
+            else None,
+        )
 
     def _make_compilable_group_callable(
         self,

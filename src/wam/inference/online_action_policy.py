@@ -1,6 +1,7 @@
 """Online action diffusion from anchor + recent + current frames."""
 
 import math
+import os
 from dataclasses import dataclass
 from typing import Any, Callable, Literal, Optional
 
@@ -506,7 +507,10 @@ def _predict_online_action_noise_with_cache(
     timestep_action: torch.Tensor,
     context: torch.Tensor,
     context_mask: torch.Tensor,
+    action_context_kv_cache: Optional[tuple[tuple[torch.Tensor, torch.Tensor], ...]],
+    action_context_kv_cache_stacked: Optional[tuple[torch.Tensor, torch.Tensor]],
     video_kv_cache: list[dict[str, torch.Tensor]],
+    video_grouped_kv_cache: Optional[tuple[torch.Tensor, torch.Tensor]],
     attention_mask: torch.Tensor,
     video_seq_len: int,
 ) -> torch.Tensor:
@@ -519,6 +523,8 @@ def _predict_online_action_noise_with_cache(
     action_context_payload = {
         "context": action_pre["context"],
         "mask": action_pre["context_mask"],
+        "kv_cache": action_context_kv_cache,
+        "kv_cache_stacked": action_context_kv_cache_stacked,
     }
     action_tokens = action_pre["tokens"]
     action_freqs = action_pre["freqs"]
@@ -531,6 +537,7 @@ def _predict_online_action_noise_with_cache(
         action_t_mod=action_t_mod,
         action_context_payload=action_context_payload,
         video_kv_cache=video_kv_cache,
+        video_grouped_kv_cache=video_grouped_kv_cache,
         attention_mask=attention_mask,
         video_seq_len=int(video_seq_len),
     )
@@ -567,6 +574,16 @@ def infer_online_action_chunk(
     if int(num_inference_steps) < 1:
         raise ValueError("num_inference_steps must be positive")
     model.eval()
+    # CUDA Graph Trees retain outputs by invocation. Mark each action chunk as
+    # a fresh graph-tree step so consecutive requests cannot recycle a live
+    # output tensor.
+    mot = getattr(model, "mot", None)
+    if getattr(mot, "compile_mode", "off") == "reduce-overhead":
+        mark_step_begin = getattr(
+            getattr(torch, "compiler", None), "cudagraph_mark_step_begin", None
+        )
+        if mark_step_begin is not None:
+            mark_step_begin()
     if rtc_guidance is not None and rtc_prefix_condition is not None:
         raise ValueError(
             "`rtc_guidance` and `rtc_prefix_condition` are mutually exclusive."
@@ -814,6 +831,36 @@ def infer_online_action_chunk(
         attention_mask=joint_attention_mask[:video_seq_len, :video_seq_len],
         key_mask=video_key_mask,
     )
+    mot_compile_mode = str(getattr(model.mot, "compile_mode", "off") or "off")
+    prefill_action_context_kv_cache = getattr(
+        model.mot, "prefill_action_context_kv_cache", None
+    )
+    action_context_kv_cache_enabled = str(
+        os.environ.get("WAM_ACTION_CONTEXT_KV_CACHE", "1")
+    ).lower() not in {"0", "false", "no", "off"}
+    action_context_kv_cache = (
+        prefill_action_context_kv_cache(action_context)
+        if (
+            mot_compile_mode != "off"
+            and action_context_kv_cache_enabled
+            and prefill_action_context_kv_cache is not None
+        )
+        else None
+    )
+    action_context_kv_cache_stacked = None
+    if action_context_kv_cache is not None:
+        action_context_kv_cache_stacked = (
+            torch.stack(tuple(layer_kv[0] for layer_kv in action_context_kv_cache)),
+            torch.stack(tuple(layer_kv[1] for layer_kv in action_context_kv_cache)),
+        )
+    video_grouped_kv_cache = (
+        (
+            torch.stack(tuple(layer_cache["k"] for layer_cache in video_kv_cache)),
+            torch.stack(tuple(layer_cache["v"] for layer_cache in video_kv_cache)),
+        )
+        if mot_compile_mode != "off" and video_kv_cache
+        else None
+    )
     action_attention_mask = joint_attention_mask
 
     infer_timesteps_action, infer_deltas_action = (
@@ -846,7 +893,10 @@ def infer_online_action_chunk(
                 timestep_action=timestep_action,
                 context=action_context,
                 context_mask=action_context_mask,
+                action_context_kv_cache=action_context_kv_cache,
+                action_context_kv_cache_stacked=action_context_kv_cache_stacked,
                 video_kv_cache=video_kv_cache,
+                video_grouped_kv_cache=video_grouped_kv_cache,
                 attention_mask=action_attention_mask,
                 video_seq_len=video_seq_len,
             )

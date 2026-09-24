@@ -290,6 +290,26 @@ class CrossAttention(nn.Module):
         x = flash_attention(q=q, k=k, v=v, num_heads=self.num_heads, ctx_mask=ctx_mask)
         return self.o(x)
 
+    def forward_with_kv_cache(
+        self,
+        x: torch.Tensor,
+        context_k: torch.Tensor,
+        context_v: torch.Tensor,
+        ctx_mask: Optional[torch.Tensor] = None,
+    ):
+        """Run cross-attention with context K/V projected outside the hot path."""
+
+        q = self.norm_q(self.q(x))
+        return self.o(
+            flash_attention(
+                q=q,
+                k=context_k,
+                v=context_v,
+                num_heads=self.num_heads,
+                ctx_mask=ctx_mask,
+            )
+        )
+
 
 class GateModule(nn.Module):
     def __init__(self,):
