@@ -168,6 +168,15 @@ html:not([data-theme]) .benchmark-card{border-color:#dce6df}
 html:not([data-theme]) .benchmark-scroll-controls button{border-color:#cbdad2}
 html:not([data-theme]) .benchmark-scroll-controls button:hover:not(:disabled){background:#edf3ef;border-color:#a6beb2}
 
+/* BibTeX contains the complete author list; affiliations below are plain text. */
+.citation-block{margin-top:40px;padding:0;background:transparent;border:0;border-radius:0}
+.citation-header h3{font-size:20px;color:#465d56}
+.citation-block pre{max-height:250px;overflow:auto;padding:18px 20px;margin:16px 0 0;background:#f6f9f7;border:1px solid #e0e9e3;border-radius:5px;font-size:14px;line-height:1.75;white-space:normal;overflow-wrap:anywhere;color:#4b6258;scrollbar-width:thin;scrollbar-color:#b9ccc0 #f6f9f7}
+.citation-line{display:block;min-height:1.75em;white-space:pre-wrap;padding-left:var(--citation-indent,0ch);text-indent:calc(-1 * var(--citation-indent,0ch))}
+.citation-affiliations{min-width:0}
+.author-affiliation-statement{margin:20px 0 7px;font-size:16px;line-height:1.7;color:#465d56}
+.author-additional-notes{margin:0;font-size:15px;line-height:1.8;color:#71837b}
+@media(max-width:760px){.citation-block pre{max-height:230px;padding:15px;font-size:13px}.author-affiliation-statement{font-size:16px}.author-additional-notes{font-size:15px}}
 /* A slightly shallower stage; the film stays uncropped at its native 16:9. */
 .hero-media.has-video{aspect-ratio:19/10;height:auto;min-height:0;gap:0;background:#132039}
 .hero-media.has-video img{object-fit:contain;opacity:1}

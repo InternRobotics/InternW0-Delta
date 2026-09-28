@@ -350,21 +350,27 @@
       }, { once: true });
     }
   }
-  if (content.authors.length) {
+  if (content.team) {
     const target = $('#authors'); target.replaceChildren();
-    const list = make('div', 'author-list');
-    content.authors.forEach(author => {
-      const url = safeUrl(author.url);
-      const node = make(url ? 'a' : 'span', '', author.name);
-      if (url) { node.href = url; node.target = '_blank'; node.rel = 'noopener noreferrer'; }
-      list.append(node);
+    target.append(make('p', 'author-affiliation-statement', content.team.affiliationStatement));
+    const additional = make('p', 'author-additional-notes');
+    content.team.additionalAffiliations.forEach((author, index) => {
+      if (index) additional.append(document.createTextNode(' '));
+      additional.append(make('span', 'author-university-note', `${author.name} is also affiliated with ${author.institution}.`));
     });
-    target.append(list);
-    const affiliations = content.affiliations.length ? content.affiliations : [...new Set(content.authors.map(a => a.affiliation).filter(Boolean))];
-    if (affiliations.length) target.append(make('p', 'affiliation-list', affiliations.join(' · ')));
+    target.append(additional);
   }
   if (content.citation.trim()) {
-    $('#citation-block').hidden = false; $('#citation-text').textContent = content.citation;
+    $('#citation-block').hidden = false;
+    const citation = $('#citation-text'); citation.replaceChildren();
+    content.citation.split('\n').forEach((line, index) => {
+      if (index) citation.append(document.createTextNode('\n'));
+      const node = make('span', 'citation-line', line);
+      // Keep soft-wrapped lines aligned too, including narrow mobile viewports.
+      const indent = line.match(/^(?:\s*[A-Za-z]+\s*=\s*\{|\s+)/)?.[0].length || 0;
+      node.style.setProperty('--citation-indent', `${indent}ch`);
+      citation.append(node);
+    });
   }
   let timer;
   function toast(text) {

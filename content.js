@@ -6,8 +6,30 @@ window.WAM_CONTENT = {
   title: 'An Embodied World Model Bridging Predictive Dynamics and Actions',
   subtitle: 'An Embodied World Model Bridging Predictive Dynamics and Actions',
   year: '2026',
-  authors: [],
+  // Exact author order on https://arxiv.org/abs/2609.31394 (checked 2026-09-28).
+  authors: [
+    'Xingyu Miao', 'Zizun Li', 'Baole Fang', 'Kaiwen Song', 'Tenghui Wang',
+    'Hanxue Zhang', 'Yating Wang', 'Xudong Li', 'Yuping He', 'Xueyuan Wei',
+    'Chao Gao', 'Xijie Yang', 'Yingxiang Xu', 'Kerui Ren', 'Wenqi Guo',
+    'Jianjun Zhou', 'Xinzhe Wang', 'Weiguang Zhao', 'Ni Yang', 'Zetao Cai',
+    'Yufei Xue', 'Hengjie Li', 'Zeyu He', 'Yuanzhen Zhou', 'Rong Fu',
+    'Jianyang Zhang', 'Siwei Cui', 'Fuxian Huang', 'Yunsong Zhou', 'Xing Gao',
+    'Yifei Yao', 'Qiaojun Yu', 'Kailin Li', 'Ming Zhou', 'Mu Huang',
+    'Xinyue Li', 'Wenze Cui', 'Bingqi Jiang', 'Xueyue Zhu', 'Junting Dong',
+    'Haoyu Guo', 'Tao Lu', 'Mulin Yu', 'Bowen Zhou', 'Bin Zhao',
+    'Tianfan Xue', 'Weinan Zhang', 'Chunhua Shen'
+  ].map(name => ({ name })),
   affiliations: [],
+  // Plain-text affiliation notes only; no role groups or university links.
+  team: {
+    affiliationStatement: 'All authors are affiliated with Shanghai Artificial Intelligence Laboratory.',
+    additionalAffiliations: [
+      { name: 'Bin Zhao', institution: 'Northwestern Polytechnical University' },
+      { name: 'Tianfan Xue', institution: 'The Chinese University of Hong Kong' },
+      { name: 'Weinan Zhang', institution: 'Shanghai Jiao Tong University' },
+      { name: 'Chunhua Shen', institution: 'Zhejiang University' }
+    ]
+  },
   links: { paper: 'https://arxiv.org/abs/2609.31394', code: 'https://github.com/InternRobotics/InternW0-Delta', models: 'https://huggingface.co/collections/InternRobotics/internw0' },
   linkLabels: { paper: 'Read on arXiv ↗', code: 'View repository ↗', models: 'View collection ↗' },
   citation: '',
@@ -121,3 +143,30 @@ window.WAM_CONTENT = {
     ]
   }
 };
+
+// arXiv citation: keep the full ordered author list in the copied BibTeX.
+// Wrap between complete author names; continuation lines align after `author = {`.
+const citationAuthorPrefix = '  author = {';
+const citationAuthorIndent = ' '.repeat(citationAuthorPrefix.length);
+const citationAuthorLines = [];
+let citationAuthorLine = citationAuthorPrefix;
+window.WAM_CONTENT.authors.forEach((author, index, authors) => {
+  const entry = author.name + (index === authors.length - 1 ? '},' : ' and');
+  if (citationAuthorLine.length + entry.length > 110 && citationAuthorLine !== citationAuthorPrefix) {
+    citationAuthorLines.push(citationAuthorLine.trimEnd());
+    citationAuthorLine = citationAuthorIndent;
+  }
+  citationAuthorLine += entry + (index === authors.length - 1 ? '' : ' ');
+});
+citationAuthorLines.push(citationAuthorLine);
+window.WAM_CONTENT.citation = [
+  '@misc{miao2026internw0delta,',
+  '  title = {InternW0-{$\\Delta$}: A World Action Model Bridging Predictive Dynamics and Actions with 20K+ Hours of Open Data},',
+  ...citationAuthorLines,
+  '  year = {2026},',
+  '  eprint = {2609.31394},',
+  '  archivePrefix = {arXiv},',
+  '  primaryClass = {cs.RO},',
+  '  url = {https://arxiv.org/abs/2609.31394}',
+  '}'
+].join('\n');
