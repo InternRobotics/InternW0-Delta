@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en" data-title-style="studio">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8fbf9">
+  <meta name="description" content="InternW0-Δ: an embodied world model for robot manipulation, connecting visual dynamics and action generation through directed expert interaction and Causal Imprint.">
+  <meta property="og:title" content="InternW0-Δ: An Embodied World Model Bridging Predictive Dynamics and Actions">
+  <meta property="og:description" content="World modeling for robot manipulation. Explore the model, demonstrations, and research.">
+  <meta property="og:type" content="website">
+  <title>InternW0-Δ: An Embodied World Model Bridging Predictive Dynamics and Actions</title>
+  <link rel="icon" href="assets/internw0-favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="content.js"></script>
+  <script defer src="translations.js"></script>
+  <script defer src="i18n.js"></script>
+  <script defer src="inline-video.js"></script>
+  <link rel="stylesheet" href="themes/studio-title.css">
+
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" id="header"><div class="header-inner">
+    <a class="brand" href="#home" aria-label="InternW0-Δ home"><span class="brand-symbol" aria-hidden="true"><img src="assets/brand/internw0-delta-logo.jpg" alt="" width="1254" height="1254"></span><span data-project-name>InternW0-Δ</span></a>
+    <nav class="desktop-nav" aria-label="Main navigation"><a href="#demos">Demos</a><a href="#data">Data</a><a href="#method">Method</a><a href="#results">Results</a><a href="#resources">Resources</a></nav>
+    <button class="nav-paper" data-resource="paper">Paper <span aria-hidden="true">↗</span></button>
+    <button class="language-toggle" type="button" data-language-toggle aria-label="Switch to Chinese" lang="zh-CN" hidden>中文</button>
+    <button class="menu-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span></button>
+    <nav id="mobile-nav" class="mobile-nav" aria-label="Mobile navigation" hidden><a href="#demos">Demos</a><a href="#data">Data</a><a href="#method">Method</a><a href="#results">Results</a><a href="#resources">Resources</a></nav>
+  </div></header>
+  <main id="main">
+    <section class="hero" id="home" aria-labelledby="hero-title">
+      <div class="ambient-field" aria-hidden="true"><div class="ambient-light light-one"></div><div class="ambient-light light-two"></div><div class="ambient-grid"></div></div>
+      <div class="hero-copy content-width">
+        <p class="project-category"><span></span> World Action Model</p>
+        <div class="hero-brand"><span class="brand-symbol" aria-hidden="true"><img src="assets/brand/internw0-delta-logo.jpg" alt="" width="1254" height="1254"></span><h1 id="hero-title"><span class="title-accessible" data-project-name>InternW0-Δ</span><svg class="studio-lettering" viewBox="210 900 840 140" width="840" height="140" aria-hidden="true" focusable="false"><defs><filter id="single-color-lettering" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -0.2126 -0.7152 -0.0722 0 1"/><feComponentTransfer result="letter-alpha"><feFuncA type="linear" slope="10" intercept="-2"/></feComponentTransfer><feFlood flood-color="#1b2942"/><feComposite in2="letter-alpha" operator="in"/></filter></defs><image href="assets/brand/internw0-delta-logo.jpg" x="0" y="0" width="1254" height="1254" filter="url(#single-color-lettering)"/></svg></h1></div>
+        <p class="hero-subtitle" data-project-title>An Embodied World Model Bridging Predictive Dynamics and Actions</p>
+        <p class="hero-description">Jointly learning visual dynamics and robot actions,<br class="desktop-break"> with Causal Imprint capturing action-relevant future changes.</p>
+        <div class="paper-links"><button data-resource="paper">Paper <span aria-hidden="true">↗</span></button><button data-resource="code">Code <span aria-hidden="true">↗</span></button><button data-resource="models">Models <span aria-hidden="true">↗</span></button></div>
+        <p class="release-note">Explore code and models. Technical report forthcoming.</p>
+      </div>
+      <div class="hero-media-wrap content-width">
+        <div class="media-heading"><span>Robot manipulation</span><span class="media-status">Project video</span></div>
+        <div class="hero-media has-video inline-media" id="hero-media">
+          <video class="inline-video" controls muted playsinline preload="none" poster="assets/videos/posters/main-20260927/main-demo-cover.jpg" width="1920" height="1080" aria-label="Project video"></video>
+        </div>
+        <div class="hero-media-footer"><a href="#demos">Explore demonstrations <span aria-hidden="true">↓</span></a></div>
+      </div>
+    </section>
+    <section class="section demos-section" id="demos" aria-labelledby="demos-title"><div class="content-width">
+      <div class="section-heading"><div><p class="section-kicker">Demonstrations</p><h2 id="demos-title">Real-world<br><span>robot manipulation.</span></h2></div><p id="demos-media-note">Explore demonstrations with grippers<br>and dexterous hands.</p></div>
+      <div class="tab-list" id="demo-tabs" role="tablist" aria-label="Demo end effectors"></div>
+      <div id="demo-panel" role="tabpanel" tabindex="0"><div class="demo-toolbar"><p class="demo-description" id="demo-description"></p><div class="demo-scroll-controls" id="demo-scroll-controls" role="group" aria-label="Browse demos" hidden><button id="demo-prev" type="button" aria-label="Scroll to previous demos" aria-controls="demo-grid" disabled><span aria-hidden="true">←</span></button><button id="demo-next" type="button" aria-label="Scroll to next demos" aria-controls="demo-grid"><span aria-hidden="true">→</span></button></div></div><div class="demo-grid" id="demo-grid" role="region" aria-label="Demonstration videos" tabindex="0"></div></div>
+      <p class="demo-disclaimer">Qualitative demonstrations. Playback-speed annotations, where shown, are part of the supplied footage.</p>
+    </div></section>
+    <section class="section data-section" id="data" aria-labelledby="data-title"><div class="content-width">
+      <div class="section-heading"><div><p class="section-kicker">Data curation</p><h2 id="data-title">Filtering the<br><span>training data.</span></h2></div><p>Examples of filtered or masked segments,<br>grouped by the reason for exclusion.</p></div>
+      <p class="data-intro">Robot and human demonstrations are curated and aligned for pretraining. The examples below illustrate four types of data filtering, including segment removal and action-target masking.</p>
+      <div class="tab-list filter-tabs" id="filter-tabs" role="tablist" aria-label="Data filtering categories"></div>
+      <div id="filter-panel" role="tabpanel" tabindex="0"><p class="filter-description" id="filter-description"></p><div class="filter-examples" id="filter-examples">
+        <article class="filter-card"><div class="filter-media inline-media"><video class="inline-video" controls muted playsinline preload="none" src="assets/videos/filtering/web/action_guard_1.mp4" poster="assets/videos/filtering/posters/action_guard_1.jpg" aria-label="Implausible actions · 1"></video></div></article>
+        <article class="filter-card"><div class="filter-media inline-media"><video class="inline-video" controls muted playsinline preload="none" src="assets/videos/filtering/web/action_guard_2.mp4" poster="assets/videos/filtering/posters/action_guard_2.jpg" aria-label="Implausible actions · 2"></video></div></article>
+      </div></div>
+    </div></section>
+    <section class="section method-section" id="method" aria-labelledby="method-title"><div class="content-width">
+      <div class="section-heading"><div><p class="section-kicker">Method</p><h2 id="method-title">World Action Model<br><span>with directed attention.</span></h2></div><p>A pretrained video expert and an action expert,<br>with separate parameters and masked interaction.</p></div>
+      <figure class="paper-figure" id="figure-architecture">
+        <button class="figure-image-button" data-figure="architecture" aria-label="Enlarge architecture overview"><img src="assets/figures/architecture.png" alt="Original InternW0-Δ architecture with A/R/C observations, dual conditioning, and a 30-layer World Action MoT." width="2600" height="1007" loading="lazy"></button>
+        <figcaption><strong>Architecture overview.</strong> Wan VAE encodes visual observations. T5 and proprioception condition the video expert; task-conditioned VLM features and proprioception condition the action expert. The two experts are coupled through directed attention.</figcaption>
+        <div class="figure-tools"><button data-figure="architecture">Enlarge figure ↗</button><a href="assets/figures/architecture.pdf" target="_blank" rel="noopener">View PDF</a></div>
+      </figure>
+      <dl class="method-context"><div><dt>Sparse Memory Context (SMC)</dt><dd>Anchor, recent, and current frames preserve episode context and recent execution history without a dense video history.</dd></div><div><dt>Task-conditioned scene semantics</dt><dd>A frozen VLM encodes the instruction together with current observations, providing scene-grounded context for the action expert.</dd></div></dl>
+      <div class="method-details" aria-label="Additional method details">
+        <details id="detail-attention"><summary><span>Directed attention</span><span class="detail-symbol" aria-hidden="true">+</span></summary><div class="method-detail-body"><p>Video and action experts exchange information through masked joint attention while retaining their own cross-attention and feed-forward layers. Causal Imprint tokens (Δ) attend to R, C, and Δ; action tokens attend to A, R, C, Δ, and Act. Neither can attend to future video tokens F.</p><button class="detail-figure-link" data-figure="attention">View the MoT layer & attention mask ↗</button></div></details>
+        <details id="detail-causal-imprint"><summary><span>Causal Imprint (CI)</span><span class="detail-symbol" aria-hidden="true">+</span></summary><div class="method-detail-body"><p>Learnable queries capture action-relevant future changes from recent and current observations. Latent-difference supervision and future-feature alignment shape these representations, which the action expert uses alongside observed visual features.</p><button class="detail-figure-link" data-figure="causal-imprint">View the supervision diagram ↗</button></div></details>
+        <details id="detail-distillation"><summary><span>4D-aware representation distillation</span><span class="detail-symbol" aria-hidden="true">+</span></summary><div class="method-detail-body"><p>A frozen <a href="https://arxiv.org/abs/2603.02573" target="_blank" rel="noopener">Track4World</a> teacher provides offline-cached geometry and motion descriptors. A query decoder aggregates clean A/R/C features, and an auxiliary loss distills these priors into the video expert during training.</p><button class="detail-figure-link" data-figure="distillation">View the distillation diagram ↗</button></div></details>
+      </div>
+    </div></section>
+    <section class="section results-section" id="results" aria-labelledby="results-title"><div class="content-width">
+      <div class="section-heading"><div><p class="section-kicker">Experiments</p><h2 id="results-title">Results across<br><span>benchmark settings.</span></h2></div><p>LIBERO-Plus, RoboTwin,<br>RoboDojo, and EBench.</p></div>
+      <div class="benchmark-scroll-controls" id="benchmark-scroll-controls" role="group" aria-label="Browse benchmark results" hidden><span>More benchmarks</span><button id="benchmark-prev" type="button" aria-label="Previous benchmark" aria-controls="benchmark-grid" disabled><span aria-hidden="true">←</span></button><button id="benchmark-next" type="button" aria-label="Next benchmark" aria-controls="benchmark-grid"><span aria-hidden="true">→</span></button></div>
+      <div class="benchmark-grid" id="benchmark-grid" role="region" aria-label="Benchmark results, scroll horizontally" tabindex="0"></div>
+      <p class="results-note" id="results-note">All axes start at zero. RoboDojo uses a 0–30% range; the other panels use 0–100%.</p>
+      <noscript><div class="results-table-wrap"><table class="results-table"><caption>Success rate (%) ↑</caption><thead><tr><th scope="col">Benchmark</th><th scope="col">Method</th><th scope="col">Success rate (%)</th></tr></thead><tbody><tr><td>LIBERO-Plus</td><th scope="row">Π0.5</th><td>84.4</td></tr><tr><td>LIBERO-Plus</td><th scope="row">OpenWAM-α</th><td>69.2</td></tr><tr><td>LIBERO-Plus</td><th scope="row">Qwen-RobotManip-Context</th><td>91.4</td></tr><tr><td>LIBERO-Plus</td><th scope="row">InternW0-Δ</th><td>92.8</td></tr><tr><td>RoboTwin Clean2Random</td><th scope="row">Π0.5</th><td>47.9</td></tr><tr><td>RoboTwin Clean2Random</td><th scope="row">OpenWAM-α</th><td>48.7</td></tr><tr><td>RoboTwin Clean2Random</td><th scope="row">Qwen-RobotManip-Context</th><td>69.4</td></tr><tr><td>RoboTwin Clean2Random</td><th scope="row">InternW0-Δ</th><td>71.9</td></tr><tr><td>RoboDojo</td><th scope="row">Π0.5</th><td>6.91</td></tr><tr><td>RoboDojo</td><th scope="row">OpenWAM-α</th><td>11.92</td></tr><tr><td>RoboDojo</td><th scope="row">GPT-6-Astra</th><td>22.48</td></tr><tr><td>RoboDojo</td><th scope="row">InternW0-Δ</th><td>23.9</td></tr><tr><td>EBench</td><th scope="row">Π0.5</th><td>27.1</td></tr><tr><td>EBench</td><th scope="row">OpenWAM-α</th><td>49.4</td></tr><tr><td>EBench</td><th scope="row">Qwen-RobotManip</th><td>45.6</td></tr><tr><td>EBench</td><th scope="row">InternW0-Δ</th><td>49.2</td></tr><tr><td>RoboTwin Clean2Clean</td><th scope="row">Π0.5</th><td>73.1</td></tr><tr><td>RoboTwin Clean2Clean</td><th scope="row">OpenWAM-α</th><td>89.4</td></tr><tr><td>RoboTwin Clean2Clean</td><th scope="row">Qwen-RobotManip-Context</th><td>84.7</td></tr><tr><td>RoboTwin Clean2Clean</td><th scope="row">InternW0-Δ</th><td>90.0</td></tr></tbody></table></div></noscript>
+    </div></section>
+    <section class="section resources-section" id="resources" aria-labelledby="resources-title"><div class="content-width">
+      <div class="section-heading"><div><p class="section-kicker">Open research</p><h2 id="resources-title">Paper, code,<br><span>and models.</span></h2></div><p>Explore the code repository and model collection.</p></div>
+      <div class="resource-list"><button class="resource-card" data-resource="paper"><span>Technical report</span><span data-state="paper">Forthcoming</span><span aria-hidden="true">↗</span></button><button class="resource-card" data-resource="code"><span>Source code</span><span data-state="code">Forthcoming</span><span aria-hidden="true">↗</span></button><button class="resource-card" data-resource="models"><span>Model checkpoints</span><span data-state="models">Forthcoming</span><span aria-hidden="true">↗</span></button></div>
+      <div class="authors-section"><h3>Authors & affiliations</h3><div id="authors" class="authors"><p class="pending-authors">To be announced with the technical report.</p></div></div>
+      <div class="citation-block" id="citation-block" hidden><div class="citation-header"><h3>Citation</h3><button id="copy-citation">Copy BibTeX</button></div><pre id="citation-text"></pre></div>
+    </div></section>
+  </main>
+  <footer><div class="content-width footer-row">
+    <a class="brand" href="#home"><span class="brand-symbol" aria-hidden="true"><img src="assets/brand/internw0-delta-logo.jpg" alt="" width="1254" height="1254"></span><span data-project-name>InternW0-Δ</span></a>
+    <span>Embodied world models · <span data-year>2026</span></span>
+    <div class="footer-actions">
+      <div class="footer-institutions" role="group" aria-label="Institution logos">
+        <img class="institution-shai" src="assets/brand/shanghai-ai-laboratory.png" alt="Shanghai Artificial Intelligence Laboratory" width="672" height="390" loading="lazy" decoding="async">
+        <img class="institution-internrobotics" src="assets/brand/internrobotics.png" alt="InternRobotics" width="536" height="73" loading="lazy" decoding="async">
+      </div>
+      <a class="back-top" href="#home">Back to top ↑</a>
+    </div>
+  </div></footer>
+  <dialog id="media-dialog" class="media-dialog" aria-labelledby="dialog-title"><div class="dialog-top"><h2 id="dialog-title"></h2><button class="dialog-close" aria-label="Close dialog">×</button></div><div class="figure-viewer-tools" id="figure-viewer-tools" hidden><button id="figure-zoom" aria-pressed="false">Original size</button><a id="figure-pdf" target="_blank" rel="noopener">Open PDF ↗</a><span>Use original size to inspect details.</span></div><div id="dialog-body"></div><p id="dialog-description" class="dialog-description"></p></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <noscript><p class="no-script-note">The method figure and research text remain available without JavaScript. Use “View PDF” for the original architecture figure.</p></noscript>
+</body>
+</html>
