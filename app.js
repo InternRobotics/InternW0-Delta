@@ -188,11 +188,17 @@
     $('.demo-disclaimer').textContent = hasPublishedVideos
       ? 'Qualitative demonstrations. Playback-speed annotations, where shown, are part of the supplied footage.'
       : 'These slots are placeholders and do not represent experimental results or measured performance.';
-    category.items.forEach(demo => {
+    category.items.forEach((demo, demoIndex) => {
       const card = make('article', 'demo-card');
       const media = make('div', 'demo-media has-media');
-      inlineMedia.mount(media, demo, { loop: true });
-      card.append(media);
+      const title = make('h3', 'demo-card-title', demo.title);
+      const caption = make('p', 'demo-caption', demo.subtitle);
+      title.id = `demo-${category.id}-${demoIndex}-title`;
+      caption.id = `demo-${category.id}-${demoIndex}-caption`;
+      card.setAttribute('aria-labelledby', title.id);
+      const video = inlineMedia.mount(media, demo, { loop: true });
+      video?.setAttribute('aria-describedby', caption.id);
+      card.append(media, title, caption);
       demoStrip.append(card);
     });
     demoStrip.scrollTo({ left: 0, behavior: 'instant' });

@@ -62,11 +62,11 @@ window.WAM_CONTENT = {
   ],
   demos: [
     { id: 'grippers', label: 'Grippers', description: 'Everyday and laboratory tasks with gripper-equipped robots.', items: [
-      { title: 'Filling a cup', subtitle: 'Filling a cup using a drink dispenser.', src: 'assets/videos/web/final-20260924/get-drink.mp4', poster: 'assets/videos/posters/final-20260924/get-drink.jpg' },
-      { title: 'MOF experiment', subtitle: 'Transferring liquid in a MOF experiment.', src: 'assets/videos/web/final-20260924/mof-2000.mp4', poster: 'assets/videos/posters/final-20260924/mof-2000.jpg' },
+      { title: 'Filling a cup', subtitle: 'A single model dispenses different specified amounts of water.', src: 'assets/videos/web/final-20260924/get-drink.mp4', poster: 'assets/videos/posters/final-20260924/get-drink.jpg' },
+      { title: 'MOF experiment', subtitle: 'Long-horizon manipulation: transferring liquid and weighing it in a MOF experiment.', src: 'assets/videos/web/final-20260924/mof-2000.mp4', poster: 'assets/videos/posters/final-20260924/mof-2000.jpg' },
       { title: 'Toasting bread', subtitle: 'Preparing toast with a bread toaster.', src: 'assets/videos/web/final-20260924/toast-bread-2000.mp4', poster: 'assets/videos/posters/final-20260924/toast-bread-2000.jpg' },
       { title: 'Luminol experiment', subtitle: 'Performing a luminol experiment.', src: 'assets/videos/web/final-20260924/luminol-2000.mp4', poster: 'assets/videos/posters/final-20260924/luminol-2000.jpg' },
-      { title: 'Placing test tubes', subtitle: 'Placing test tubes into a rack.', src: 'assets/videos/web/final-20260924/insert-tubes-2000.mp4', poster: 'assets/videos/posters/final-20260924/insert-tubes-2000.jpg' }
+      { title: 'Placing test tubes', subtitle: 'Trained on single-tube insertion demonstrations, the policy generalizes to inserting two tubes consecutively.', src: 'assets/videos/web/final-20260924/insert-tubes-2000.mp4', poster: 'assets/videos/posters/final-20260924/insert-tubes-2000.jpg' }
     ]},
     { id: 'dexterous-hands', label: 'Dexterous hands', description: 'Manipulation with multi-fingered robotic hands.', items: [
       { title: 'Pouring water', subtitle: 'Pouring water with a dexterous hand.', src: 'assets/videos/web/final-20260924/pour-water-2000.mp4', poster: 'assets/videos/posters/final-20260924/pour-water-2000.jpg' },

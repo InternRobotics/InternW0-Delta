@@ -40,6 +40,8 @@
 .demo-scroll-controls button:disabled{opacity:.35;cursor:default}
 .demo-grid{display:flex;flex-wrap:nowrap;position:relative;gap:23px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding-inline:8px;padding:8px 8px 18px;margin-inline:-8px;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#a5b8d5 transparent}
 .demo-grid>.demo-card{flex:0 0 calc((100% - 23px)/2);scroll-snap-align:start}
+.demo-card .demo-card-title{margin:16px 0 6px;font-size:20px;line-height:1.4;font-weight:500}
+.demo-card>.demo-caption{margin:0;font-size:17px;line-height:1.7;overflow-wrap:break-word;color:#65766f}
 .demo-grid::-webkit-scrollbar{height:6px}
 .demo-grid::-webkit-scrollbar-thumb{background:#a5b8d5;border-radius:8px}
 @media(max-width:1080px){.demo-grid{gap:18px}.demo-grid>.demo-card{flex-basis:calc((100% - 18px)/2)}}
