@@ -1,0 +1,73 @@
+# @package _global_
+
+defaults:
+- train
+- override /task: robotwin
+- override hydra/job_logging: disabled
+- override hydra/hydra_logging: disabled
+- _self_
+ckpt: ${oc.env:ROBOTWIN_CHECKPOINT,${paths.checkpoints}/robotwin.pt}
+gpu_id: 0
+model:
+  load_text_encoder: true
+  skip_dit_load_from_pretrain: true
+  action_dit_pretrained_path: null
+EVALUATION:
+  robotwin_root: ${oc.env:ROBOTWIN_ROOT,third_party/RoboTwin}
+  policy_name: wam_policy
+  task_name: null
+  task_config: demo_randomized
+  instruction_type: unseen
+  eval_num_episodes: 100
+  output_dir: ${paths.output}/eval/robotwin/${now:%Y%m%d_%H%M%S}
+  action_horizon: 32
+  replan_steps: 10
+  num_inference_steps: ${eval_num_inference_steps}
+  sigma_shift: null
+  rand_device: cpu
+  tiled: false
+  timing_enabled: false
+  skip_get_obs_within_replan: false
+  dataset_stats_path: ${oc.env:ROBOTWIN_NORM_STATS,assets/stats/robotwin.json}
+  device: cuda
+  simulator_python: ${oc.env:ROBOTWIN_PYTHON,.venv-robotwin/bin/python}
+  action_hz: 50.0
+  eval_video_log: false
+  resume: true
+  expert_timeout_sec: 300
+  rollout_setup_timeout_sec: 300
+  episode_timeout_sec: 1800
+  heartbeat_interval_sec: 10
+  max_seed_attempts: 20000
+  policy_server_socket: null
+  policy_client_id: null
+MULTIRUN:
+  num_gpus: 1
+  gpu_ids: null
+  max_tasks_per_gpu: 6
+  policy_server_mode: shared_per_gpu
+  shared_servers_per_gpu: 1
+  shared_clients_per_server: 6
+  shared_server_request_timeout_sec: 300
+  phases:
+  - random
+  worker_startup_timeout_sec: 1800
+  worker_stall_timeout_sec: 1200
+  max_worker_restarts: 5
+hydra:
+  job:
+    chdir: false
+  run:
+    dir: .
+  output_subdir: null
+seed: 0
+data:
+  train:
+    image_color_jitter:
+      enabled: false
+      apply_to_vlm: false
+    image_camera_jitter:
+      enabled: false
+      apply_to_vlm: false
+    image_domain_jitter:
+      enabled: false

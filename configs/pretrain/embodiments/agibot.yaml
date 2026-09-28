@@ -1,0 +1,117 @@
+embodiments:
+  adapter_agibot_a2d_end_pose:
+    control_schema: dual_arm
+    notes:
+    - AgiBot action EEF fields at row t mirror observation EEF at row t.
+    - Joint and EEF supervision therefore use action[t+1], aligned with the next observed robot state.
+    - WAM action contains absolute next joint targets, EEF target deltas, and absolute gripper commands.
+    canonical_adapter:
+      layout: robot
+      pose_input: split_xyz_xyzw
+      action_pose_semantics: absolute_target
+      state_pose_output: xyz_rot6d
+      action_pose_output: xyz_rotvec
+      missing_policy: pad_and_mask
+      frame_transform:
+        world_from_source: robot_to_opencv
+        source_ee_from_canonical_ee: opencv_to_robot
+      slots:
+        left:
+          joint:
+            state_key: observation.states.joint.position
+            action_key: actions.joint.position
+            raw_slice:
+            - 0
+            - 7
+            target_slice:
+            - 0
+            - 7
+            action_from_next_action: true
+          ee:
+            state_position_key: observation.states.end.position
+            state_orientation_key: observation.states.end.orientation
+            action_position_key: actions.end.position
+            action_orientation_key: actions.end.orientation
+            position_slice:
+            - 0
+            - 3
+            orientation_slice:
+            - 0
+            - 4
+            state_target_slice:
+            - 7
+            - 16
+            action_target_slice:
+            - 7
+            - 13
+            action_from_next_action: true
+          gripper:
+            state_key: observation.states.effector.position
+            action_key: actions.effector.position
+            raw_slice:
+            - 0
+            - 1
+            target_slice:
+            - 16
+            - 17
+        right:
+          joint:
+            state_key: observation.states.joint.position
+            action_key: actions.joint.position
+            raw_slice:
+            - 7
+            - 14
+            target_slice:
+            - 40
+            - 47
+            action_from_next_action: true
+          ee:
+            state_position_key: observation.states.end.position
+            state_orientation_key: observation.states.end.orientation
+            action_position_key: actions.end.position
+            action_orientation_key: actions.end.orientation
+            position_slice:
+            - 3
+            - 6
+            orientation_slice:
+            - 4
+            - 8
+            state_target_slice:
+            - 47
+            - 56
+            action_target_slice:
+            - 47
+            - 53
+            action_from_next_action: true
+          gripper:
+            state_key: observation.states.effector.position
+            action_key: actions.effector.position
+            raw_slice:
+            - 1
+            - 2
+            target_slice:
+            - 56
+            - 57
+    modalities:
+      state:
+        keys:
+        - observation.states.joint.position
+        - observation.states.end.position
+        - observation.states.end.orientation
+        - observation.states.effector.position
+      action:
+        keys:
+        - actions.joint.position
+        - actions.end.position
+        - actions.end.orientation
+        - actions.effector.position
+      video:
+        key: auto
+      language:
+        source: meta/tasks.jsonl
+      timestamp:
+        key: timestamp
+      frame_index:
+        key: frame_index
+      task_index:
+        key: task_index

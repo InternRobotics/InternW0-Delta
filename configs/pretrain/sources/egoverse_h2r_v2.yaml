@@ -1,0 +1,872 @@
+normalization_stats: ${oc.env:WAM_PRETRAIN_STATS,assets/stats/pretrain}/egoverse_h2r_v2.json
+sources:
+- enabled: true
+  format_version: v2
+  modalities:
+    video_concat: single_masked
+    video: {}
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  name: human2robot_agilex_mobile_aloha_fl__left-right
+  adapter: h2r_mobile_aloha
+  stats_group: human2robot_agilex_mobile_aloha_fl__left-right
+  canonical_adapter:
+    slots:
+      left:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+      right:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+  root: egoverse_h2r_v2/agilex_mobile_aloha_fl
+  datasets_glob: '**'
+- enabled: true
+  format_version: v2
+  modalities:
+    video_concat: single_masked
+    video: {}
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  name: human2robot_agilex_piper__left-right
+  adapter: h2r_piper
+  stats_group: human2robot_agilex_piper__left-right
+  canonical_adapter:
+    slots:
+      left:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+      right:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+  root: egoverse_h2r_v2/agilex_piper
+  datasets_glob: '**'
+- enabled: true
+  format_version: v2
+  modalities:
+    video_concat: single_masked
+    video: {}
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  name: human2robot_arx_l5__left-right
+  adapter: h2r_arx_l5
+  stats_group: human2robot_arx_l5__left-right
+  canonical_adapter:
+    slots:
+      left:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+      right:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+  root: egoverse_h2r_v2/arx_l5
+  datasets_glob: '**'
+- enabled: true
+  format_version: v2
+  modalities:
+    video_concat: single_masked
+    video: {}
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  name: human2robot_flexiv_rizon4_robotiq_2f85__left-right
+  adapter: h2r_rizon4
+  stats_group: human2robot_flexiv_rizon4_robotiq_2f85__left-right
+  canonical_adapter:
+    slots:
+      left:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+      right:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+  root: egoverse_h2r_v2/flexiv_rizon4_robotiq_2f85
+  datasets_glob: '**'
+- enabled: true
+  format_version: v2
+  modalities:
+    video_concat: single_masked
+    video: {}
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  name: human2robot_franka_emika_panda__left-right
+  adapter: h2r_panda
+  stats_group: human2robot_franka_emika_panda__left-right
+  canonical_adapter:
+    slots:
+      left:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+      right:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+  root: egoverse_h2r_v2/franka_emika_panda
+  datasets_glob: '**'
+- enabled: true
+  format_version: v2
+  modalities:
+    video_concat: single_masked
+    video: {}
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  name: human2robot_i2rt_yam__left-right
+  adapter: h2r_yam
+  stats_group: human2robot_i2rt_yam__left-right
+  canonical_adapter:
+    slots:
+      left:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+      right:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+  root: egoverse_h2r_v2/i2rt_yam
+  datasets_glob: '**'
+- enabled: true
+  format_version: v2
+  modalities:
+    video_concat: single_masked
+    video: {}
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  name: human2robot_kinova_gen3_robotiq_2f85__left-right
+  adapter: h2r_gen3
+  stats_group: human2robot_kinova_gen3_robotiq_2f85__left-right
+  canonical_adapter:
+    slots:
+      left:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+      right:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+  root: egoverse_h2r_v2/kinova_gen3_robotiq_2f85
+  datasets_glob: '**'
+- enabled: true
+  format_version: v2
+  modalities:
+    video_concat: single_masked
+    video: {}
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  name: human2robot_kinova_jaco2_j2n6s300__left-right
+  adapter: h2r_jaco2
+  stats_group: human2robot_kinova_jaco2_j2n6s300__left-right
+  canonical_adapter:
+    slots:
+      left:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+      right:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+  root: egoverse_h2r_v2/kinova_jaco2_j2n6s300
+  datasets_glob: '**'
+- enabled: true
+  format_version: v2
+  modalities:
+    video_concat: single_masked
+    video: {}
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  name: human2robot_kuka_iiwa14_robotiq_2f85__left-right
+  adapter: h2r_iiwa14
+  stats_group: human2robot_kuka_iiwa14_robotiq_2f85__left-right
+  canonical_adapter:
+    slots:
+      left:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+      right:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+  root: egoverse_h2r_v2/kuka_iiwa14_robotiq_2f85
+  datasets_glob: '**'
+- enabled: true
+  format_version: v2
+  modalities:
+    video_concat: single_masked
+    video: {}
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  name: human2robot_rethink_sawyer_electric_gripper__left-right
+  adapter: h2r_sawyer
+  stats_group: human2robot_rethink_sawyer_electric_gripper__left-right
+  canonical_adapter:
+    slots:
+      left:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+      right:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+  root: egoverse_h2r_v2/rethink_sawyer_electric_gripper
+  datasets_glob: '**'
+- enabled: true
+  format_version: v2
+  modalities:
+    video_concat: single_masked
+    video: {}
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  name: human2robot_trossen_vx300s__left-right
+  adapter: h2r_vx300s
+  stats_group: human2robot_trossen_vx300s__left-right
+  canonical_adapter:
+    slots:
+      left:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+      right:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+  root: egoverse_h2r_v2/trossen_vx300s
+  datasets_glob: '**'
+- enabled: true
+  format_version: v2
+  modalities:
+    video_concat: single_masked
+    video: {}
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  name: human2robot_trossen_wx250s__left-right
+  adapter: h2r_wx250s
+  stats_group: human2robot_trossen_wx250s__left-right
+  canonical_adapter:
+    slots:
+      left:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+      right:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+  root: egoverse_h2r_v2/trossen_wx250s
+  datasets_glob: '**'
+- enabled: true
+  format_version: v2
+  modalities:
+    video_concat: single_masked
+    video: {}
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  name: human2robot_ufactory_xarm7_gripper__left-right
+  adapter: h2r_xarm7
+  stats_group: human2robot_ufactory_xarm7_gripper__left-right
+  canonical_adapter:
+    slots:
+      left:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+      right:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+  root: egoverse_h2r_v2/ufactory_xarm7_gripper
+  datasets_glob: '**'
+- enabled: true
+  format_version: v2
+  modalities:
+    video_concat: single_masked
+    video: {}
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  name: human2robot_ur10e_robotiq_2f85__left-right
+  adapter: h2r_ur10e
+  stats_group: human2robot_ur10e_robotiq_2f85__left-right
+  canonical_adapter:
+    slots:
+      left:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+      right:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+  root: egoverse_h2r_v2/ur10e_robotiq_2f85
+  datasets_glob: '**'
+- enabled: true
+  format_version: v2
+  modalities:
+    video_concat: single_masked
+    video: {}
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  name: human2robot_ur5e_wsg50_robotwin__left-right
+  adapter: h2r_ur5e
+  stats_group: human2robot_ur5e_wsg50_robotwin__left-right
+  canonical_adapter:
+    slots:
+      left:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+      right:
+        ee:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        gripper:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+        joint:
+          state_validity_key: observation.valid
+          action_validity_key: action.valid
+          validity_raw_slice:
+          - 0
+          - 1
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+  root: egoverse_h2r_v2/ur5e_wsg50_robotwin
+  datasets_glob: '**'

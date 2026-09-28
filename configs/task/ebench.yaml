@@ -1,0 +1,53 @@
+# @package _global_
+
+defaults:
+- override /data: ebench
+- override /model: wam
+- _self_
+batch_size: 16
+num_workers: 8
+video_latent_cache: 'off'
+cache_locality_sampling:
+  enabled: false
+  episodes_per_batch: 4
+model:
+  mot_checkpoint_mixed_attn: false
+  action_dit_use_interpolated_init: false
+  future_delta:
+    enabled: true
+    num_views: 1
+    loss_weight: 0.5
+    semantic_alignment:
+      enabled: true
+      student_layer: 8
+      teacher_layer: 20
+      loss_weight: 0.1
+      max_sigma: 0.5
+  understanding:
+    enabled: true
+    train_vlm: false
+    vlm_gradient_checkpointing: false
+    vlm_batch_size: 0
+    max_pixels: 65536
+    interval_chunks: 1
+  memory:
+    enabled: false
+    video:
+      enabled: true
+      num_anchor_frames: 1
+      num_recent_frames: 1
+  skip_dit_load_from_pretrain: true
+  action_dit_pretrained_path: null
+lr_scheduler_type: cosine
+learning_rate: 5.0e-05
+num_epochs: 10
+max_steps: null
+log_every: 10
+save_every: 1000
+max_weight_checkpoints: 5
+eval_every: 500
+gradient_accumulation_steps: 8
+weight_decay: 0.01
+resume: ${oc.env:WAM_PRETRAIN_CHECKPOINT,${paths.checkpoints}/pretrain.pt}
+wandb:
+  name: ebench

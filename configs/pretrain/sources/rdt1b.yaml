@@ -1,0 +1,17 @@
+normalization_stats: ${oc.env:WAM_PRETRAIN_STATS,assets/stats/pretrain}/rdt1b.json
+sources:
+- name: rdt
+  enabled: true
+  adapter: adapter_rdt1b_agilex_dual_joint
+  format_version: v2
+  root: rdt1b
+  stats_group: rdt/agilex
+  modalities:
+    video:
+      keys:
+      - observation.images.cam_high
+      - observation.images.cam_left_wrist
+      - observation.images.cam_right_wrist
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample

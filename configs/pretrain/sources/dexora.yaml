@@ -1,0 +1,68 @@
+normalization_stats: ${oc.env:WAM_PRETRAIN_STATS,assets/stats/pretrain}/dexora.json
+sources:
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.top
+      - observation.images.wrist_left
+      - observation.images.wrist_right
+      timestamp_source: timestamp
+    video_concat: robotwin
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/dexora_airbot
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: dexora_1
+  root: dexora/three_camera
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.top
+      timestamp_source: timestamp
+    video_concat: single_masked
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/dexora_airbot
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: dexora_2
+  root: dexora/head_camera
+  datasets_glob: '**'

@@ -1,0 +1,449 @@
+data_root: ${oc.env:WAM_DATA_ROOT,data}
+projection_files:
+- projections/robot.yaml
+cache_root: ${oc.env:WAM_CACHE_ROOT,.cache/internw0}
+cache_templates:
+  path_index_dir: '{cache_root}/path_index/{source}/{name}'
+  local_text_embedding_cache_dir: '{cache_root}/text_embed/{source}/{name}'
+stats:
+  group_strategy: auto_body
+  minimum_widths:
+    action:
+      RoboCOIN/Cobot_Magic:
+      - dims:
+        - 7
+        - 8
+        - 9
+        - 47
+        - 48
+        - 49
+        width: 0.05
+      - dims:
+        - 10
+        - 11
+        - 12
+        - 50
+        - 51
+        - 52
+        width: 0.16
+      RoboCOIN/G1edu-u3:
+      - dims:
+        - 7
+        - 8
+        - 9
+        - 47
+        - 48
+        - 49
+        width: 0.05
+      - dims:
+        - 10
+        - 11
+        - 12
+        - 50
+        - 51
+        - 52
+        width: 0.2
+      RoboCOIN/R1_Lite:
+        dims:
+        - 10
+        - 11
+        - 12
+        - 50
+        - 51
+        - 52
+        width: 0.2
+      RoboCOIN/RMC-AIDA-L:
+      - dims:
+        - 7
+        - 8
+        - 9
+        - 47
+        - 48
+        - 49
+        width: 0.08
+      - dims:
+        - 10
+        - 11
+        - 12
+        - 50
+        - 51
+        - 52
+        width: 0.2
+      RoboCOIN/Tianqin_A2:
+        dims:
+        - 10
+        - 11
+        - 12
+        - 50
+        - 51
+        - 52
+        width: 0.08
+      aria:
+      - dims:
+        - 7
+        - 8
+        - 9
+        - 47
+        - 48
+        - 49
+        width: 0.025
+      - dims:
+        - 10
+        - 11
+        - 12
+        - 50
+        - 51
+        - 52
+        width: 0.25
+      egodex:
+      - dims:
+        - 7
+        - 8
+        - 9
+        - 47
+        - 48
+        - 49
+        width: 0.025
+      - dims:
+        - 10
+        - 11
+        - 12
+        - 50
+        - 51
+        - 52
+        width: 0.25
+      lightwheel:
+      - dims:
+        - 7
+        - 8
+        - 9
+        - 47
+        - 48
+        - 49
+        width: 0.025
+      - dims:
+        - 10
+        - 11
+        - 12
+        - 50
+        - 51
+        - 52
+        width: 0.25
+      mecka:
+      - dims:
+        - 7
+        - 8
+        - 9
+        - 47
+        - 48
+        - 49
+        width: 0.025
+      - dims:
+        - 10
+        - 11
+        - 12
+        - 50
+        - 51
+        - 52
+        width: 0.25
+      microagi:
+      - dims:
+        - 7
+        - 8
+        - 9
+        - 47
+        - 48
+        - 49
+        width: 0.025
+      - dims:
+        - 10
+        - 11
+        - 12
+        - 50
+        - 51
+        - 52
+        width: 0.25
+      robomind/ur_1rgb:
+        dims:
+        - 50
+        - 51
+        - 52
+        width: 0.05
+      robomind2/ur5:
+        dims:
+        - 10
+        - 11
+        - 12
+        - 50
+        - 51
+        - 52
+        width: 0.08
+      scale:
+      - dims:
+        - 7
+        - 8
+        - 9
+        - 47
+        - 48
+        - 49
+        width: 0.025
+      - dims:
+        - 10
+        - 11
+        - 12
+        - 50
+        - 51
+        - 52
+        width: 0.25
+  norm_mode: q01/q99
+  passthrough_dims:
+    state:
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    - 15
+    - 50
+    - 51
+    - 52
+    - 53
+    - 54
+    - 55
+post_normalize_transforms:
+  action:
+    by_stats_group:
+      agibot/a2d:
+      - dims:
+        - 16
+        - 56
+        offset: 0.0
+        scale: -1.0
+      robomind/agilex_3rgb:
+      - dims:
+        - 16
+        - 56
+        offset: 0.0
+        scale: -1.0
+      robomind/franka_1rgb:
+      - dims:
+        - 56
+        offset: 0.0
+        scale: -1.0
+      robomind/franka_3rgb:
+      - dims:
+        - 56
+        offset: 0.0
+        scale: -1.0
+      robomind/franka_fr3_dual:
+      - dims:
+        - 16
+        - 56
+        offset: 0.0
+        scale: -1.0
+      robomind/ur_1rgb:
+      - dims:
+        - 56
+        offset: 0.0
+        scale: -1.0
+      robomind2/franka:
+      - dims:
+        - 16
+        - 56
+        offset: 0.0
+        scale: -1.0
+      robomind2/ur5:
+      - dims:
+        - 16
+        - 56
+        offset: 0.0
+        scale: -1.0
+      roboset/franka:
+      - dims:
+        - 56
+        offset: 0.0
+        scale: -1.0
+  state:
+    by_stats_group:
+      agibot/a2d:
+      - dims:
+        - 16
+        - 56
+        offset: 0.0
+        scale: -1.0
+      robomind/agilex_3rgb:
+      - dims:
+        - 16
+        - 56
+        offset: 0.0
+        scale: -1.0
+      robomind/franka_1rgb:
+      - dims:
+        - 56
+        offset: 0.0
+        scale: -1.0
+      robomind/franka_3rgb:
+      - dims:
+        - 56
+        offset: 0.0
+        scale: -1.0
+      robomind/franka_fr3_dual:
+      - dims:
+        - 16
+        - 56
+        offset: 0.0
+        scale: -1.0
+      robomind/ur_1rgb:
+      - dims:
+        - 56
+        offset: 0.0
+        scale: -1.0
+      robomind2/franka:
+      - dims:
+        - 16
+        - 56
+        offset: 0.0
+        scale: -1.0
+      robomind2/ur5:
+      - dims:
+        - 16
+        - 56
+        offset: 0.0
+        scale: -1.0
+      roboset/franka:
+      - dims:
+        - 56
+        offset: 0.0
+        scale: -1.0
+sampling:
+  num_frames: 33
+  action_size: 32
+  global_sample_stride: 1
+  action_video_freq_ratio: 4
+  memory_video_anchor_size: 1
+  memory_recent_frame_offset: 32
+mixture:
+  allow_padding_at_end: false
+  balance_dataset_weights: false
+  balance_trajectory_weights: true
+  bucket_wave_apply_dataset_weights: true
+  bucket_wave_cyclic_families:
+  - umi
+  - ego2robot
+  - ego
+  bucket_wave_epoch_anchor_family: real
+  dataset_weight_mode: family_grouped
+  episode_block_tile_size: 64
+  eval_subset:
+    exclude_from_training: none
+    fixed_per_dataset: false
+    scope: source_type
+    total_samples: 1000
+  family_groups:
+    ego:
+      high_quality:
+        allocation: valid_start_count
+        datasets:
+        - egodex
+        - aria
+        - lightwheel
+        weight: 0.8
+      lower_quality:
+        allocation: uniform
+        datasets:
+        - mecka
+        - scale
+        - microagi
+        weight: 0.2
+  family_weights:
+    real: 0.8
+    umi: 0.08
+    ego2robot: 0.1
+    ego: 0.02
+  seed: 20260911
+  training: true
+  training_batch_size_per_rank: 16
+  training_block_size: 4
+  training_sampling_strategy: optimizer_stratified_without_replacement
+embodiment_files:
+- embodiments/human.yaml
+- embodiments/human2robot.yaml
+- embodiments/intern.yaml
+- embodiments/agibot.yaml
+- embodiments/galaxea.yaml
+- embodiments/robomind.yaml
+- embodiments/robomind2.yaml
+- embodiments/ABC.yaml
+- embodiments/roboset.yaml
+- embodiments/molomoact2.yaml
+- embodiments/RoboCOIN.yaml
+- embodiments/rdt1b.yaml
+- embodiments/rh20t.yaml
+- embodiments/umi.yaml
+- embodiments/processed.yaml
+ego_data:
+  enabled: true
+  source_files:
+  - egodex
+  - egoverse
+  - egodex_h2r
+  - egoverse_h2r
+  - egoverse_h2r_v2
+source_files:
+- sources/egodex.yaml
+- sources/egoverse.yaml
+- sources/egodex_h2r.yaml
+- sources/egoverse_h2r.yaml
+- sources/intern_a1.yaml
+- sources/agibotworld.yaml
+- sources/galaxea.yaml
+- sources/actionnet.yaml
+- sources/dexora.yaml
+- sources/robomind_mobile.yaml
+- sources/habit.yaml
+- sources/realsource.yaml
+- sources/rwrl.yaml
+- sources/umi.yaml
+- sources/robomind.yaml
+- sources/robomind2.yaml
+- sources/ABC.yaml
+- sources/roboset.yaml
+- sources/molomoact2.yaml
+- sources/RoboCOIN.yaml
+- sources/rdt1b.yaml
+- sources/rh20t.yaml
+- sources/egoverse_h2r_v2.yaml
+dataset_defaults:
+  require_path_index: false
+  allow_padding_at_end: true
+  dataset_weight: 1.0
+  distribute_weights: true
+  sampling_family: real
+dataset_weights:
+  source_files:
+    egodex: 1.0
+    egoverse: 1.0
+    egodex_h2r: 1.0
+    egoverse_h2r: 1.0
+    intern_a1: 1.0
+    agibotworld: 1.0
+    galaxea: 1.0
+    actionnet: 1.0
+    dexora: 1.0
+    robomind_mobile: 1.0
+    habit: 1.0
+    realsource: 1.0
+    rwrl: 1.0
+    umi: 1.0
+    robomind: 1.0
+    robomind2: 1.0
+    ABC: 1.0
+    roboset: 1.0
+    molomoact2: 1.0
+    RoboCOIN: 1.0
+    rdt1b: 1.0
+    rh20t: 1.0
+    egoverse_h2r_v2: 1.0
+  embodiments: {}
+  sources: {}
+  datasets: {}

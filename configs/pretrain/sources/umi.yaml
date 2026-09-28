@@ -1,0 +1,31 @@
+normalization_stats: ${oc.env:WAM_PRETRAIN_STATS,assets/stats/pretrain}/umi.json
+sources:
+- action_gripper_loss_weight: 1.0
+  action_loss_normalization: legacy_per_sample
+  action_loss_weight: 0.5
+  context_len: 128
+  control_schema: dual_eef_rdf_local_rotation
+  embodiment: robot_bimanual
+  format_version: v2
+  modalities:
+    action:
+      key: action
+    state:
+      key: observation.state
+    video:
+      keys:
+      - observation.images.rgb
+      - observation.images.camera_left
+      - observation.images.camera_right
+    video_concat: robotwin
+  name: hy_umi_episode_v21
+  prompt_template: 'A video recorded from a robot''s point of view executing the following instruction:
+    {task}'
+  require_independent_episode_videos: true
+  sampling_family: umi
+  slow_motion_factor: 1.0
+  stats_group: hy_umi_30hz
+  task_index_authority: episode_metadata
+  text_encoder_id: wan22ti2v5b
+  root: umi
+  adapter: adapter_umi_bimanual

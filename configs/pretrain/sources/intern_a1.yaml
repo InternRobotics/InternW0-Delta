@@ -1,0 +1,2555 @@
+normalization_stats: ${oc.env:WAM_PRETRAIN_STATS,assets/stats/pretrain}/intern_a1.json
+sources:
+- name: a1_articulation_franka
+  enabled: true
+  adapter: adapter_a1_single_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 0.0
+        - 1.0
+        - 0.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/articulation_tasks/franka
+  datasets:
+  - close_the_electriccooker
+  - close_the_laptop
+  - close_the_microwave_part1
+  - close_the_microwave_part2
+  - close_the_pot
+  - close_the_trashcan
+  - close_the_washingmachine_left
+  - close_the_washingmachine_right
+  - open_the_laptop
+  - open_the_microwave_part1
+  - open_the_microwave_part2
+  - open_the_pot
+  - open_the_trashcan
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/franka
+- name: a1_articulation_lift2
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  format_version: v3
+  root: intern_a1/articulation_tasks/lift2
+  datasets:
+  - close_the_microwave_left_arm_part1
+  - close_the_microwave_left_arm_part2
+  - close_the_microwave_right_arm_part1
+  - close_the_microwave_right_arm_part2
+  - close_the_package
+  - heat_the_food_in_the_microwave
+  - open_the_microwave_left_arm_part1
+  - open_the_microwave_left_arm_part2
+  - open_the_microwave_right_arm_part1
+  - open_the_microwave_right_arm_part2
+  - pull_the_storagefurniture_left_arm_bottom
+  - pull_the_storagefurniture_left_arm_middle
+  - pull_the_storagefurniture_left_arm_top
+  - pull_the_storagefurniture_right_arm_bottom
+  - pull_the_storagefurniture_right_arm_middle
+  - pull_the_storagefurniture_right_arm_top
+  - push_the_storagefurniture_left_arm_bottom
+  - push_the_storagefurniture_left_arm_middle
+  - push_the_storagefurniture_left_arm_top
+  - push_the_storagefurniture_right_arm_bottom
+  - push_the_storagefurniture_right_arm_middle
+  - push_the_storagefurniture_right_arm_top
+  - rotate_the_left_hearth_left_arm_clockwise
+  - rotate_the_left_hearth_left_arm_counterclockwise
+  - rotate_the_left_hearth_right_arm_clockwise
+  - rotate_the_left_hearth_right_arm_counterclockwise
+  - rotate_the_right_hearth_left_arm_clockwise
+  - rotate_the_right_hearth_left_arm_counterclockwise
+  - rotate_the_right_hearth_right_arm_clockwise
+  - rotate_the_right_hearth_right_arm_counterclockwise
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/lift2
+- name: a1_articulation_split_aloha
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/articulation_tasks/split_aloha
+  datasets:
+  - close_the_microwave_left_arm
+  - close_the_microwave_right_arm
+  - open_the_microwave_from_scratch
+  - open_the_microwave_left_arm
+  - open_the_microwave_right_arm
+  - pull_the_storagefurniture_left_arm_bottom
+  - pull_the_storagefurniture_left_arm_middle
+  - pull_the_storagefurniture_left_arm_top
+  - pull_the_storagefurniture_right_arm_bottom
+  - pull_the_storagefurniture_right_arm_middle
+  - pull_the_storagefurniture_right_arm_top
+  - push_the_storagefurniture_left_arm_bottom
+  - push_the_storagefurniture_left_arm_middle
+  - push_the_storagefurniture_left_arm_top
+  - push_the_storagefurniture_right_arm_bottom
+  - push_the_storagefurniture_right_arm_middle
+  - push_the_storagefurniture_right_arm_top
+  - rotate_the_left_hearth_left_arm_clockwise
+  - rotate_the_left_hearth_left_arm_counterclockwise
+  - rotate_the_left_hearth_right_arm_clockwise
+  - rotate_the_left_hearth_right_arm_counterclockwise
+  - rotate_the_right_hearth_left_arm_clockwise
+  - rotate_the_right_hearth_left_arm_counterclockwise
+  - rotate_the_right_hearth_right_arm_clockwise
+  - rotate_the_right_hearth_right_arm_counterclockwise
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/split_aloha
+- name: a1_basic_acone
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  format_version: v3
+  root: intern_a1/basic_tasks/acone
+  datasets:
+  - fold_the_blue_shirt
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/acone
+- name: a1_basic_franka
+  enabled: true
+  adapter: adapter_a1_single_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 0.0
+        - 1.0
+        - 0.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/basic_tasks/franka
+  datasets:
+  - collect_the_shoes_language
+  - organize_the_alarm_clocks_language
+  - organize_the_brushes
+  - organize_the_colorful_cups
+  - organize_the_glues_language
+  - organize_the_teaboxes_language
+  - pick_the_object_into_trashcan
+  - pick_the_priced_item
+  - select_a_drink
+  - sort_the_table_waste
+  - track_the_targets
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/franka
+- name: a1_basic_genie1
+  enabled: true
+  adapter: adapter_a1_dual7_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/basic_tasks/genie1
+  datasets:
+  - scan_qrcode_part1
+  - scan_qrcode_part2
+  - store_the_eggs_part1
+  - store_the_eggs_part2
+  - take_shelf_items_to_cart_left_arm_part1
+  - take_shelf_items_to_cart_left_arm_part2
+  - take_shelf_items_to_cart_right_arm_part1
+  - take_shelf_items_to_cart_right_arm_part2
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/genie1
+- name: a1_basic_lift2
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  format_version: v3
+  root: intern_a1/basic_tasks/lift2
+  datasets:
+  - arrange_the_tableware
+  - collect_the_shoes
+  - flip_the_package_part1
+  - flip_the_package_part2
+  - flip_the_package_part3
+  - flip_the_package_part4
+  - flip_the_package_part5
+  - flip_the_package_part6
+  - fold_short_pants
+  - fold_short_shirts
+  - fold_towels
+  - gather_toothbrush_and_toothpaste_part1
+  - gather_toothbrush_and_toothpaste_part2
+  - gather_toothbrush_and_toothpaste_part3
+  - hang_the_cup_on_rack_left_arm
+  - hang_the_cup_on_rack_right_arm
+  - insert_the_flower_in_vase_left_arm
+  - insert_the_flower_in_vase_right_arm
+  - insert_the_markpen_in_penholder_left_arm
+  - insert_the_markpen_in_penholder_right_arm
+  - organize_the_alarm_clocks
+  - organize_the_brushes
+  - pick_beef_sandwich_on_conveyor
+  - pick_ham_sandwich_on_conveyor
+  - pick_the_package_on_conveyor
+  - pick_the_priced_item
+  - pour_Baijiu_left_arm
+  - pour_Baijiu_right_arm
+  - pour_redwine_left_arm
+  - pour_redwine_right_arm
+  - pour_water_left_arm
+  - pour_water_right_arm
+  - recovery_pick_objects_left_arm
+  - recovery_pick_objects_right_arm
+  - select_a_drink
+  - sort_the_table_waste
+  - sort_the_tray_on_rack
+  - stack_the_boxes_part1
+  - stack_the_boxes_part2
+  - stack_the_boxes_part3
+  - stack_the_boxes_part4
+  - stack_the_boxes_part5
+  - stack_the_boxes_part6
+  - track_the_targets
+  - watering_plants_left_arm
+  - watering_plants_right_arm
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/lift2
+- name: a1_basic_split_aloha
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/basic_tasks/split_aloha
+  datasets:
+  - collect_the_shoes
+  - gather_toothbrush_and_toothpaste_part1
+  - gather_toothbrush_and_toothpaste_part2
+  - hang_the_cup_on_rack_left_arm
+  - hang_the_cup_on_rack_right_arm
+  - insert_the_flower_in_vase_left_arm
+  - insert_the_flower_in_vase_right_arm
+  - insert_the_markpen_in_penholder_left_arm
+  - insert_the_markpen_in_penholder_right_arm
+  - organize_the_alarm_clocks
+  - organize_the_brushes
+  - pick_beef_sandwich_on_conveyor
+  - pick_ham_sandwich_on_conveyor
+  - pick_the_priced_item
+  - pour_Baijiu_left_arm
+  - pour_Baijiu_right_arm
+  - pour_redwine_left_arm
+  - pour_redwine_right_arm
+  - pour_water_left_arm
+  - pour_water_right_arm
+  - select_a_drink
+  - sort_the_table_waste
+  - sort_the_tray_on_rack
+  - stack_the_boxes_part1
+  - stack_the_boxes_part2
+  - stack_the_boxes_part3
+  - stack_the_boxes_part4
+  - stack_the_boxes_part5
+  - stack_the_boxes_part6
+  - track_the_targets
+  - watering_plants_left_arm
+  - watering_plants_right_arm
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/split_aloha
+- name: a1_long_franka
+  enabled: true
+  adapter: adapter_a1_single_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 0.0
+        - 1.0
+        - 0.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/long_horizon_tasks/franka
+  datasets:
+  - manipulate_the_microwave
+  - put_the_trashcan_in_trashcan_long
+  - sort_bowls_and_cups
+  - sweep_the_trash
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/franka
+- name: a1_long_lift2
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  format_version: v3
+  root: intern_a1/long_horizon_tasks/lift2
+  datasets:
+  - clean_the_dirt_with_brown_cloth_left_arm
+  - clean_the_dirt_with_brown_cloth_right_arm
+  - clean_the_dirt_with_sponge_left_arm
+  - clean_the_dirt_with_sponge_right_arm
+  - clean_the_dirt_with_white_cloth_left_arm
+  - clean_the_dirt_with_white_cloth_right_arm
+  - collaborate_assemble_a_beef_sandwich_part1
+  - collaborate_assemble_a_beef_sandwich_part2
+  - collaborate_assemble_a_beef_sandwich_part3
+  - collaborate_assemble_a_ham_sandwich_part1
+  - collaborate_assemble_a_ham_sandwich_part2
+  - collect_the_glues
+  - gather_the_teaboxes
+  - handover_objects_left_right_part1
+  - handover_objects_left_right_part10
+  - handover_objects_left_right_part2
+  - handover_objects_left_right_part3
+  - handover_objects_left_right_part4
+  - handover_objects_left_right_part5
+  - handover_objects_left_right_part6
+  - handover_objects_left_right_part7
+  - handover_objects_left_right_part8
+  - handover_objects_left_right_part9
+  - handover_objects_right_left_part1
+  - handover_objects_right_left_part10
+  - handover_objects_right_left_part2
+  - handover_objects_right_left_part3
+  - handover_objects_right_left_part4
+  - handover_objects_right_left_part5
+  - handover_objects_right_left_part6
+  - handover_objects_right_left_part7
+  - handover_objects_right_left_part9
+  - make_a_sandwich
+  - pack_in_objects_part1
+  - pack_in_objects_part2
+  - pack_in_objects_part3
+  - sort_parts
+  - sort_the_rubbish_part1
+  - sort_the_rubbish_part2
+  - sort_the_rubbish_part3
+  - sort_the_rubbish_part4
+  - stack_a_beef_sandwich
+  - store_objects_in_the_drawer_part1
+  - store_objects_in_the_drawer_part2
+  - store_objects_in_the_drawer_part3
+  - store_objects_in_the_drawer_part4
+  - sweep_the_trash_part1
+  - sweep_the_trash_part2
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/lift2
+- name: a1_long_split_aloha
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/long_horizon_tasks/split_aloha
+  datasets:
+  - clean_the_dirt_with_brown_cloth_left_arm
+  - clean_the_dirt_with_brown_cloth_right_arm
+  - clean_the_dirt_with_sponge_left_arm
+  - clean_the_dirt_with_sponge_right_arm
+  - clean_the_dirt_with_white_cloth_left_arm
+  - clean_the_dirt_with_white_cloth_right_arm
+  - collaborate_assemble_a_beef_sandwich
+  - collect_the_glues
+  - gather_the_teaboxes
+  - make_a_sandwich
+  - pack_in_objects_part1
+  - pack_in_objects_part2
+  - pack_in_objects_part3
+  - pack_out_objects_part1
+  - pack_out_objects_part2
+  - pack_out_objects_part3
+  - pack_out_objects_part4
+  - sort_the_rubbish_part1
+  - sort_the_rubbish_part2
+  - sort_the_rubbish_part3
+  - stack_a_beef_sandwich
+  - sweep_the_trash
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/split_aloha
+- name: a1_pick_place_franka_continues_pick_and_place_part1
+  enabled: true
+  adapter: adapter_a1_single_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 0.0
+        - 1.0
+        - 0.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/franka/continues_pick_and_place_part1
+  datasets:
+  - render
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/franka
+- name: a1_pick_place_franka_continues_pick_and_place_part2
+  enabled: true
+  adapter: adapter_a1_single_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 0.0
+        - 1.0
+        - 0.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/franka/continues_pick_and_place_part2
+  datasets:
+  - render
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/franka
+- name: a1_pick_place_franka_multiple_pick_and_place_part1
+  enabled: true
+  adapter: adapter_a1_single_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 0.0
+        - 1.0
+        - 0.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/franka/multiple_pick_and_place_part1
+  datasets:
+  - basket
+  - basket_top
+  - bowl
+  - box
+  - dish
+  - drawing
+  - flower_pot
+  - microwaveoven
+  - pad
+  - pan
+  - projector
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/franka
+- name: a1_pick_place_franka_multiple_pick_and_place_part2
+  enabled: true
+  adapter: adapter_a1_single_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 0.0
+        - 1.0
+        - 0.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/franka/multiple_pick_and_place_part2
+  datasets:
+  - basket_top
+  - bowl
+  - box
+  - dish
+  - drawing
+  - flower_pot
+  - microwaveoven
+  - pad
+  - pan
+  - projector
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/franka
+- name: a1_pick_place_franka_single_pick_part1
+  enabled: true
+  adapter: adapter_a1_single_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 0.0
+        - 1.0
+        - 0.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/franka/single_pick_part1
+  datasets:
+  - google_scan-book
+  - google_scan-box
+  - google_scan-handbag
+  - google_scan-hat
+  - omniobject3d-asparagus
+  - omniobject3d-ball
+  - omniobject3d-bamboo_shoots
+  - omniobject3d-banana
+  - omniobject3d-battery
+  - omniobject3d-belt
+  - omniobject3d-bottle
+  - omniobject3d-bowl
+  - omniobject3d-box
+  - omniobject3d-boxed_beverage
+  - omniobject3d-bread
+  - omniobject3d-brush
+  - omniobject3d-cake
+  - omniobject3d-calculator
+  - omniobject3d-candle
+  - omniobject3d-carrot
+  - omniobject3d-chess
+  - omniobject3d-chicken_leg
+  - omniobject3d-chili
+  - omniobject3d-chinese_chess
+  - omniobject3d-clock
+  - omniobject3d-conch
+  - omniobject3d-corn
+  - omniobject3d-cucumber
+  - omniobject3d-cup
+  - omniobject3d-dinosaur
+  - omniobject3d-dish
+  - omniobject3d-donut
+  - omniobject3d-dumpling
+  - omniobject3d-egg
+  - omniobject3d-egg_tart
+  - omniobject3d-eraser
+  - omniobject3d-facial_cream
+  - omniobject3d-flash_light
+  - omniobject3d-garage_kit
+  - omniobject3d-glasses
+  - omniobject3d-glasses_case
+  - omniobject3d-hair_dryer
+  - omniobject3d-hamburger
+  - omniobject3d-hammer
+  - omniobject3d-hand_cream
+  - omniobject3d-hot_dog
+  - omniobject3d-knife
+  - omniobject3d-lemon
+  - omniobject3d-lipstick
+  - omniobject3d-lotus_root
+  - omniobject3d-mango
+  - omniobject3d-mangosteen
+  - omniobject3d-medicine_bottle
+  - omniobject3d-mooncake
+  - omniobject3d-mouse
+  - omniobject3d-mug
+  - omniobject3d-onion
+  - omniobject3d-orange
+  - omniobject3d-pastry
+  - omniobject3d-peach
+  - omniobject3d-pear
+  - omniobject3d-pen
+  - omniobject3d-pineapple
+  - omniobject3d-pitaya
+  - omniobject3d-pomegranate
+  - omniobject3d-power_strip
+  - omniobject3d-razor
+  - omniobject3d-red_wine_glass
+  - omniobject3d-remote_control
+  - omniobject3d-rubik_cube
+  - omniobject3d-sausage
+  - omniobject3d-scissor
+  - omniobject3d-shampoo
+  - omniobject3d-shoe
+  - omniobject3d-shrimp
+  - omniobject3d-soap
+  - omniobject3d-spanner
+  - omniobject3d-starfish
+  - omniobject3d-sweet_potato
+  - omniobject3d-table_tennis_bat
+  - omniobject3d-tape_measure
+  - omniobject3d-teapot
+  - omniobject3d-timer
+  - omniobject3d-tissue
+  - omniobject3d-tomato
+  - omniobject3d-tooth_brush
+  - omniobject3d-tooth_paste
+  - omniobject3d-toy_animals
+  - omniobject3d-toy_boat
+  - omniobject3d-toy_car
+  - omniobject3d-toy_motorcycle
+  - omniobject3d-toy_plane
+  - omniobject3d-toy_plant
+  - omniobject3d-toy_train
+  - omniobject3d-toy_truck
+  - omniobject3d-umbrella
+  - omniobject3d-waffle
+  - omniobject3d-watch
+  - omniobject3d-whistle
+  - phocal-can
+  - phocal-red_wine_glass
+  - phocal-spoon
+  - real-camera
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/franka
+- name: a1_pick_place_franka_single_pick_part2
+  enabled: true
+  adapter: adapter_a1_single_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 0.0
+        - 1.0
+        - 0.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/franka/single_pick_part2
+  datasets:
+  - google_scan-book
+  - google_scan-box
+  - google_scan-handbag
+  - google_scan-hat
+  - omniobject3d-asparagus
+  - omniobject3d-ball
+  - omniobject3d-bamboo_shoots
+  - omniobject3d-banana
+  - omniobject3d-battery
+  - omniobject3d-belt
+  - omniobject3d-bottle
+  - omniobject3d-bowl
+  - omniobject3d-box
+  - omniobject3d-boxed_beverage
+  - omniobject3d-bread
+  - omniobject3d-brush
+  - omniobject3d-cake
+  - omniobject3d-calculator
+  - omniobject3d-candle
+  - omniobject3d-carrot
+  - omniobject3d-chess
+  - omniobject3d-chicken_leg
+  - omniobject3d-chili
+  - omniobject3d-chinese_chess
+  - omniobject3d-clock
+  - omniobject3d-conch
+  - omniobject3d-corn
+  - omniobject3d-cucumber
+  - omniobject3d-cup
+  - omniobject3d-dinosaur
+  - omniobject3d-dish
+  - omniobject3d-donut
+  - omniobject3d-dumpling
+  - omniobject3d-egg
+  - omniobject3d-egg_tart
+  - omniobject3d-eraser
+  - omniobject3d-facial_cream
+  - omniobject3d-flash_light
+  - omniobject3d-garage_kit
+  - omniobject3d-glasses
+  - omniobject3d-glasses_case
+  - omniobject3d-hair_dryer
+  - omniobject3d-hamburger
+  - omniobject3d-hammer
+  - omniobject3d-hand_cream
+  - omniobject3d-hot_dog
+  - omniobject3d-knife
+  - omniobject3d-lemon
+  - omniobject3d-lipstick
+  - omniobject3d-lotus_root
+  - omniobject3d-mango
+  - omniobject3d-mangosteen
+  - omniobject3d-medicine_bottle
+  - omniobject3d-mooncake
+  - omniobject3d-mouse
+  - omniobject3d-mug
+  - omniobject3d-onion
+  - omniobject3d-orange
+  - omniobject3d-pastry
+  - omniobject3d-peach
+  - omniobject3d-pear
+  - omniobject3d-pen
+  - omniobject3d-pineapple
+  - omniobject3d-pitaya
+  - omniobject3d-pomegranate
+  - omniobject3d-power_strip
+  - omniobject3d-razor
+  - omniobject3d-red_wine_glass
+  - omniobject3d-remote_control
+  - omniobject3d-rubik_cube
+  - omniobject3d-sausage
+  - omniobject3d-scissor
+  - omniobject3d-shampoo
+  - omniobject3d-shoe
+  - omniobject3d-shrimp
+  - omniobject3d-soap
+  - omniobject3d-spanner
+  - omniobject3d-starfish
+  - omniobject3d-sweet_potato
+  - omniobject3d-table_tennis_bat
+  - omniobject3d-tape_measure
+  - omniobject3d-teapot
+  - omniobject3d-timer
+  - omniobject3d-tissue
+  - omniobject3d-tomato
+  - omniobject3d-tooth_brush
+  - omniobject3d-tooth_paste
+  - omniobject3d-toy_animals
+  - omniobject3d-toy_boat
+  - omniobject3d-toy_car
+  - omniobject3d-toy_motorcycle
+  - omniobject3d-toy_plane
+  - omniobject3d-toy_plant
+  - omniobject3d-toy_train
+  - omniobject3d-toy_truck
+  - omniobject3d-umbrella
+  - omniobject3d-waffle
+  - omniobject3d-watch
+  - omniobject3d-whistle
+  - phocal-can
+  - phocal-red_wine_glass
+  - phocal-spoon
+  - real-camera
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/franka
+- name: a1_pick_place_genie1_grasp_functional_part_left_arm
+  enabled: true
+  adapter: adapter_a1_dual7_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/genie1/grasp_functional_part_left_arm
+  datasets:
+  - cup
+  - kettle
+  - omniobject3d-brush
+  - omniobject3d-chicken_leg
+  - omniobject3d-flash_light
+  - omniobject3d-hair_dryer
+  - omniobject3d-hammer
+  - omniobject3d-knife
+  - omniobject3d-table_tennis_bat
+  - omniobject3d-tooth_brush
+  - pan
+  - phocal-red_wine_glass
+  - teapot
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/genie1
+- name: a1_pick_place_genie1_grasp_functional_part_right_arm
+  enabled: true
+  adapter: adapter_a1_dual7_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/genie1/grasp_functional_part_right_arm
+  datasets:
+  - cup
+  - kettle
+  - omniobject3d-brush
+  - omniobject3d-chicken_leg
+  - omniobject3d-flash_light
+  - omniobject3d-hair_dryer
+  - omniobject3d-hammer
+  - omniobject3d-knife
+  - omniobject3d-table_tennis_bat
+  - omniobject3d-tooth_brush
+  - pan
+  - phocal-red_wine_glass
+  - teapot
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/genie1
+- name: a1_pick_place_genie1_parallel_pick_and_place
+  enabled: true
+  adapter: adapter_a1_dual7_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/genie1/parallel_pick_and_place
+  datasets:
+  - google_scan-box
+  - omniobject3d-ball
+  - omniobject3d-bamboo_shoots
+  - omniobject3d-banana
+  - omniobject3d-battery
+  - omniobject3d-bottle
+  - omniobject3d-bowl
+  - omniobject3d-box
+  - omniobject3d-boxed_beverage
+  - omniobject3d-bread
+  - omniobject3d-cake
+  - omniobject3d-candle
+  - omniobject3d-carrot
+  - omniobject3d-chess
+  - omniobject3d-chicken_leg
+  - omniobject3d-chili
+  - omniobject3d-chinese_chess
+  - omniobject3d-clock
+  - omniobject3d-corn
+  - omniobject3d-cup
+  - omniobject3d-dinosaur
+  - omniobject3d-dish
+  - omniobject3d-egg
+  - omniobject3d-facial_cream
+  - omniobject3d-garage_kit
+  - omniobject3d-garlic
+  - omniobject3d-glasses
+  - omniobject3d-hair_dryer
+  - omniobject3d-hammer
+  - omniobject3d-lemon
+  - omniobject3d-lipstick
+  - omniobject3d-lotus_root
+  - omniobject3d-mangosteen
+  - omniobject3d-medicine_bottle
+  - omniobject3d-mooncake
+  - omniobject3d-mug
+  - omniobject3d-orange
+  - omniobject3d-pastry
+  - omniobject3d-peach
+  - omniobject3d-pear
+  - omniobject3d-pineapple
+  - omniobject3d-pitaya
+  - omniobject3d-pomegranate
+  - omniobject3d-rubik_cube
+  - omniobject3d-shampoo
+  - omniobject3d-soap
+  - omniobject3d-sweet_potato
+  - omniobject3d-tape_measure
+  - omniobject3d-teapot
+  - omniobject3d-timer
+  - omniobject3d-tomato
+  - omniobject3d-toy_animals
+  - omniobject3d-toy_bus
+  - omniobject3d-toy_motorcycle
+  - omniobject3d-toy_plane
+  - omniobject3d-toy_plant
+  - omniobject3d-toy_train
+  - omniobject3d-toy_truck
+  - omniobject3d-umbrella
+  - omniobject3d-watch
+  - omniobject3d-whistle
+  - phocal-can
+  - phocal-red_wine_glass
+  - real-camera
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/genie1
+- name: a1_pick_place_genie1_pick_and_place_part1
+  enabled: true
+  adapter: adapter_a1_dual7_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/genie1/pick_and_place_part1
+  datasets:
+  - google_scan-book
+  - google_scan-box
+  - google_scan-handbag
+  - google_scan-hat
+  - omniobject3d-asparagus
+  - omniobject3d-ball
+  - omniobject3d-bamboo_shoots
+  - omniobject3d-banana
+  - omniobject3d-battery
+  - omniobject3d-belt
+  - omniobject3d-bottle
+  - omniobject3d-bowl
+  - omniobject3d-box
+  - omniobject3d-boxed_beverage
+  - omniobject3d-bread
+  - omniobject3d-brush
+  - omniobject3d-cake
+  - omniobject3d-calculator
+  - omniobject3d-candle
+  - omniobject3d-carrot
+  - omniobject3d-chess
+  - omniobject3d-chicken_leg
+  - omniobject3d-chili
+  - omniobject3d-chinese_chess
+  - omniobject3d-clock
+  - omniobject3d-conch
+  - omniobject3d-corn
+  - omniobject3d-cucumber
+  - omniobject3d-cup
+  - omniobject3d-dinosaur
+  - omniobject3d-dish
+  - omniobject3d-donut
+  - omniobject3d-dumpling
+  - omniobject3d-egg
+  - omniobject3d-egg_tart
+  - omniobject3d-eraser
+  - omniobject3d-facial_cream
+  - omniobject3d-flash_light
+  - omniobject3d-garage_kit
+  - omniobject3d-garlic
+  - omniobject3d-glasses
+  - omniobject3d-glasses_case
+  - omniobject3d-hair_dryer
+  - omniobject3d-hamburger
+  - omniobject3d-hammer
+  - omniobject3d-hand_cream
+  - omniobject3d-hot_dog
+  - omniobject3d-knife
+  - omniobject3d-lemon
+  - omniobject3d-lipstick
+  - omniobject3d-lotus_root
+  - omniobject3d-mango
+  - omniobject3d-mangosteen
+  - omniobject3d-medicine_bottle
+  - omniobject3d-mooncake
+  - omniobject3d-mouse
+  - omniobject3d-mug
+  - omniobject3d-onion
+  - omniobject3d-orange
+  - omniobject3d-pastry
+  - omniobject3d-peach
+  - omniobject3d-pear
+  - omniobject3d-pen
+  - omniobject3d-pineapple
+  - omniobject3d-pitaya
+  - omniobject3d-pomegranate
+  - omniobject3d-power_strip
+  - omniobject3d-razor
+  - omniobject3d-red_wine_glass
+  - omniobject3d-remote_control
+  - omniobject3d-rubik_cube
+  - omniobject3d-sausage
+  - omniobject3d-scissor
+  - omniobject3d-shampoo
+  - omniobject3d-shoe
+  - omniobject3d-shrimp
+  - omniobject3d-soap
+  - omniobject3d-spanner
+  - omniobject3d-starfish
+  - omniobject3d-sweet_potato
+  - omniobject3d-table_tennis_bat
+  - omniobject3d-tape_measure
+  - omniobject3d-teapot
+  - omniobject3d-timer
+  - omniobject3d-tissue
+  - omniobject3d-tomato
+  - omniobject3d-tooth_brush
+  - omniobject3d-tooth_paste
+  - omniobject3d-toy_animals
+  - omniobject3d-toy_boat
+  - omniobject3d-toy_bus
+  - omniobject3d-toy_car
+  - omniobject3d-toy_motorcycle
+  - omniobject3d-toy_plane
+  - omniobject3d-toy_plant
+  - omniobject3d-toy_train
+  - omniobject3d-toy_truck
+  - omniobject3d-umbrella
+  - omniobject3d-waffle
+  - omniobject3d-watch
+  - omniobject3d-whistle
+  - phocal-can
+  - phocal-red_wine_glass
+  - phocal-spoon
+  - real-camera
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/genie1
+- name: a1_pick_place_genie1_pick_and_place_part2
+  enabled: true
+  adapter: adapter_a1_dual7_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/genie1/pick_and_place_part2
+  datasets:
+  - google_scan-book
+  - google_scan-box
+  - google_scan-handbag
+  - google_scan-hat
+  - omniobject3d-asparagus
+  - omniobject3d-ball
+  - omniobject3d-bamboo_shoots
+  - omniobject3d-banana
+  - omniobject3d-battery
+  - omniobject3d-belt
+  - omniobject3d-bottle
+  - omniobject3d-bowl
+  - omniobject3d-box
+  - omniobject3d-boxed_beverage
+  - omniobject3d-bread
+  - omniobject3d-brush
+  - omniobject3d-cake
+  - omniobject3d-calculator
+  - omniobject3d-candle
+  - omniobject3d-carrot
+  - omniobject3d-chess
+  - omniobject3d-chicken_leg
+  - omniobject3d-chili
+  - omniobject3d-chinese_chess
+  - omniobject3d-clock
+  - omniobject3d-conch
+  - omniobject3d-corn
+  - omniobject3d-cucumber
+  - omniobject3d-cup
+  - omniobject3d-dinosaur
+  - omniobject3d-dish
+  - omniobject3d-donut
+  - omniobject3d-dumpling
+  - omniobject3d-egg
+  - omniobject3d-egg_tart
+  - omniobject3d-eraser
+  - omniobject3d-facial_cream
+  - omniobject3d-flash_light
+  - omniobject3d-garage_kit
+  - omniobject3d-garlic
+  - omniobject3d-glasses
+  - omniobject3d-glasses_case
+  - omniobject3d-hair_dryer
+  - omniobject3d-hamburger
+  - omniobject3d-hammer
+  - omniobject3d-hand_cream
+  - omniobject3d-hot_dog
+  - omniobject3d-knife
+  - omniobject3d-lemon
+  - omniobject3d-lipstick
+  - omniobject3d-lotus_root
+  - omniobject3d-mango
+  - omniobject3d-mangosteen
+  - omniobject3d-medicine_bottle
+  - omniobject3d-mooncake
+  - omniobject3d-mouse
+  - omniobject3d-mug
+  - omniobject3d-onion
+  - omniobject3d-orange
+  - omniobject3d-pastry
+  - omniobject3d-peach
+  - omniobject3d-pear
+  - omniobject3d-pen
+  - omniobject3d-pineapple
+  - omniobject3d-pitaya
+  - omniobject3d-pomegranate
+  - omniobject3d-power_strip
+  - omniobject3d-razor
+  - omniobject3d-red_wine_glass
+  - omniobject3d-remote_control
+  - omniobject3d-rubik_cube
+  - omniobject3d-sausage
+  - omniobject3d-scissor
+  - omniobject3d-shampoo
+  - omniobject3d-shoe
+  - omniobject3d-soap
+  - omniobject3d-spanner
+  - omniobject3d-starfish
+  - omniobject3d-sweet_potato
+  - omniobject3d-table_tennis_bat
+  - omniobject3d-tape_measure
+  - omniobject3d-teapot
+  - omniobject3d-timer
+  - omniobject3d-tissue
+  - omniobject3d-tomato
+  - omniobject3d-tooth_brush
+  - omniobject3d-tooth_paste
+  - omniobject3d-toy_animals
+  - omniobject3d-toy_boat
+  - omniobject3d-toy_bus
+  - omniobject3d-toy_car
+  - omniobject3d-toy_motorcycle
+  - omniobject3d-toy_plane
+  - omniobject3d-toy_plant
+  - omniobject3d-toy_train
+  - omniobject3d-toy_truck
+  - omniobject3d-umbrella
+  - omniobject3d-waffle
+  - omniobject3d-watch
+  - omniobject3d-whistle
+  - phocal-can
+  - phocal-red_wine_glass
+  - phocal-spoon
+  - real-camera
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/genie1
+- name: a1_pick_place_genie1_single_pick_left_arm
+  enabled: true
+  adapter: adapter_a1_dual7_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/genie1/single_pick_left_arm
+  datasets:
+  - google_scan-book
+  - google_scan-box
+  - google_scan-handbag
+  - google_scan-hat
+  - omniobject3d-asparagus
+  - omniobject3d-ball
+  - omniobject3d-bamboo_shoots
+  - omniobject3d-banana
+  - omniobject3d-battery
+  - omniobject3d-belt
+  - omniobject3d-bottle
+  - omniobject3d-bowl
+  - omniobject3d-box
+  - omniobject3d-boxed_beverage
+  - omniobject3d-bread
+  - omniobject3d-brush
+  - omniobject3d-cake
+  - omniobject3d-calculator
+  - omniobject3d-candle
+  - omniobject3d-carrot
+  - omniobject3d-chess
+  - omniobject3d-chicken_leg
+  - omniobject3d-chili
+  - omniobject3d-chinese_chess
+  - omniobject3d-clock
+  - omniobject3d-conch
+  - omniobject3d-corn
+  - omniobject3d-cucumber
+  - omniobject3d-cup
+  - omniobject3d-dinosaur
+  - omniobject3d-dish
+  - omniobject3d-donut
+  - omniobject3d-dumpling
+  - omniobject3d-egg
+  - omniobject3d-egg_tart
+  - omniobject3d-eraser
+  - omniobject3d-facial_cream
+  - omniobject3d-flash_light
+  - omniobject3d-garage_kit
+  - omniobject3d-glasses_case
+  - omniobject3d-hair_dryer
+  - omniobject3d-hamburger
+  - omniobject3d-hammer
+  - omniobject3d-hand_cream
+  - omniobject3d-hot_dog
+  - omniobject3d-knife
+  - omniobject3d-lemon
+  - omniobject3d-lipstick
+  - omniobject3d-lotus_root
+  - omniobject3d-mango
+  - omniobject3d-mangosteen
+  - omniobject3d-medicine_bottle
+  - omniobject3d-mooncake
+  - omniobject3d-mouse
+  - omniobject3d-mug
+  - omniobject3d-onion
+  - omniobject3d-orange
+  - omniobject3d-pastry
+  - omniobject3d-peach
+  - omniobject3d-pear
+  - omniobject3d-pen
+  - omniobject3d-pineapple
+  - omniobject3d-pitaya
+  - omniobject3d-pomegranate
+  - omniobject3d-power_strip
+  - omniobject3d-razor
+  - omniobject3d-red_wine_glass
+  - omniobject3d-remote_control
+  - omniobject3d-rubik_cube
+  - omniobject3d-sausage
+  - omniobject3d-scissor
+  - omniobject3d-shampoo
+  - omniobject3d-shoe
+  - omniobject3d-shrimp
+  - omniobject3d-soap
+  - omniobject3d-spanner
+  - omniobject3d-starfish
+  - omniobject3d-sweet_potato
+  - omniobject3d-table_tennis_bat
+  - omniobject3d-tape_measure
+  - omniobject3d-teapot
+  - omniobject3d-timer
+  - omniobject3d-tooth_brush
+  - omniobject3d-tooth_paste
+  - omniobject3d-toy_animals
+  - omniobject3d-toy_boat
+  - omniobject3d-toy_bus
+  - omniobject3d-toy_car
+  - omniobject3d-toy_motorcycle
+  - omniobject3d-toy_plane
+  - omniobject3d-toy_plant
+  - omniobject3d-toy_train
+  - omniobject3d-toy_truck
+  - omniobject3d-umbrella
+  - omniobject3d-waffle
+  - omniobject3d-watch
+  - omniobject3d-whistle
+  - phocal-can
+  - phocal-red_wine_glass
+  - phocal-spoon
+  - real-camera
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/genie1
+- name: a1_pick_place_genie1_single_pick_right_arm
+  enabled: true
+  adapter: adapter_a1_dual7_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/genie1/single_pick_right_arm
+  datasets:
+  - google_scan-book
+  - google_scan-box
+  - google_scan-handbag
+  - google_scan-hat
+  - omniobject3d-asparagus
+  - omniobject3d-ball
+  - omniobject3d-bamboo_shoots
+  - omniobject3d-banana
+  - omniobject3d-battery
+  - omniobject3d-belt
+  - omniobject3d-bottle
+  - omniobject3d-bowl
+  - omniobject3d-box
+  - omniobject3d-boxed_beverage
+  - omniobject3d-bread
+  - omniobject3d-brush
+  - omniobject3d-cake
+  - omniobject3d-calculator
+  - omniobject3d-candle
+  - omniobject3d-carrot
+  - omniobject3d-chicken_leg
+  - omniobject3d-chili
+  - omniobject3d-chinese_chess
+  - omniobject3d-clock
+  - omniobject3d-conch
+  - omniobject3d-corn
+  - omniobject3d-cucumber
+  - omniobject3d-cup
+  - omniobject3d-dinosaur
+  - omniobject3d-dish
+  - omniobject3d-donut
+  - omniobject3d-dumpling
+  - omniobject3d-egg
+  - omniobject3d-egg_tart
+  - omniobject3d-eraser
+  - omniobject3d-facial_cream
+  - omniobject3d-flash_light
+  - omniobject3d-garage_kit
+  - omniobject3d-garlic
+  - omniobject3d-glasses
+  - omniobject3d-glasses_case
+  - omniobject3d-hair_dryer
+  - omniobject3d-hamburger
+  - omniobject3d-hammer
+  - omniobject3d-hand_cream
+  - omniobject3d-hot_dog
+  - omniobject3d-knife
+  - omniobject3d-lemon
+  - omniobject3d-lipstick
+  - omniobject3d-lotus_root
+  - omniobject3d-mango
+  - omniobject3d-mangosteen
+  - omniobject3d-medicine_bottle
+  - omniobject3d-mooncake
+  - omniobject3d-mouse
+  - omniobject3d-mug
+  - omniobject3d-onion
+  - omniobject3d-orange
+  - omniobject3d-pastry
+  - omniobject3d-peach
+  - omniobject3d-pear
+  - omniobject3d-pen
+  - omniobject3d-pitaya
+  - omniobject3d-pomegranate
+  - omniobject3d-power_strip
+  - omniobject3d-razor
+  - omniobject3d-remote_control
+  - omniobject3d-rubik_cube
+  - omniobject3d-sausage
+  - omniobject3d-scissor
+  - omniobject3d-shampoo
+  - omniobject3d-shoe
+  - omniobject3d-shrimp
+  - omniobject3d-soap
+  - omniobject3d-spanner
+  - omniobject3d-starfish
+  - omniobject3d-sweet_potato
+  - omniobject3d-table_tennis_bat
+  - omniobject3d-tape_measure
+  - omniobject3d-teapot
+  - omniobject3d-timer
+  - omniobject3d-tissue
+  - omniobject3d-tomato
+  - omniobject3d-tooth_brush
+  - omniobject3d-tooth_paste
+  - omniobject3d-toy_animals
+  - omniobject3d-toy_boat
+  - omniobject3d-toy_bus
+  - omniobject3d-toy_car
+  - omniobject3d-toy_motorcycle
+  - omniobject3d-toy_plane
+  - omniobject3d-toy_plant
+  - omniobject3d-toy_train
+  - omniobject3d-toy_truck
+  - omniobject3d-umbrella
+  - omniobject3d-waffle
+  - omniobject3d-watch
+  - omniobject3d-whistle
+  - phocal-can
+  - phocal-red_wine_glass
+  - phocal-spoon
+  - real-camera
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/genie1
+- name: a1_pick_place_lift2_continues_pick_and_place_part1
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/lift2/continues_pick_and_place_part1
+  datasets:
+  - render
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/lift2
+- name: a1_pick_place_lift2_continues_pick_and_place_part2
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/lift2/continues_pick_and_place_part2
+  datasets:
+  - render
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/lift2
+- name: a1_pick_place_lift2_continues_pick_and_place_part3
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/lift2/continues_pick_and_place_part3
+  datasets:
+  - render
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/lift2
+- name: a1_pick_place_lift2_parallel_pick_and_place
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/lift2/parallel_pick_and_place
+  datasets:
+  - basket_top
+  - bowl
+  - box
+  - dish
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/lift2
+- name: a1_pick_place_lift2_parallel_pick_and_place_left_left
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/lift2/parallel_pick_and_place_left_left
+  datasets:
+  - basket
+  - basket_top
+  - bowl
+  - box
+  - dish
+  - drawing
+  - flower_pot
+  - microwaveoven
+  - pad
+  - pan
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/lift2
+- name: a1_pick_place_lift2_parallel_pick_and_place_left_right
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/lift2/parallel_pick_and_place_left_right
+  datasets:
+  - basket
+  - basket_top
+  - bowl
+  - box
+  - dish
+  - drawing
+  - flower_pot
+  - microwaveoven
+  - pad
+  - pan
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/lift2
+- name: a1_pick_place_lift2_parallel_pick_and_place_right_right
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/lift2/parallel_pick_and_place_right_right
+  datasets:
+  - basket
+  - basket_top
+  - bowl
+  - box
+  - dish
+  - drawing
+  - flower_pot
+  - microwaveoven
+  - pad
+  - pan
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/lift2
+- name: a1_pick_place_lift2_parallel_pick_and_placer_right_left
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/lift2/parallel_pick_and_placer_right_left
+  datasets:
+  - basket
+  - basket_top
+  - bowl
+  - box
+  - dish
+  - drawing
+  - flower_pot
+  - microwaveoven
+  - pad
+  - pan
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/lift2
+- name: a1_pick_place_lift2_single_pick_left_arm
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/lift2/single_pick_left_arm
+  datasets:
+  - google_scan-book
+  - google_scan-box
+  - google_scan-handbag
+  - google_scan-hat
+  - omniobject3d-asparagus
+  - omniobject3d-ball
+  - omniobject3d-bamboo_shoots
+  - omniobject3d-banana
+  - omniobject3d-battery
+  - omniobject3d-belt
+  - omniobject3d-bottle
+  - omniobject3d-bowl
+  - omniobject3d-box
+  - omniobject3d-boxed_beverage
+  - omniobject3d-bread
+  - omniobject3d-brush
+  - omniobject3d-cake
+  - omniobject3d-calculator
+  - omniobject3d-candle
+  - omniobject3d-carrot
+  - omniobject3d-chess
+  - omniobject3d-chicken_leg
+  - omniobject3d-chili
+  - omniobject3d-chinese_chess
+  - omniobject3d-clock
+  - omniobject3d-conch
+  - omniobject3d-corn
+  - omniobject3d-cucumber
+  - omniobject3d-cup
+  - omniobject3d-dinosaur
+  - omniobject3d-dish
+  - omniobject3d-donut
+  - omniobject3d-dumpling
+  - omniobject3d-egg
+  - omniobject3d-egg_tart
+  - omniobject3d-eraser
+  - omniobject3d-facial_cream
+  - omniobject3d-flash_light
+  - omniobject3d-garage_kit
+  - omniobject3d-glasses
+  - omniobject3d-glasses_case
+  - omniobject3d-hair_dryer
+  - omniobject3d-hamburger
+  - omniobject3d-hammer
+  - omniobject3d-hand_cream
+  - omniobject3d-hot_dog
+  - omniobject3d-knife
+  - omniobject3d-lemon
+  - omniobject3d-lipstick
+  - omniobject3d-lotus_root
+  - omniobject3d-mango
+  - omniobject3d-mangosteen
+  - omniobject3d-medicine_bottle
+  - omniobject3d-mooncake
+  - omniobject3d-mouse
+  - omniobject3d-mug
+  - omniobject3d-onion
+  - omniobject3d-orange
+  - omniobject3d-pastry
+  - omniobject3d-peach
+  - omniobject3d-pear
+  - omniobject3d-pen
+  - omniobject3d-pineapple
+  - omniobject3d-pitaya
+  - omniobject3d-pomegranate
+  - omniobject3d-power_strip
+  - omniobject3d-razor
+  - omniobject3d-red_wine_glass
+  - omniobject3d-remote_control
+  - omniobject3d-rubik_cube
+  - omniobject3d-sausage
+  - omniobject3d-scissor
+  - omniobject3d-shampoo
+  - omniobject3d-shoe
+  - omniobject3d-shrimp
+  - omniobject3d-soap
+  - omniobject3d-spanner
+  - omniobject3d-starfish
+  - omniobject3d-sweet_potato
+  - omniobject3d-table_tennis_bat
+  - omniobject3d-tape_measure
+  - omniobject3d-teapot
+  - omniobject3d-timer
+  - omniobject3d-tissue
+  - omniobject3d-tomato
+  - omniobject3d-tooth_brush
+  - omniobject3d-tooth_paste
+  - omniobject3d-toy_animals
+  - omniobject3d-toy_boat
+  - omniobject3d-toy_car
+  - omniobject3d-toy_motorcycle
+  - omniobject3d-toy_plane
+  - omniobject3d-toy_plant
+  - omniobject3d-toy_train
+  - omniobject3d-toy_truck
+  - omniobject3d-umbrella
+  - omniobject3d-waffle
+  - omniobject3d-watch
+  - omniobject3d-whistle
+  - phocal-can
+  - phocal-red_wine_glass
+  - phocal-spoon
+  - real-camera
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/lift2
+- name: a1_pick_place_lift2_single_pick_right_arm
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/lift2/single_pick_right_arm
+  datasets:
+  - google_scan-book
+  - google_scan-box
+  - google_scan-handbag
+  - google_scan-hat
+  - omniobject3d-asparagus
+  - omniobject3d-ball
+  - omniobject3d-bamboo_shoots
+  - omniobject3d-banana
+  - omniobject3d-battery
+  - omniobject3d-belt
+  - omniobject3d-bottle
+  - omniobject3d-bowl
+  - omniobject3d-box
+  - omniobject3d-boxed_beverage
+  - omniobject3d-bread
+  - omniobject3d-brush
+  - omniobject3d-cake
+  - omniobject3d-calculator
+  - omniobject3d-candle
+  - omniobject3d-carrot
+  - omniobject3d-chess
+  - omniobject3d-chicken_leg
+  - omniobject3d-chili
+  - omniobject3d-chinese_chess
+  - omniobject3d-clock
+  - omniobject3d-conch
+  - omniobject3d-corn
+  - omniobject3d-cucumber
+  - omniobject3d-cup
+  - omniobject3d-dinosaur
+  - omniobject3d-dish
+  - omniobject3d-donut
+  - omniobject3d-dumpling
+  - omniobject3d-egg
+  - omniobject3d-egg_tart
+  - omniobject3d-eraser
+  - omniobject3d-facial_cream
+  - omniobject3d-flash_light
+  - omniobject3d-garage_kit
+  - omniobject3d-glasses
+  - omniobject3d-glasses_case
+  - omniobject3d-hair_dryer
+  - omniobject3d-hamburger
+  - omniobject3d-hammer
+  - omniobject3d-hand_cream
+  - omniobject3d-hot_dog
+  - omniobject3d-knife
+  - omniobject3d-lemon
+  - omniobject3d-lipstick
+  - omniobject3d-lotus_root
+  - omniobject3d-mango
+  - omniobject3d-mangosteen
+  - omniobject3d-medicine_bottle
+  - omniobject3d-mooncake
+  - omniobject3d-mouse
+  - omniobject3d-mug
+  - omniobject3d-onion
+  - omniobject3d-orange
+  - omniobject3d-pastry
+  - omniobject3d-peach
+  - omniobject3d-pear
+  - omniobject3d-pen
+  - omniobject3d-pineapple
+  - omniobject3d-pitaya
+  - omniobject3d-pomegranate
+  - omniobject3d-power_strip
+  - omniobject3d-razor
+  - omniobject3d-red_wine_glass
+  - omniobject3d-remote_control
+  - omniobject3d-rubik_cube
+  - omniobject3d-sausage
+  - omniobject3d-scissor
+  - omniobject3d-shampoo
+  - omniobject3d-shoe
+  - omniobject3d-shrimp
+  - omniobject3d-soap
+  - omniobject3d-spanner
+  - omniobject3d-starfish
+  - omniobject3d-sweet_potato
+  - omniobject3d-table_tennis_bat
+  - omniobject3d-tape_measure
+  - omniobject3d-teapot
+  - omniobject3d-timer
+  - omniobject3d-tissue
+  - omniobject3d-tomato
+  - omniobject3d-tooth_brush
+  - omniobject3d-tooth_paste
+  - omniobject3d-toy_animals
+  - omniobject3d-toy_boat
+  - omniobject3d-toy_car
+  - omniobject3d-toy_motorcycle
+  - omniobject3d-toy_plane
+  - omniobject3d-toy_plant
+  - omniobject3d-toy_train
+  - omniobject3d-toy_truck
+  - omniobject3d-umbrella
+  - omniobject3d-waffle
+  - omniobject3d-watch
+  - omniobject3d-whistle
+  - phocal-can
+  - phocal-red_wine_glass
+  - phocal-spoon
+  - real-camera
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/lift2
+- name: a1_pick_place_split_aloha_continues_pick_and_place_part1
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/split_aloha/continues_pick_and_place_part1
+  datasets:
+  - render
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/split_aloha
+- name: a1_pick_place_split_aloha_continues_pick_and_place_part2
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/split_aloha/continues_pick_and_place_part2
+  datasets:
+  - render
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/split_aloha
+- name: a1_pick_place_split_aloha_continues_pick_and_place_part3
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/split_aloha/continues_pick_and_place_part3
+  datasets:
+  - render
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/split_aloha
+- name: a1_pick_place_split_aloha_parallel_pick_and_place
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/split_aloha/parallel_pick_and_place
+  datasets:
+  - basket_top
+  - bowl
+  - box
+  - dish
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/split_aloha
+- name: a1_pick_place_split_aloha_parallel_pick_and_place_left_left
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/split_aloha/parallel_pick_and_place_left_left
+  datasets:
+  - basket
+  - basket_top
+  - bowl
+  - box
+  - dish
+  - drawing
+  - flower_pot
+  - microwaveoven
+  - pad
+  - pan
+  - projector
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/split_aloha
+- name: a1_pick_place_split_aloha_parallel_pick_and_place_left_right
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/split_aloha/parallel_pick_and_place_left_right
+  datasets:
+  - basket
+  - basket_top
+  - bowl
+  - box
+  - dish
+  - drawing
+  - flower_pot
+  - microwaveoven
+  - pad
+  - pan
+  - projector
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/split_aloha
+- name: a1_pick_place_split_aloha_parallel_pick_and_place_right_left
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/split_aloha/parallel_pick_and_place_right_left
+  datasets:
+  - basket
+  - bowl
+  - dish
+  - flower_pot
+  - pan
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/split_aloha
+- name: a1_pick_place_split_aloha_parallel_pick_and_place_right_right
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/split_aloha/parallel_pick_and_place_right_right
+  datasets:
+  - basket
+  - bowl
+  - dish
+  - flower_pot
+  - pan
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/split_aloha
+- name: a1_pick_place_split_aloha_single_pick_left_arm
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/split_aloha/single_pick_left_arm
+  datasets:
+  - google_scan-book
+  - google_scan-box
+  - google_scan-handbag
+  - google_scan-hat
+  - omniobject3d-asparagus
+  - omniobject3d-ball
+  - omniobject3d-bamboo_shoots
+  - omniobject3d-banana
+  - omniobject3d-battery
+  - omniobject3d-belt
+  - omniobject3d-bottle
+  - omniobject3d-bowl
+  - omniobject3d-box
+  - omniobject3d-boxed_beverage
+  - omniobject3d-bread
+  - omniobject3d-brush
+  - omniobject3d-cake
+  - omniobject3d-calculator
+  - omniobject3d-candle
+  - omniobject3d-carrot
+  - omniobject3d-chess
+  - omniobject3d-chicken_leg
+  - omniobject3d-chili
+  - omniobject3d-chinese_chess
+  - omniobject3d-clock
+  - omniobject3d-conch
+  - omniobject3d-corn
+  - omniobject3d-cucumber
+  - omniobject3d-cup
+  - omniobject3d-dinosaur
+  - omniobject3d-dish
+  - omniobject3d-donut
+  - omniobject3d-dumpling
+  - omniobject3d-egg
+  - omniobject3d-egg_tart
+  - omniobject3d-eraser
+  - omniobject3d-facial_cream
+  - omniobject3d-flash_light
+  - omniobject3d-garage_kit
+  - omniobject3d-glasses
+  - omniobject3d-glasses_case
+  - omniobject3d-hair_dryer
+  - omniobject3d-hamburger
+  - omniobject3d-hammer
+  - omniobject3d-hand_cream
+  - omniobject3d-hot_dog
+  - omniobject3d-knife
+  - omniobject3d-lemon
+  - omniobject3d-lipstick
+  - omniobject3d-lotus_root
+  - omniobject3d-mango
+  - omniobject3d-mangosteen
+  - omniobject3d-medicine_bottle
+  - omniobject3d-mooncake
+  - omniobject3d-mouse
+  - omniobject3d-mug
+  - omniobject3d-onion
+  - omniobject3d-orange
+  - omniobject3d-pastry
+  - omniobject3d-peach
+  - omniobject3d-pear
+  - omniobject3d-pen
+  - omniobject3d-pineapple
+  - omniobject3d-pitaya
+  - omniobject3d-pomegranate
+  - omniobject3d-power_strip
+  - omniobject3d-razor
+  - omniobject3d-red_wine_glass
+  - omniobject3d-remote_control
+  - omniobject3d-rubik_cube
+  - omniobject3d-sausage
+  - omniobject3d-scissor
+  - omniobject3d-shampoo
+  - omniobject3d-shoe
+  - omniobject3d-shrimp
+  - omniobject3d-soap
+  - omniobject3d-spanner
+  - omniobject3d-starfish
+  - omniobject3d-sweet_potato
+  - omniobject3d-table_tennis_bat
+  - omniobject3d-tape_measure
+  - omniobject3d-teapot
+  - omniobject3d-timer
+  - omniobject3d-tissue
+  - omniobject3d-tomato
+  - omniobject3d-tooth_brush
+  - omniobject3d-tooth_paste
+  - omniobject3d-toy_animals
+  - omniobject3d-toy_boat
+  - omniobject3d-toy_car
+  - omniobject3d-toy_motorcycle
+  - omniobject3d-toy_plane
+  - omniobject3d-toy_plant
+  - omniobject3d-toy_train
+  - omniobject3d-toy_truck
+  - omniobject3d-umbrella
+  - omniobject3d-waffle
+  - omniobject3d-watch
+  - omniobject3d-whistle
+  - phocal-can
+  - phocal-red_wine_glass
+  - phocal-spoon
+  - real-camera
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/split_aloha
+- name: a1_pick_place_split_aloha_single_pick_right_arm
+  enabled: true
+  adapter: adapter_a1_dual_ee_to_robot
+  canonical_adapter:
+    frame_transform:
+      world_from_source: robot_to_opencv
+      source_ee_from_canonical_ee:
+      - - 0.0
+        - -1.0
+        - 0.0
+      - - 0.0
+        - 0.0
+        - -1.0
+      - - 1.0
+        - 0.0
+        - 0.0
+  format_version: v3
+  root: intern_a1/pick_and_place_tasks/split_aloha/single_pick_right_arm
+  datasets:
+  - google_scan-book
+  - google_scan-box
+  - google_scan-handbag
+  - google_scan-hat
+  - omniobject3d-asparagus
+  - omniobject3d-ball
+  - omniobject3d-bamboo_shoots
+  - omniobject3d-banana
+  - omniobject3d-battery
+  - omniobject3d-belt
+  - omniobject3d-bottle
+  - omniobject3d-bowl
+  - omniobject3d-box
+  - omniobject3d-boxed_beverage
+  - omniobject3d-bread
+  - omniobject3d-brush
+  - omniobject3d-cake
+  - omniobject3d-calculator
+  - omniobject3d-candle
+  - omniobject3d-carrot
+  - omniobject3d-chess
+  - omniobject3d-chicken_leg
+  - omniobject3d-chili
+  - omniobject3d-chinese_chess
+  - omniobject3d-clock
+  - omniobject3d-conch
+  - omniobject3d-corn
+  - omniobject3d-cucumber
+  - omniobject3d-cup
+  - omniobject3d-dinosaur
+  - omniobject3d-dish
+  - omniobject3d-donut
+  - omniobject3d-dumpling
+  - omniobject3d-egg
+  - omniobject3d-egg_tart
+  - omniobject3d-eraser
+  - omniobject3d-facial_cream
+  - omniobject3d-flash_light
+  - omniobject3d-garage_kit
+  - omniobject3d-glasses
+  - omniobject3d-glasses_case
+  - omniobject3d-hair_dryer
+  - omniobject3d-hamburger
+  - omniobject3d-hammer
+  - omniobject3d-hand_cream
+  - omniobject3d-hot_dog
+  - omniobject3d-knife
+  - omniobject3d-lemon
+  - omniobject3d-lipstick
+  - omniobject3d-lotus_root
+  - omniobject3d-mango
+  - omniobject3d-mangosteen
+  - omniobject3d-medicine_bottle
+  - omniobject3d-mooncake
+  - omniobject3d-mouse
+  - omniobject3d-mug
+  - omniobject3d-onion
+  - omniobject3d-orange
+  - omniobject3d-pastry
+  - omniobject3d-peach
+  - omniobject3d-pear
+  - omniobject3d-pen
+  - omniobject3d-pineapple
+  - omniobject3d-pomegranate
+  - omniobject3d-power_strip
+  - omniobject3d-razor
+  - omniobject3d-red_wine_glass
+  - omniobject3d-remote_control
+  - omniobject3d-rubik_cube
+  - omniobject3d-sausage
+  - omniobject3d-scissor
+  - omniobject3d-shampoo
+  - omniobject3d-shoe
+  - omniobject3d-shrimp
+  - omniobject3d-soap
+  - omniobject3d-spanner
+  - omniobject3d-starfish
+  - omniobject3d-sweet_potato
+  - omniobject3d-table_tennis_bat
+  - omniobject3d-tape_measure
+  - omniobject3d-teapot
+  - omniobject3d-timer
+  - omniobject3d-tissue
+  - omniobject3d-tomato
+  - omniobject3d-tooth_brush
+  - omniobject3d-tooth_paste
+  - omniobject3d-toy_animals
+  - omniobject3d-toy_boat
+  - omniobject3d-toy_car
+  - omniobject3d-toy_motorcycle
+  - omniobject3d-toy_plane
+  - omniobject3d-toy_plant
+  - omniobject3d-toy_train
+  - omniobject3d-toy_truck
+  - omniobject3d-umbrella
+  - omniobject3d-waffle
+  - omniobject3d-watch
+  - omniobject3d-whistle
+  - phocal-can
+  - phocal-red_wine_glass
+  - phocal-spoon
+  - real-camera
+  modalities:
+    video:
+      keys:
+      - images.rgb.head
+      - images.rgb.hand_left
+      - images.rgb.hand_right
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+  stats_group: a1/split_aloha

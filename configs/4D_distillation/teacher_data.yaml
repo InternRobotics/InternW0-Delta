@@ -1,0 +1,9 @@
+extends: dataset.yaml
+mixture:
+  seed: 42
+  training_sampling_strategy: random_with_replacement
+  allow_padding_at_end: false
+source_files:
+  - ../pretrain/sources/intern_a1.yaml
+  - ../pretrain/sources/agibotworld.yaml
+  - ../pretrain/sources/galaxea.yaml

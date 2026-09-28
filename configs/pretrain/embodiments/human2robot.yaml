@@ -1,0 +1,1876 @@
+embodiments:
+  h2r_mobile_aloha:
+    control_schema: dual_arm
+    canonical_adapter:
+      action_pose_output: xyz_rotvec
+      action_pose_semantics: state_delta_common
+      layout: robot
+      missing_policy: pad_and_mask
+      pose_input: xyz_rotvec
+      slots:
+        left:
+          ee:
+            action_key: action.left_eef_delta_local
+            action_target_slice:
+            - 7
+            - 13
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - -3.1885497780478936e-22
+                - 8.680565697029481e-17
+                - 1.0
+              - - -1.0
+                - -3.6732051285071066e-06
+                - 0.0
+              - - 3.6732051285071066e-06
+                - -1.0
+                - 8.680565697029481e-17
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_eef_pose_camera
+            state_target_slice:
+            - 7
+            - 16
+          gripper:
+            action_key: action.left_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.left_gripper_opening
+            target_slice:
+            - 16
+            - 17
+          joint:
+            action_key: action.left_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_joint_position
+            target_slice:
+            - 0
+            - 6
+        right:
+          ee:
+            action_key: action.right_eef_delta_local
+            action_target_slice:
+            - 47
+            - 53
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - -3.1885497780478936e-22
+                - 8.680565697029481e-17
+                - 1.0
+              - - -1.0
+                - -3.6732051285071066e-06
+                - 0.0
+              - - 3.6732051285071066e-06
+                - -1.0
+                - 8.680565697029481e-17
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_eef_pose_camera
+            state_target_slice:
+            - 47
+            - 56
+          gripper:
+            action_key: action.right_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.right_gripper_opening
+            target_slice:
+            - 56
+            - 57
+          joint:
+            action_key: action.right_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_joint_position
+            target_slice:
+            - 40
+            - 46
+      state_pose_output: xyz_rot6d
+    modalities:
+      action:
+        keys:
+        - action.left_joint_position
+        - action.left_eef_delta_local
+        - action.left_gripper_opening
+        - action.right_joint_position
+        - action.right_eef_delta_local
+        - action.right_gripper_opening
+      frame_index:
+        key: frame_index
+      language:
+        source: meta/tasks.jsonl
+      state:
+        keys:
+        - observation.state.left_joint_position
+        - observation.state.left_eef_pose_camera
+        - observation.state.left_gripper_opening
+        - observation.state.right_joint_position
+        - observation.state.right_eef_pose_camera
+        - observation.state.right_gripper_opening
+      timestamp:
+        key: timestamp
+      video:
+        key: observation.images.image
+  h2r_piper:
+    control_schema: dual_arm
+    canonical_adapter:
+      action_pose_output: xyz_rotvec
+      action_pose_semantics: state_delta_common
+      layout: robot
+      missing_policy: pad_and_mask
+      pose_input: xyz_rotvec
+      slots:
+        left:
+          ee:
+            action_key: action.left_eef_delta_local
+            action_target_slice:
+            - 7
+            - 13
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - -1.0309477552537485e-16
+                - 2.775345591567841e-15
+                - 1.0
+              - - -5.359030907925444e-08
+                - -1.0
+                - 2.775345591567841e-15
+              - - 1.0
+                - -5.359030907925444e-08
+                - 1.0309492772660756e-16
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_eef_pose_camera
+            state_target_slice:
+            - 7
+            - 16
+          gripper:
+            action_key: action.left_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.left_gripper_opening
+            target_slice:
+            - 16
+            - 17
+          joint:
+            action_key: action.left_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_joint_position
+            target_slice:
+            - 0
+            - 6
+        right:
+          ee:
+            action_key: action.right_eef_delta_local
+            action_target_slice:
+            - 47
+            - 53
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - -1.0309477552537485e-16
+                - 2.775345591567841e-15
+                - 1.0
+              - - -5.359030907925444e-08
+                - -1.0
+                - 2.775345591567841e-15
+              - - 1.0
+                - -5.359030907925444e-08
+                - 1.0309492772660756e-16
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_eef_pose_camera
+            state_target_slice:
+            - 47
+            - 56
+          gripper:
+            action_key: action.right_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.right_gripper_opening
+            target_slice:
+            - 56
+            - 57
+          joint:
+            action_key: action.right_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_joint_position
+            target_slice:
+            - 40
+            - 46
+      state_pose_output: xyz_rot6d
+    modalities:
+      action:
+        keys:
+        - action.left_joint_position
+        - action.left_eef_delta_local
+        - action.left_gripper_opening
+        - action.right_joint_position
+        - action.right_eef_delta_local
+        - action.right_gripper_opening
+      frame_index:
+        key: frame_index
+      language:
+        source: meta/tasks.jsonl
+      state:
+        keys:
+        - observation.state.left_joint_position
+        - observation.state.left_eef_pose_camera
+        - observation.state.left_gripper_opening
+        - observation.state.right_joint_position
+        - observation.state.right_eef_pose_camera
+        - observation.state.right_gripper_opening
+      timestamp:
+        key: timestamp
+      video:
+        key: observation.images.image
+  h2r_arx_l5:
+    control_schema: dual_arm
+    canonical_adapter:
+      action_pose_output: xyz_rotvec
+      action_pose_semantics: state_delta_common
+      layout: robot
+      missing_policy: pad_and_mask
+      pose_input: xyz_rotvec
+      slots:
+        left:
+          ee:
+            action_key: action.left_eef_delta_local
+            action_target_slice:
+            - 7
+            - 13
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.9999983906745911
+                - 2.8196796009183345e-08
+                - -0.0017839173087850213
+              - - 0.0
+                - 1.0
+                - 1.5806112060090527e-05
+              - - 0.0017839173087850213
+                - -1.5806086594238877e-05
+                - 0.9999983906745911
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_eef_pose_camera
+            state_target_slice:
+            - 7
+            - 16
+          gripper:
+            action_key: action.left_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.left_gripper_opening
+            target_slice:
+            - 16
+            - 17
+          joint:
+            action_key: action.left_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_joint_position
+            target_slice:
+            - 0
+            - 6
+        right:
+          ee:
+            action_key: action.right_eef_delta_local
+            action_target_slice:
+            - 47
+            - 53
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.9999983906745911
+                - 2.8196796009183345e-08
+                - -0.0017839173087850213
+              - - 0.0
+                - 1.0
+                - 1.5806112060090527e-05
+              - - 0.0017839173087850213
+                - -1.5806086594238877e-05
+                - 0.9999983906745911
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_eef_pose_camera
+            state_target_slice:
+            - 47
+            - 56
+          gripper:
+            action_key: action.right_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.right_gripper_opening
+            target_slice:
+            - 56
+            - 57
+          joint:
+            action_key: action.right_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_joint_position
+            target_slice:
+            - 40
+            - 46
+      state_pose_output: xyz_rot6d
+    modalities:
+      action:
+        keys:
+        - action.left_joint_position
+        - action.left_eef_delta_local
+        - action.left_gripper_opening
+        - action.right_joint_position
+        - action.right_eef_delta_local
+        - action.right_gripper_opening
+      frame_index:
+        key: frame_index
+      language:
+        source: meta/tasks.jsonl
+      state:
+        keys:
+        - observation.state.left_joint_position
+        - observation.state.left_eef_pose_camera
+        - observation.state.left_gripper_opening
+        - observation.state.right_joint_position
+        - observation.state.right_eef_pose_camera
+        - observation.state.right_gripper_opening
+      timestamp:
+        key: timestamp
+      video:
+        key: observation.images.image
+  h2r_rizon4:
+    control_schema: dual_arm
+    canonical_adapter:
+      action_pose_output: xyz_rotvec
+      action_pose_semantics: state_delta_common
+      layout: robot
+      missing_policy: pad_and_mask
+      pose_input: xyz_rotvec
+      slots:
+        left:
+          ee:
+            action_key: action.left_eef_delta_local
+            action_target_slice:
+            - 7
+            - 13
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.0
+                - 0.0
+                - 1.0
+              - - 0.0
+                - -1.0
+                - 0.0
+              - - 1.0
+                - 0.0
+                - 0.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_eef_pose_camera
+            state_target_slice:
+            - 7
+            - 16
+          gripper:
+            action_key: action.left_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.left_gripper_opening
+            target_slice:
+            - 16
+            - 17
+          joint:
+            action_key: action.left_joint_position
+            raw_slice:
+            - 0
+            - 7
+            state_key: observation.state.left_joint_position
+            target_slice:
+            - 0
+            - 7
+        right:
+          ee:
+            action_key: action.right_eef_delta_local
+            action_target_slice:
+            - 47
+            - 53
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.0
+                - 0.0
+                - 1.0
+              - - 0.0
+                - -1.0
+                - 0.0
+              - - 1.0
+                - 0.0
+                - 0.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_eef_pose_camera
+            state_target_slice:
+            - 47
+            - 56
+          gripper:
+            action_key: action.right_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.right_gripper_opening
+            target_slice:
+            - 56
+            - 57
+          joint:
+            action_key: action.right_joint_position
+            raw_slice:
+            - 0
+            - 7
+            state_key: observation.state.right_joint_position
+            target_slice:
+            - 40
+            - 47
+      state_pose_output: xyz_rot6d
+    modalities:
+      action:
+        keys:
+        - action.left_joint_position
+        - action.left_eef_delta_local
+        - action.left_gripper_opening
+        - action.right_joint_position
+        - action.right_eef_delta_local
+        - action.right_gripper_opening
+      frame_index:
+        key: frame_index
+      language:
+        source: meta/tasks.jsonl
+      state:
+        keys:
+        - observation.state.left_joint_position
+        - observation.state.left_eef_pose_camera
+        - observation.state.left_gripper_opening
+        - observation.state.right_joint_position
+        - observation.state.right_eef_pose_camera
+        - observation.state.right_gripper_opening
+      timestamp:
+        key: timestamp
+      video:
+        key: observation.images.image
+  h2r_panda:
+    control_schema: dual_arm
+    canonical_adapter:
+      action_pose_output: xyz_rotvec
+      action_pose_semantics: state_delta_common
+      layout: robot
+      missing_policy: pad_and_mask
+      pose_input: xyz_rotvec
+      slots:
+        left:
+          ee:
+            action_key: action.left_eef_delta_local
+            action_target_slice:
+            - 7
+            - 13
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.0
+                - 0.0
+                - 1.0
+              - - 5.605496226526285e-16
+                - 1.0
+                - 0.0
+              - - -1.0
+                - 5.605496226526285e-16
+                - 0.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_eef_pose_camera
+            state_target_slice:
+            - 7
+            - 16
+          gripper:
+            action_key: action.left_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.left_gripper_opening
+            target_slice:
+            - 16
+            - 17
+          joint:
+            action_key: action.left_joint_position
+            raw_slice:
+            - 0
+            - 7
+            state_key: observation.state.left_joint_position
+            target_slice:
+            - 0
+            - 7
+        right:
+          ee:
+            action_key: action.right_eef_delta_local
+            action_target_slice:
+            - 47
+            - 53
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.0
+                - 0.0
+                - 1.0
+              - - 5.605496226526285e-16
+                - 1.0
+                - 0.0
+              - - -1.0
+                - 5.605496226526285e-16
+                - 0.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_eef_pose_camera
+            state_target_slice:
+            - 47
+            - 56
+          gripper:
+            action_key: action.right_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.right_gripper_opening
+            target_slice:
+            - 56
+            - 57
+          joint:
+            action_key: action.right_joint_position
+            raw_slice:
+            - 0
+            - 7
+            state_key: observation.state.right_joint_position
+            target_slice:
+            - 40
+            - 47
+      state_pose_output: xyz_rot6d
+    modalities:
+      action:
+        keys:
+        - action.left_joint_position
+        - action.left_eef_delta_local
+        - action.left_gripper_opening
+        - action.right_joint_position
+        - action.right_eef_delta_local
+        - action.right_gripper_opening
+      frame_index:
+        key: frame_index
+      language:
+        source: meta/tasks.jsonl
+      state:
+        keys:
+        - observation.state.left_joint_position
+        - observation.state.left_eef_pose_camera
+        - observation.state.left_gripper_opening
+        - observation.state.right_joint_position
+        - observation.state.right_eef_pose_camera
+        - observation.state.right_gripper_opening
+      timestamp:
+        key: timestamp
+      video:
+        key: observation.images.image
+  h2r_yam:
+    control_schema: dual_arm
+    canonical_adapter:
+      action_pose_output: xyz_rotvec
+      action_pose_semantics: state_delta_common
+      layout: robot
+      missing_policy: pad_and_mask
+      pose_input: xyz_rotvec
+      slots:
+        left:
+          ee:
+            action_key: action.left_eef_delta_local
+            action_target_slice:
+            - 7
+            - 13
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.0
+                - -0.32096609473228455
+                - 0.9470906853675842
+              - - 1.0
+                - 0.0
+                - 0.0
+              - - 0.0
+                - 0.9470906853675842
+                - 0.32096609473228455
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_eef_pose_camera
+            state_target_slice:
+            - 7
+            - 16
+          gripper:
+            action_key: action.left_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.left_gripper_opening
+            target_slice:
+            - 16
+            - 17
+          joint:
+            action_key: action.left_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_joint_position
+            target_slice:
+            - 0
+            - 6
+        right:
+          ee:
+            action_key: action.right_eef_delta_local
+            action_target_slice:
+            - 47
+            - 53
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.0
+                - -0.32096609473228455
+                - 0.9470906853675842
+              - - 1.0
+                - 0.0
+                - 0.0
+              - - 0.0
+                - 0.9470906853675842
+                - 0.32096609473228455
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_eef_pose_camera
+            state_target_slice:
+            - 47
+            - 56
+          gripper:
+            action_key: action.right_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.right_gripper_opening
+            target_slice:
+            - 56
+            - 57
+          joint:
+            action_key: action.right_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_joint_position
+            target_slice:
+            - 40
+            - 46
+      state_pose_output: xyz_rot6d
+    modalities:
+      action:
+        keys:
+        - action.left_joint_position
+        - action.left_eef_delta_local
+        - action.left_gripper_opening
+        - action.right_joint_position
+        - action.right_eef_delta_local
+        - action.right_gripper_opening
+      frame_index:
+        key: frame_index
+      language:
+        source: meta/tasks.jsonl
+      state:
+        keys:
+        - observation.state.left_joint_position
+        - observation.state.left_eef_pose_camera
+        - observation.state.left_gripper_opening
+        - observation.state.right_joint_position
+        - observation.state.right_eef_pose_camera
+        - observation.state.right_gripper_opening
+      timestamp:
+        key: timestamp
+      video:
+        key: observation.images.image
+  h2r_gen3:
+    control_schema: dual_arm
+    canonical_adapter:
+      action_pose_output: xyz_rotvec
+      action_pose_semantics: state_delta_common
+      layout: robot
+      missing_policy: pad_and_mask
+      pose_input: xyz_rotvec
+      slots:
+        left:
+          ee:
+            action_key: action.left_eef_delta_local
+            action_target_slice:
+            - 7
+            - 13
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.0
+                - 0.0
+                - 1.0
+              - - 0.0
+                - -1.0
+                - 0.0
+              - - 1.0
+                - 0.0
+                - 0.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_eef_pose_camera
+            state_target_slice:
+            - 7
+            - 16
+          gripper:
+            action_key: action.left_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.left_gripper_opening
+            target_slice:
+            - 16
+            - 17
+          joint:
+            action_key: action.left_joint_position
+            raw_slice:
+            - 0
+            - 7
+            state_key: observation.state.left_joint_position
+            target_slice:
+            - 0
+            - 7
+        right:
+          ee:
+            action_key: action.right_eef_delta_local
+            action_target_slice:
+            - 47
+            - 53
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.0
+                - 0.0
+                - 1.0
+              - - 0.0
+                - -1.0
+                - 0.0
+              - - 1.0
+                - 0.0
+                - 0.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_eef_pose_camera
+            state_target_slice:
+            - 47
+            - 56
+          gripper:
+            action_key: action.right_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.right_gripper_opening
+            target_slice:
+            - 56
+            - 57
+          joint:
+            action_key: action.right_joint_position
+            raw_slice:
+            - 0
+            - 7
+            state_key: observation.state.right_joint_position
+            target_slice:
+            - 40
+            - 47
+      state_pose_output: xyz_rot6d
+    modalities:
+      action:
+        keys:
+        - action.left_joint_position
+        - action.left_eef_delta_local
+        - action.left_gripper_opening
+        - action.right_joint_position
+        - action.right_eef_delta_local
+        - action.right_gripper_opening
+      frame_index:
+        key: frame_index
+      language:
+        source: meta/tasks.jsonl
+      state:
+        keys:
+        - observation.state.left_joint_position
+        - observation.state.left_eef_pose_camera
+        - observation.state.left_gripper_opening
+        - observation.state.right_joint_position
+        - observation.state.right_eef_pose_camera
+        - observation.state.right_gripper_opening
+      timestamp:
+        key: timestamp
+      video:
+        key: observation.images.image
+  h2r_jaco2:
+    control_schema: dual_arm
+    canonical_adapter:
+      action_pose_output: xyz_rotvec
+      action_pose_semantics: state_delta_common
+      layout: robot
+      missing_policy: pad_and_mask
+      pose_input: xyz_rotvec
+      slots:
+        left:
+          ee:
+            action_key: action.left_eef_delta_local
+            action_target_slice:
+            - 7
+            - 13
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 3.978953680990429e-16
+                - -2.0959792229499484e-17
+                - -1.0
+              - - 1.0
+                - -7.09622569039503e-11
+                - 3.978953680990429e-16
+              - - -7.09622569039503e-11
+                - -1.0
+                - 2.0959792229499484e-17
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_eef_pose_camera
+            state_target_slice:
+            - 7
+            - 16
+          gripper:
+            action_key: action.left_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.left_gripper_opening
+            target_slice:
+            - 16
+            - 17
+          joint:
+            action_key: action.left_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_joint_position
+            target_slice:
+            - 0
+            - 6
+        right:
+          ee:
+            action_key: action.right_eef_delta_local
+            action_target_slice:
+            - 47
+            - 53
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 3.978953680990429e-16
+                - -2.0959792229499484e-17
+                - -1.0
+              - - 1.0
+                - -7.09622569039503e-11
+                - 3.978953680990429e-16
+              - - -7.09622569039503e-11
+                - -1.0
+                - 2.0959792229499484e-17
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_eef_pose_camera
+            state_target_slice:
+            - 47
+            - 56
+          gripper:
+            action_key: action.right_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.right_gripper_opening
+            target_slice:
+            - 56
+            - 57
+          joint:
+            action_key: action.right_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_joint_position
+            target_slice:
+            - 40
+            - 46
+      state_pose_output: xyz_rot6d
+    modalities:
+      action:
+        keys:
+        - action.left_joint_position
+        - action.left_eef_delta_local
+        - action.left_gripper_opening
+        - action.right_joint_position
+        - action.right_eef_delta_local
+        - action.right_gripper_opening
+      frame_index:
+        key: frame_index
+      language:
+        source: meta/tasks.jsonl
+      state:
+        keys:
+        - observation.state.left_joint_position
+        - observation.state.left_eef_pose_camera
+        - observation.state.left_gripper_opening
+        - observation.state.right_joint_position
+        - observation.state.right_eef_pose_camera
+        - observation.state.right_gripper_opening
+      timestamp:
+        key: timestamp
+      video:
+        key: observation.images.image
+  h2r_iiwa14:
+    control_schema: dual_arm
+    canonical_adapter:
+      action_pose_output: xyz_rotvec
+      action_pose_semantics: state_delta_common
+      layout: robot
+      missing_policy: pad_and_mask
+      pose_input: xyz_rotvec
+      slots:
+        left:
+          ee:
+            action_key: action.left_eef_delta_local
+            action_target_slice:
+            - 7
+            - 13
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.0
+                - 0.0
+                - 1.0
+              - - 0.0
+                - -1.0
+                - 0.0
+              - - 1.0
+                - 0.0
+                - 0.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_eef_pose_camera
+            state_target_slice:
+            - 7
+            - 16
+          gripper:
+            action_key: action.left_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.left_gripper_opening
+            target_slice:
+            - 16
+            - 17
+          joint:
+            action_key: action.left_joint_position
+            raw_slice:
+            - 0
+            - 7
+            state_key: observation.state.left_joint_position
+            target_slice:
+            - 0
+            - 7
+        right:
+          ee:
+            action_key: action.right_eef_delta_local
+            action_target_slice:
+            - 47
+            - 53
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.0
+                - 0.0
+                - 1.0
+              - - 0.0
+                - -1.0
+                - 0.0
+              - - 1.0
+                - 0.0
+                - 0.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_eef_pose_camera
+            state_target_slice:
+            - 47
+            - 56
+          gripper:
+            action_key: action.right_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.right_gripper_opening
+            target_slice:
+            - 56
+            - 57
+          joint:
+            action_key: action.right_joint_position
+            raw_slice:
+            - 0
+            - 7
+            state_key: observation.state.right_joint_position
+            target_slice:
+            - 40
+            - 47
+      state_pose_output: xyz_rot6d
+    modalities:
+      action:
+        keys:
+        - action.left_joint_position
+        - action.left_eef_delta_local
+        - action.left_gripper_opening
+        - action.right_joint_position
+        - action.right_eef_delta_local
+        - action.right_gripper_opening
+      frame_index:
+        key: frame_index
+      language:
+        source: meta/tasks.jsonl
+      state:
+        keys:
+        - observation.state.left_joint_position
+        - observation.state.left_eef_pose_camera
+        - observation.state.left_gripper_opening
+        - observation.state.right_joint_position
+        - observation.state.right_eef_pose_camera
+        - observation.state.right_gripper_opening
+      timestamp:
+        key: timestamp
+      video:
+        key: observation.images.image
+  h2r_sawyer:
+    control_schema: dual_arm
+    canonical_adapter:
+      action_pose_output: xyz_rotvec
+      action_pose_semantics: state_delta_common
+      layout: robot
+      missing_policy: pad_and_mask
+      pose_input: xyz_rotvec
+      slots:
+        left:
+          ee:
+            action_key: action.left_eef_delta_local
+            action_target_slice:
+            - 7
+            - 13
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - -4.164131097476878e-17
+                - 1.2335810914150102e-15
+                - 1.0
+              - - -2.023843984720196e-15
+                - 1.0
+                - -1.2335810914150102e-15
+              - - -1.0
+                - -2.023843984720196e-15
+                - -4.164131097476878e-17
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_eef_pose_camera
+            state_target_slice:
+            - 7
+            - 16
+          gripper:
+            action_key: action.left_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.left_gripper_opening
+            target_slice:
+            - 16
+            - 17
+          joint:
+            action_key: action.left_joint_position
+            raw_slice:
+            - 0
+            - 7
+            state_key: observation.state.left_joint_position
+            target_slice:
+            - 0
+            - 7
+        right:
+          ee:
+            action_key: action.right_eef_delta_local
+            action_target_slice:
+            - 47
+            - 53
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - -4.164131097476878e-17
+                - 1.2335810914150102e-15
+                - 1.0
+              - - -2.023843984720196e-15
+                - 1.0
+                - -1.2335810914150102e-15
+              - - -1.0
+                - -2.023843984720196e-15
+                - -4.164131097476878e-17
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_eef_pose_camera
+            state_target_slice:
+            - 47
+            - 56
+          gripper:
+            action_key: action.right_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.right_gripper_opening
+            target_slice:
+            - 56
+            - 57
+          joint:
+            action_key: action.right_joint_position
+            raw_slice:
+            - 0
+            - 7
+            state_key: observation.state.right_joint_position
+            target_slice:
+            - 40
+            - 47
+      state_pose_output: xyz_rot6d
+    modalities:
+      action:
+        keys:
+        - action.left_joint_position
+        - action.left_eef_delta_local
+        - action.left_gripper_opening
+        - action.right_joint_position
+        - action.right_eef_delta_local
+        - action.right_gripper_opening
+      frame_index:
+        key: frame_index
+      language:
+        source: meta/tasks.jsonl
+      state:
+        keys:
+        - observation.state.left_joint_position
+        - observation.state.left_eef_pose_camera
+        - observation.state.left_gripper_opening
+        - observation.state.right_joint_position
+        - observation.state.right_eef_pose_camera
+        - observation.state.right_gripper_opening
+      timestamp:
+        key: timestamp
+      video:
+        key: observation.images.image
+  h2r_vx300s:
+    control_schema: dual_arm
+    canonical_adapter:
+      action_pose_output: xyz_rotvec
+      action_pose_semantics: state_delta_common
+      layout: robot
+      missing_policy: pad_and_mask
+      pose_input: xyz_rotvec
+      slots:
+        left:
+          ee:
+            action_key: action.left_eef_delta_local
+            action_target_slice:
+            - 7
+            - 13
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 1.0
+                - 0.0
+                - 0.0
+              - - 0.0
+                - -1.0
+                - 0.0
+              - - 0.0
+                - 0.0
+                - -1.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_eef_pose_camera
+            state_target_slice:
+            - 7
+            - 16
+          gripper:
+            action_key: action.left_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.left_gripper_opening
+            target_slice:
+            - 16
+            - 17
+          joint:
+            action_key: action.left_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_joint_position
+            target_slice:
+            - 0
+            - 6
+        right:
+          ee:
+            action_key: action.right_eef_delta_local
+            action_target_slice:
+            - 47
+            - 53
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 1.0
+                - 0.0
+                - 0.0
+              - - 0.0
+                - -1.0
+                - 0.0
+              - - 0.0
+                - 0.0
+                - -1.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_eef_pose_camera
+            state_target_slice:
+            - 47
+            - 56
+          gripper:
+            action_key: action.right_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.right_gripper_opening
+            target_slice:
+            - 56
+            - 57
+          joint:
+            action_key: action.right_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_joint_position
+            target_slice:
+            - 40
+            - 46
+      state_pose_output: xyz_rot6d
+    modalities:
+      action:
+        keys:
+        - action.left_joint_position
+        - action.left_eef_delta_local
+        - action.left_gripper_opening
+        - action.right_joint_position
+        - action.right_eef_delta_local
+        - action.right_gripper_opening
+      frame_index:
+        key: frame_index
+      language:
+        source: meta/tasks.jsonl
+      state:
+        keys:
+        - observation.state.left_joint_position
+        - observation.state.left_eef_pose_camera
+        - observation.state.left_gripper_opening
+        - observation.state.right_joint_position
+        - observation.state.right_eef_pose_camera
+        - observation.state.right_gripper_opening
+      timestamp:
+        key: timestamp
+      video:
+        key: observation.images.image
+  h2r_wx250s:
+    control_schema: dual_arm
+    canonical_adapter:
+      action_pose_output: xyz_rotvec
+      action_pose_semantics: state_delta_common
+      layout: robot
+      missing_policy: pad_and_mask
+      pose_input: xyz_rotvec
+      slots:
+        left:
+          ee:
+            action_key: action.left_eef_delta_local
+            action_target_slice:
+            - 7
+            - 13
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 1.0
+                - 0.0
+                - 0.0
+              - - 0.0
+                - -1.0
+                - 0.0
+              - - 0.0
+                - 0.0
+                - -1.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_eef_pose_camera
+            state_target_slice:
+            - 7
+            - 16
+          gripper:
+            action_key: action.left_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.left_gripper_opening
+            target_slice:
+            - 16
+            - 17
+          joint:
+            action_key: action.left_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_joint_position
+            target_slice:
+            - 0
+            - 6
+        right:
+          ee:
+            action_key: action.right_eef_delta_local
+            action_target_slice:
+            - 47
+            - 53
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 1.0
+                - 0.0
+                - 0.0
+              - - 0.0
+                - -1.0
+                - 0.0
+              - - 0.0
+                - 0.0
+                - -1.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_eef_pose_camera
+            state_target_slice:
+            - 47
+            - 56
+          gripper:
+            action_key: action.right_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.right_gripper_opening
+            target_slice:
+            - 56
+            - 57
+          joint:
+            action_key: action.right_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_joint_position
+            target_slice:
+            - 40
+            - 46
+      state_pose_output: xyz_rot6d
+    modalities:
+      action:
+        keys:
+        - action.left_joint_position
+        - action.left_eef_delta_local
+        - action.left_gripper_opening
+        - action.right_joint_position
+        - action.right_eef_delta_local
+        - action.right_gripper_opening
+      frame_index:
+        key: frame_index
+      language:
+        source: meta/tasks.jsonl
+      state:
+        keys:
+        - observation.state.left_joint_position
+        - observation.state.left_eef_pose_camera
+        - observation.state.left_gripper_opening
+        - observation.state.right_joint_position
+        - observation.state.right_eef_pose_camera
+        - observation.state.right_gripper_opening
+      timestamp:
+        key: timestamp
+      video:
+        key: observation.images.image
+  h2r_xarm7:
+    control_schema: dual_arm
+    canonical_adapter:
+      action_pose_output: xyz_rotvec
+      action_pose_semantics: state_delta_common
+      layout: robot
+      missing_policy: pad_and_mask
+      pose_input: xyz_rotvec
+      slots:
+        left:
+          ee:
+            action_key: action.left_eef_delta_local
+            action_target_slice:
+            - 7
+            - 13
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.0
+                - 0.0
+                - 1.0
+              - - 0.0
+                - 1.0
+                - 0.0
+              - - -1.0
+                - 0.0
+                - 0.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_eef_pose_camera
+            state_target_slice:
+            - 7
+            - 16
+          gripper:
+            action_key: action.left_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.left_gripper_opening
+            target_slice:
+            - 16
+            - 17
+          joint:
+            action_key: action.left_joint_position
+            raw_slice:
+            - 0
+            - 7
+            state_key: observation.state.left_joint_position
+            target_slice:
+            - 0
+            - 7
+        right:
+          ee:
+            action_key: action.right_eef_delta_local
+            action_target_slice:
+            - 47
+            - 53
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.0
+                - 0.0
+                - 1.0
+              - - 0.0
+                - 1.0
+                - 0.0
+              - - -1.0
+                - 0.0
+                - 0.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_eef_pose_camera
+            state_target_slice:
+            - 47
+            - 56
+          gripper:
+            action_key: action.right_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.right_gripper_opening
+            target_slice:
+            - 56
+            - 57
+          joint:
+            action_key: action.right_joint_position
+            raw_slice:
+            - 0
+            - 7
+            state_key: observation.state.right_joint_position
+            target_slice:
+            - 40
+            - 47
+      state_pose_output: xyz_rot6d
+    modalities:
+      action:
+        keys:
+        - action.left_joint_position
+        - action.left_eef_delta_local
+        - action.left_gripper_opening
+        - action.right_joint_position
+        - action.right_eef_delta_local
+        - action.right_gripper_opening
+      frame_index:
+        key: frame_index
+      language:
+        source: meta/tasks.jsonl
+      state:
+        keys:
+        - observation.state.left_joint_position
+        - observation.state.left_eef_pose_camera
+        - observation.state.left_gripper_opening
+        - observation.state.right_joint_position
+        - observation.state.right_eef_pose_camera
+        - observation.state.right_gripper_opening
+      timestamp:
+        key: timestamp
+      video:
+        key: observation.images.image
+  h2r_ur10e:
+    control_schema: dual_arm
+    canonical_adapter:
+      action_pose_output: xyz_rotvec
+      action_pose_semantics: state_delta_common
+      layout: robot
+      missing_policy: pad_and_mask
+      pose_input: xyz_rotvec
+      slots:
+        left:
+          ee:
+            action_key: action.left_eef_delta_local
+            action_target_slice:
+            - 7
+            - 13
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.0
+                - 0.0
+                - 1.0
+              - - 0.0
+                - -1.0
+                - 0.0
+              - - 1.0
+                - 0.0
+                - 0.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_eef_pose_camera
+            state_target_slice:
+            - 7
+            - 16
+          gripper:
+            action_key: action.left_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.left_gripper_opening
+            target_slice:
+            - 16
+            - 17
+          joint:
+            action_key: action.left_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_joint_position
+            target_slice:
+            - 0
+            - 6
+        right:
+          ee:
+            action_key: action.right_eef_delta_local
+            action_target_slice:
+            - 47
+            - 53
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.0
+                - 0.0
+                - 1.0
+              - - 0.0
+                - -1.0
+                - 0.0
+              - - 1.0
+                - 0.0
+                - 0.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_eef_pose_camera
+            state_target_slice:
+            - 47
+            - 56
+          gripper:
+            action_key: action.right_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.right_gripper_opening
+            target_slice:
+            - 56
+            - 57
+          joint:
+            action_key: action.right_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_joint_position
+            target_slice:
+            - 40
+            - 46
+      state_pose_output: xyz_rot6d
+    modalities:
+      action:
+        keys:
+        - action.left_joint_position
+        - action.left_eef_delta_local
+        - action.left_gripper_opening
+        - action.right_joint_position
+        - action.right_eef_delta_local
+        - action.right_gripper_opening
+      frame_index:
+        key: frame_index
+      language:
+        source: meta/tasks.jsonl
+      state:
+        keys:
+        - observation.state.left_joint_position
+        - observation.state.left_eef_pose_camera
+        - observation.state.left_gripper_opening
+        - observation.state.right_joint_position
+        - observation.state.right_eef_pose_camera
+        - observation.state.right_gripper_opening
+      timestamp:
+        key: timestamp
+      video:
+        key: observation.images.image
+  h2r_ur5e:
+    control_schema: dual_arm
+    canonical_adapter:
+      action_pose_output: xyz_rotvec
+      action_pose_semantics: state_delta_common
+      layout: robot
+      missing_policy: pad_and_mask
+      pose_input: xyz_rotvec
+      slots:
+        left:
+          ee:
+            action_key: action.left_eef_delta_local
+            action_target_slice:
+            - 7
+            - 13
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.0
+                - 0.0
+                - 1.0
+              - - -1.0
+                - 0.0
+                - 0.0
+              - - 0.0
+                - -1.0
+                - 0.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_eef_pose_camera
+            state_target_slice:
+            - 7
+            - 16
+          gripper:
+            action_key: action.left_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.left_gripper_opening
+            target_slice:
+            - 16
+            - 17
+          joint:
+            action_key: action.left_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.left_joint_position
+            target_slice:
+            - 0
+            - 6
+        right:
+          ee:
+            action_key: action.right_eef_delta_local
+            action_target_slice:
+            - 47
+            - 53
+            frame_transform:
+              canonical_ee_convention: approach-right_to_left-up-v1
+              canonical_ee_from_source_ee:
+              - - 0.0
+                - 0.0
+                - 1.0
+              - - -1.0
+                - 0.0
+                - 0.0
+              - - 0.0
+                - -1.0
+                - 0.0
+              delta_frame: eef_local
+              world_from_source: identity
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_eef_pose_camera
+            state_target_slice:
+            - 47
+            - 56
+          gripper:
+            action_key: action.right_gripper_opening
+            raw_slice:
+            - 0
+            - 1
+            state_key: observation.state.right_gripper_opening
+            target_slice:
+            - 56
+            - 57
+          joint:
+            action_key: action.right_joint_position
+            raw_slice:
+            - 0
+            - 6
+            state_key: observation.state.right_joint_position
+            target_slice:
+            - 40
+            - 46
+      state_pose_output: xyz_rot6d
+    modalities:
+      action:
+        keys:
+        - action.left_joint_position
+        - action.left_eef_delta_local
+        - action.left_gripper_opening
+        - action.right_joint_position
+        - action.right_eef_delta_local
+        - action.right_gripper_opening
+      frame_index:
+        key: frame_index
+      language:
+        source: meta/tasks.jsonl
+      state:
+        keys:
+        - observation.state.left_joint_position
+        - observation.state.left_eef_pose_camera
+        - observation.state.left_gripper_opening
+        - observation.state.right_joint_position
+        - observation.state.right_eef_pose_camera
+        - observation.state.right_gripper_opening
+      timestamp:
+        key: timestamp
+      video:
+        key: observation.images.image

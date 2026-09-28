@@ -1,0 +1,199 @@
+train:
+  _target_: wam.datasets.lerobot.robot_video_dataset.RobotVideoDataset
+  dataset_dirs:
+  - ${paths.libero}/libero_spatial_no_noops_lerobot
+  - ${paths.libero}/libero_object_no_noops_lerobot
+  - ${paths.libero}/libero_goal_no_noops_lerobot
+  - ${paths.libero}/libero_10_no_noops_lerobot
+  shape_meta:
+    images:
+    - key: image
+      raw_shape:
+      - 3
+      - 512
+      - 512
+      shape:
+      - 3
+      - 192
+      - 256
+    - key: wrist_image
+      raw_shape:
+      - 3
+      - 512
+      - 512
+      shape:
+      - 3
+      - 192
+      - 256
+    action:
+    - key: default
+      lerobot_key: action
+      raw_shape: 7
+      shape: 7
+    state:
+    - key: joint
+      lerobot_key: observation.states.joint_state
+      raw_shape: 7
+      shape: 7
+    - key: ee
+      lerobot_key: observation.states.ee_state
+      raw_shape: 6
+      shape: 9
+    - key: gripper
+      lerobot_key: observation.states.gripper_state
+      raw_shape: 2
+      shape: 1
+  num_frames: 33
+  global_sample_stride: 1
+  memory_video_anchor_size: 1
+  memory_recent_frame_offset: 32
+  action_video_freq_ratio: 4
+  video_size:
+  - 384
+  - 256
+  camera_key: null
+  val_set_proportion: 0.0
+  is_training_set: true
+  skip_padding_as_possible: false
+  concat_multi_camera: vertical
+  single_canvas: true
+  return_vlm_current_images: true
+  load_episode_stats: true
+  check_local_files: true
+  proprio_noise_std: 0.01
+  pretrained_norm_stats: ${oc.env:LIBERO_NORM_STATS,assets/stats/libero.json}
+  processor:
+    _target_: wam.datasets.lerobot.processors.wam_processor.WAMProcessor
+    shape_meta: ${data.train.shape_meta}
+    num_obs_steps: ${data.train.num_frames}
+    num_output_cameras: 2
+    action_output_dim: 80
+    proprio_output_dim: 80
+    delta_action_dim_mask:
+      default:
+      - true
+      - true
+      - true
+      - true
+      - true
+      - true
+      - false
+    action_state_transforms:
+    - _target_: wam.datasets.lerobot.transforms.libero.LiberoRight80NoFrameTransform
+      action_key: default
+      state_joint_key: joint
+      state_ee_key: ee
+      state_gripper_key: gripper
+    use_stepwise_action_norm: false
+    norm_default_mode: min/max
+    norm_exception_mode: null
+    action_state_merger:
+      _target_: wam.datasets.lerobot.transforms.action_state_merger.ConcatLeftAlign
+      action_target_dim: 80
+      state_target_dim: 80
+      action_target_slices:
+      - source_slice:
+        - 0
+        - 6
+        target_slice:
+        - 47
+        - 53
+      - source_slice:
+        - 6
+        - 7
+        target_slice:
+        - 56
+        - 57
+      state_target_slices:
+      - source_slice:
+        - 0
+        - 7
+        target_slice:
+        - 40
+        - 47
+      - source_slice:
+        - 7
+        - 16
+        target_slice:
+        - 47
+        - 56
+      - source_slice:
+        - 16
+        - 17
+        target_slice:
+        - 56
+        - 57
+    train_transforms:
+    - _target_: wam.datasets.lerobot.transforms.image.ToTensor
+    - _target_: torchvision.transforms.Resize
+      size:
+      - 192
+      - 256
+    val_transforms:
+    - _target_: wam.datasets.lerobot.transforms.image.ToTensor
+    - _target_: torchvision.transforms.Resize
+      size:
+      - 192
+      - 256
+    normalization_passthrough_dims:
+      state:
+        ee:
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+  text_embedding_cache_dir: ${oc.env:LIBERO_TEXT_CACHE,${paths.cache}/text_embed/libero}
+  context_len: 128
+  image_color_jitter:
+    enabled: true
+    brightness: 0.2
+    contrast: 0.2
+    saturation: 0.25
+    gamma: 0.0
+  sync_vlm_color_jitter: true
+  image_camera_jitter:
+    enabled: true
+    prob: 1.0
+    scale_min: 0.94
+    scale_max: 1.0
+    translate: 0.03
+    rotation_degrees: 5.0
+    camera_keys:
+    - image
+  sync_vlm_camera_jitter: true
+  image_sensor_noise:
+    enabled: true
+    camera_keys:
+    - image
+    gaussian_prob: 0.0
+    gaussian_std: 0.0
+    blur_prob: 0.0
+    blur_kernel_size: 3
+    blur_sigma: 0.0
+    downsample_prob: 0.08
+    downsample_scale_min: 0.75
+val:
+  _target_: wam.datasets.lerobot.robot_video_dataset.RobotVideoDataset
+  dataset_dirs: ${data.train.dataset_dirs}
+  shape_meta: ${data.train.shape_meta}
+  num_frames: ${data.train.num_frames}
+  global_sample_stride: ${data.train.global_sample_stride}
+  memory_video_anchor_size: ${data.train.memory_video_anchor_size}
+  memory_recent_frame_offset: ${data.train.memory_recent_frame_offset}
+  action_video_freq_ratio: ${data.train.action_video_freq_ratio}
+  video_size: ${data.train.video_size}
+  camera_key: ${data.train.camera_key}
+  val_set_proportion: ${data.train.val_set_proportion}
+  is_training_set: false
+  skip_padding_as_possible: ${data.train.skip_padding_as_possible}
+  concat_multi_camera: ${data.train.concat_multi_camera}
+  single_canvas: ${data.train.single_canvas}
+  return_vlm_current_images: ${data.train.return_vlm_current_images}
+  load_episode_stats: ${data.train.load_episode_stats}
+  check_local_files: ${data.train.check_local_files}
+  pretrained_norm_stats: ${data.train.pretrained_norm_stats}
+  processor: ${data.train.processor}
+  text_embedding_cache_dir: ${data.train.text_embedding_cache_dir}
+  context_len: ${data.train.context_len}

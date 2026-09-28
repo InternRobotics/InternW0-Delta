@@ -1,0 +1,34 @@
+# @package _global_
+
+defaults:
+- override /data: libero
+- override /model: wam
+- _self_
+batch_size: 16
+num_workers: 8
+prefetch_factor: 2
+pin_memory: false
+lr_scheduler_type: cosine
+learning_rate: 5.0e-05
+num_epochs: 15
+max_steps: null
+log_every: 10
+save_every: 1000
+max_weight_checkpoints: 5
+eval_every: 200
+eval_max_videos: null
+gradient_accumulation_steps: 1
+weight_decay: 0.01
+model:
+  mot_checkpoint_mixed_attn: true
+  mot_checkpoint_layer_stride: 1
+  action_dit_pretrained_path: null
+  skip_dit_load_from_pretrain: true
+  understanding:
+    enabled: true
+  future_delta:
+    num_views: 1
+resume: ${oc.env:WAM_PRETRAIN_CHECKPOINT,${paths.checkpoints}/pretrain.pt}
+video_latent_cache: 'off'
+length_bucketed_sampling: true
+save_training_state: false

@@ -1,0 +1,8 @@
+Teacher extraction changes are derived from TencentARC/Track4World and its
+Depth Anything 3 components. Copyright Tencent (2026) and ByteDance (2025).
+See LICENSE.Track4World and the original per-file license notices.
+
+The patch adds window-level feature extraction, batched geometry handling,
+H32 temporal buffers, offline checkpoint loading, and lazy optional imports.
+Teacher code and weights retain their upstream academic-use license.
+The teacher runs only when preparing caches; it is not needed for policy inference.

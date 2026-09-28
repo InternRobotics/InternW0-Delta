@@ -1,0 +1,59 @@
+embodiments:
+  adapter_rh20t_single_delta_ee:
+    control_schema: single_arm
+    canonical_adapter:
+      layout: robot
+      single_arm_slot: right
+      pose_input: xyz_rpy
+      action_pose_semantics: absolute_target
+      state_pose_output: xyz_rot6d
+      action_pose_output: xyz_rotvec
+      missing_policy: pad_and_mask
+      frame_transform:
+        world_from_source: robot_to_opencv
+        source_ee_from_canonical_ee: identity
+      slots:
+        right:
+          ee:
+            state_key: state
+            action_key: other_information.action_tcp_pose
+            state_raw_slice:
+            - 0
+            - 6
+            action_raw_slice:
+            - 0
+            - 6
+            state_target_slice:
+            - 47
+            - 56
+            action_target_slice:
+            - 47
+            - 53
+          gripper:
+            state_key: other_information.observation_gripper_open_state
+            action_key: other_information.gripper_command
+            raw_slice:
+            - 0
+            - 1
+            target_slice:
+            - 56
+            - 57
+    modalities:
+      state:
+        keys:
+        - state
+        - other_information.observation_gripper_open_state
+      action:
+        keys:
+        - other_information.action_tcp_pose
+        - other_information.gripper_command
+      video:
+        key: auto
+      language:
+        source: meta/tasks.jsonl
+      timestamp:
+        key: timestamp
+      frame_index:
+        key: frame_index
+      task_index:
+        key: task_index

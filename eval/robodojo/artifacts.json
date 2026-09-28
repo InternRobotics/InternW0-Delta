@@ -1,0 +1,14 @@
+{
+  "robodojo_assets": {
+    "dataset": "RoboDojo-Benchmark/RoboDojo",
+    "revision": "e2f40904e7b039b46e512e1443ad5055984d3344",
+    "path": "third_party/RoboDojo/Assets",
+    "approximate_size_gib": 39,
+    "required_subdirectories": [
+      "Robots",
+      "Object",
+      "Material",
+      "Eval_Layout"
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+normalization_stats: ${oc.env:WAM_PRETRAIN_STATS,assets/stats/pretrain}/realsource.json
+sources:
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.head_camera
+      - observation.images.left_hand_camera
+      - observation.images.right_hand_camera
+      timestamp_source: timestamp
+    video_concat: robotwin
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/realsource_rs02
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: realsource_1
+  root: realsource/rs02
+  datasets_glob: '**'

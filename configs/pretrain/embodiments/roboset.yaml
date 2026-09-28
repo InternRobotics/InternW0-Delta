@@ -1,0 +1,65 @@
+embodiments:
+  adapter_roboset_single_joint:
+    control_schema: single_arm
+    canonical_adapter:
+      layout: robot
+      single_arm_slot: right
+      missing_policy: pad_and_mask
+      slots:
+        right:
+          joint:
+            state_key: states.joint.position
+            action_key: actions.joint.position
+            action_scale:
+            - 2.9671
+            - 1.8326
+            - 2.9671
+            - 1.5708
+            - 2.9671
+            - 1.92085
+            - 2.9671
+            action_offset:
+            - 0.0
+            - 0.0
+            - 0.0
+            - -1.5708
+            - 0.0
+            - 0.26085
+            - 0.0
+            raw_slice:
+            - 0
+            - 7
+            target_slice:
+            - 40
+            - 47
+          gripper:
+            state_key: states.gripper.position
+            action_key: actions.gripper.position
+            action_scale: 0.417
+            action_offset: 0.417
+            raw_slice:
+            - 0
+            - 1
+            target_slice:
+            - 56
+            - 57
+    modalities:
+      state:
+        keys:
+        - states.joint.position
+        - states.gripper.position
+      action:
+        keys:
+        - actions.joint.position
+        - actions.gripper.position
+      video:
+        key: auto
+        timestamp_source: frame_index
+      language:
+        source: meta/tasks.jsonl
+      timestamp:
+        key: timestamp
+      frame_index:
+        key: frame_index
+      task_index:
+        key: task_index

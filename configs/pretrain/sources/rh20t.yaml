@@ -1,0 +1,16 @@
+normalization_stats: ${oc.env:WAM_PRETRAIN_STATS,assets/stats/pretrain}/rh20t.json
+sources:
+- name: lerobot_rh20t_anno
+  enabled: true
+  adapter: adapter_rh20t_single_delta_ee
+  format_version: v2
+  root: rh20t
+  stats_group: lerobot_rh20t_anno/rh20t
+  modalities:
+    video:
+      keys:
+      - observation.images.primary
+      - observation.images.wrist
+    video_concat: robotwin
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample

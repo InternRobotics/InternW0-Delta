@@ -1,0 +1,10 @@
+{
+  "isaaclab": {
+    "upstream": "https://github.com/yuechen0614/IsaacLab.git",
+    "commit": "afca7b09d60d8beb9c1cb28b43066499940b969b"
+  },
+  "curobo": {
+    "upstream": "https://github.com/yuechen0614/curobo.git",
+    "commit": "d17b54ce32cba095c0b000c4c58777075d11de0e"
+  }
+}

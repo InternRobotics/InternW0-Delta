@@ -1,0 +1,190 @@
+normalization_stats: ${oc.env:WAM_PRETRAIN_STATS,assets/stats/pretrain}/roboset.json
+sources:
+- name: roboset_baking_prep_scene_1
+  enabled: true
+  adapter: adapter_roboset_single_joint
+  format_version: v2
+  root: roboset/baking_prep/scene_1
+  stats_group: roboset/franka
+  datasets:
+  - baking_prep_pick_butter_scene_1
+  - baking_prep_place_butter_scene_1
+  - baking_prep_slide_close_drawer_scene_1
+  - baking_prep_slide_open_drawer_scene_1
+  modalities:
+    video:
+      keys:
+      - observation.images.top
+      - observation.images.wrist
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+- name: roboset_baking_prep_scene_4
+  enabled: true
+  adapter: adapter_roboset_single_joint
+  format_version: v2
+  root: roboset/baking_prep/scene_4
+  stats_group: roboset/franka
+  datasets:
+  - baking_prep_pick_butter_scene_4
+  - baking_prep_place_butter_scene_4
+  - baking_prep_slide_close_drawer_scene_4
+  - baking_prep_slide_open_drawer_scene_4
+  modalities:
+    video:
+      keys:
+      - observation.images.top
+      - observation.images.wrist
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+- name: roboset_clean_kitchen_scene_3
+  enabled: true
+  adapter: adapter_roboset_single_joint
+  format_version: v2
+  root: roboset/clean_kitchen/scene_3
+  stats_group: roboset/franka
+  datasets:
+  - clean_kitchen_cap_mug_scene_3
+  - clean_kitchen_flap_close_oven_scene_3
+  - clean_kitchen_pick_mug_scene_3
+  - clean_kitchen_pick_towel_scene_3
+  - clean_kitchen_slide_close_drawer_scene_3
+  - clean_kitchen_wipe_towel_scene_3
+  modalities:
+    video:
+      keys:
+      - observation.images.top
+      - observation.images.wrist
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+- name: roboset_heat_soup_scene_2
+  enabled: true
+  adapter: adapter_roboset_single_joint
+  format_version: v2
+  root: roboset/heat_soup/scene_2
+  stats_group: roboset/franka
+  datasets:
+  - baking_close_oven_scene_2
+  - baking_open_oven_scene_2
+  - baking_pick_bowl_scene_2
+  - baking_slide_in_bowl_scene_2
+  modalities:
+    video:
+      keys:
+      - observation.images.top
+      - observation.images.wrist
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+- name: roboset_heat_soup_scene_4
+  enabled: true
+  adapter: adapter_roboset_single_joint
+  format_version: v2
+  root: roboset/heat_soup/scene_4
+  stats_group: roboset/franka
+  datasets:
+  - baking_open_oven_scene_4
+  - baking_pick_bowl_scene_4
+  - baking_slide_in_bowl_scene_4
+  modalities:
+    video:
+      keys:
+      - observation.images.top
+      - observation.images.wrist
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+- name: roboset_make_tea_scene_2
+  enabled: true
+  adapter: adapter_roboset_single_joint
+  format_version: v2
+  root: roboset/make_tea/scene_2
+  stats_group: roboset/franka
+  datasets:
+  - make_tea_cap_lid_scene_2
+  - make_tea_pick_lid_scene_2
+  - make_tea_pick_tea_scene_2
+  - make_tea_place_lid_scene_2
+  - make_tea_place_tea_scene_2
+  - make_tea_uncap_lid_scene_2
+  modalities:
+    video:
+      keys:
+      - observation.images.top
+      - observation.images.wrist
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+- name: roboset_make_toast_scene_1
+  enabled: true
+  adapter: adapter_roboset_single_joint
+  format_version: v2
+  root: roboset/make_toast/scene_1
+  stats_group: roboset/franka
+  datasets:
+  - make_toast_pick_toast_scene_1
+  - make_toast_place_toast_scene_1
+  modalities:
+    video:
+      keys:
+      - observation.images.top
+      - observation.images.wrist
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+- name: roboset_make_toast_scene_2
+  enabled: true
+  adapter: adapter_roboset_single_joint
+  format_version: v2
+  root: roboset/make_toast/scene_2
+  stats_group: roboset/franka
+  datasets:
+  - make_toast_plunge_toaster_scene_2
+  modalities:
+    video:
+      keys:
+      - observation.images.top
+      - observation.images.wrist
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+- name: roboset_serve_soup_scene_2
+  enabled: true
+  adapter: adapter_roboset_single_joint
+  format_version: v2
+  root: roboset/serve_soup/scene_2
+  stats_group: roboset/franka
+  datasets:
+  - serve_soup_flap_close_oven_scene_2
+  - serve_soup_flap_open_oven_scene_2
+  - serve_soup_place_bowl_scene_2
+  - serve_soup_slide_out_bowl_scene_2
+  modalities:
+    video:
+      keys:
+      - observation.images.top
+      - observation.images.wrist
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample
+- name: roboset_stow_bowl_scene_3
+  enabled: true
+  adapter: adapter_roboset_single_joint
+  format_version: v2
+  root: roboset/stow_bowl/scene_3
+  stats_group: roboset/franka
+  datasets:
+  - stow_bowl_pick_cup_scene_3
+  - stow_bowl_place_cup_scene_3
+  - stow_bowl_slide_close_drawer_scene_3
+  - stow_bowl_slide_open_drawer_scene_3
+  modalities:
+    video:
+      keys:
+      - observation.images.top
+      - observation.images.wrist
+    video_concat: vertical
+  sampling_family: real
+  action_loss_normalization: legacy_per_sample

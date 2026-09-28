@@ -1,0 +1,67 @@
+label: Kuavo S42 · joint replay reference
+joints:
+  zarm_l1_joint: 0
+  zarm_l2_joint: 1
+  zarm_l3_joint: 2
+  zarm_l4_joint: 3
+  zarm_l5_joint: 4
+  zarm_l6_joint: 5
+  zarm_l7_joint: 6
+  zarm_r1_joint: 40
+  zarm_r2_joint: 41
+  zarm_r3_joint: 42
+  zarm_r4_joint: 43
+  zarm_r5_joint: 44
+  zarm_r6_joint: 45
+  zarm_r7_joint: 46
+recorded_joints:
+  state:
+  - key: observation.state
+    names:
+    - left_arm_joint_1_rad
+    - left_arm_joint_2_rad
+    - left_arm_joint_3_rad
+    - left_arm_joint_4_rad
+    - left_arm_joint_5_rad
+    - left_arm_joint_6_rad
+    - left_arm_joint_7_rad
+    target_slice:
+    - 0
+    - 7
+  - key: observation.state
+    names:
+    - right_arm_joint_1_rad
+    - right_arm_joint_2_rad
+    - right_arm_joint_3_rad
+    - right_arm_joint_4_rad
+    - right_arm_joint_5_rad
+    - right_arm_joint_6_rad
+    - right_arm_joint_7_rad
+    target_slice:
+    - 40
+    - 47
+  action:
+  - key: action
+    names:
+    - left_arm_joint_1_rad
+    - left_arm_joint_2_rad
+    - left_arm_joint_3_rad
+    - left_arm_joint_4_rad
+    - left_arm_joint_5_rad
+    - left_arm_joint_6_rad
+    - left_arm_joint_7_rad
+    target_slice:
+    - 0
+    - 7
+  - key: action
+    names:
+    - right_arm_joint_1_rad
+    - right_arm_joint_2_rad
+    - right_arm_joint_3_rad
+    - right_arm_joint_4_rad
+    - right_arm_joint_5_rad
+    - right_arm_joint_6_rad
+    - right_arm_joint_7_rad
+    target_slice:
+    - 40
+    - 47

@@ -1,0 +1,40 @@
+# @package _global_
+
+defaults:
+  - override /data: pretrain
+  - override /model: wam
+  - _self_
+
+# dataloading
+batch_size: 16
+num_workers: 8
+prefetch_factor: 1
+pin_memory: false
+
+model:
+  mot_checkpoint_mixed_attn: true
+  mot_checkpoint_layer_stride: 2
+  mot_flex_block_size: 128
+  understanding:
+    enabled: true
+    interval_chunks: 1
+  memory:
+    enabled: false
+    video:
+      enabled: true
+      num_anchor_frames: 1
+      num_recent_frames: 1
+
+lr_scheduler_type: "cosine"
+learning_rate: 5e-5
+min_learning_rate: 1e-6
+num_epochs: 1
+max_steps: null
+log_every: 10
+save_every: 5000
+eval_every: 500
+eval_max_videos: 8
+
+gradient_accumulation_steps: 1
+weight_decay: 1e-2
+resume: null

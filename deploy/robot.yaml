@@ -1,0 +1,22 @@
+# Example ROS2 transport. Match topics, message types, joint names, and units to your controller.
+node_name: internw0_policy
+arms:
+  left:
+    state_topic: /robot/left/joint_states
+    command_topic: /robot/left/joint_commands
+    joint_names: [left_joint1, left_joint2, left_joint3, left_joint4, left_joint5, left_joint6, left_gripper]
+  right:
+    state_topic: /robot/right/joint_states
+    command_topic: /robot/right/joint_commands
+    joint_names: [right_joint1, right_joint2, right_joint3, right_joint4, right_joint5, right_joint6, right_gripper]
+cameras:
+  head:
+    topic: /robot/head/image_raw/compressed
+    compressed: true
+  hand_left:
+    topic: /robot/left_wrist/image_raw/compressed
+    compressed: true
+  hand_right:
+    topic: /robot/right_wrist/image_raw/compressed
+    compressed: true
+reset_service: null  # Optional std_srvs/Trigger service implemented by your controller.

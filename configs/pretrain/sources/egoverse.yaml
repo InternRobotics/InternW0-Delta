@@ -1,0 +1,152 @@
+normalization_stats: ${oc.env:WAM_PRETRAIN_STATS,assets/stats/pretrain}/egoverse.json
+sources:
+- action_gripper_loss_weight: 0.01
+  action_loss_normalization: weighted_valid_cells
+  action_loss_weight: 0.1
+  allow_padding_at_end: false
+  context_len: 128
+  control_schema: wrist_only_opencv_rdf
+  datasets:
+  - name: aria
+  distribute_weights: false
+  embodiment: human_bimanual
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: action
+    state:
+      key: observation.state
+    video:
+      key: observation.images.rgb
+    video_concat: single_masked
+  name: aria
+  prompt_template: 'A video recorded from a human''s point of view executing the following instruction:
+    {task}'
+  sampling_family: ego
+  slow_motion_factor: 2.0
+  stats_group: aria
+  task_index_authority: episode_metadata
+  text_encoder_id: wan22ti2v5b
+  root: egoverse/aria
+  adapter: human
+- action_gripper_loss_weight: 0.01
+  action_loss_normalization: weighted_valid_cells
+  action_loss_weight: 0.1
+  allow_padding_at_end: false
+  context_len: 128
+  control_schema: wrist_only_opencv_rdf
+  datasets:
+  - name: mecka
+  distribute_weights: false
+  embodiment: human_bimanual
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: action
+    state:
+      key: observation.state
+    video:
+      key: observation.images.rgb
+    video_concat: single_masked
+  name: mecka
+  prompt_template: 'A video recorded from a human''s point of view executing the following instruction:
+    {task}'
+  sampling_family: ego
+  slow_motion_factor: 2.0
+  stats_group: mecka
+  task_index_authority: episode_metadata
+  text_encoder_id: wan22ti2v5b
+  root: egoverse/mecka
+  adapter: human
+- action_gripper_loss_weight: 0.01
+  action_loss_normalization: weighted_valid_cells
+  action_loss_weight: 0.1
+  allow_padding_at_end: false
+  context_len: 128
+  control_schema: wrist_only_opencv_rdf
+  datasets:
+  - name: scale
+  distribute_weights: false
+  embodiment: human_bimanual
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: action
+    state:
+      key: observation.state
+    video:
+      key: observation.images.rgb
+    video_concat: single_masked
+  name: scale
+  prompt_template: 'A video recorded from a human''s point of view executing the following instruction:
+    {task}'
+  sampling_family: ego
+  slow_motion_factor: 2.0
+  stats_group: scale
+  task_index_authority: episode_metadata
+  text_encoder_id: wan22ti2v5b
+  root: egoverse/scale
+  adapter: human
+- action_gripper_loss_weight: 0.01
+  action_loss_normalization: weighted_valid_cells
+  action_loss_weight: 0.1
+  allow_padding_at_end: false
+  context_len: 128
+  control_schema: wrist_only_opencv_rdf
+  datasets:
+  - name: microagi
+  distribute_weights: false
+  embodiment: human_bimanual
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: action
+    state:
+      key: observation.state
+    video:
+      key: observation.images.rgb
+    video_concat: single_masked
+  name: microagi
+  prompt_template: 'A video recorded from a human''s point of view executing the following instruction:
+    {task}'
+  sampling_family: ego
+  slow_motion_factor: 2.0
+  stats_group: microagi
+  task_index_authority: episode_metadata
+  text_encoder_id: wan22ti2v5b
+  root: egoverse/microagi
+  adapter: human
+- action_gripper_loss_weight: 0.01
+  action_loss_normalization: weighted_valid_cells
+  action_loss_weight: 0.1
+  allow_padding_at_end: false
+  context_len: 128
+  control_schema: wrist_only_opencv_rdf
+  datasets:
+  - name: lightwheel
+  distribute_weights: false
+  embodiment: human_bimanual
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: action
+    state:
+      key: observation.state
+    video:
+      key: observation.images.rgb
+    video_concat: single_masked
+  name: lightwheel
+  prompt_template: 'A video recorded from a human''s point of view executing the following instruction:
+    {task}'
+  sampling_family: ego
+  slow_motion_factor: 2.0
+  stats_group: lightwheel
+  task_index_authority: episode_metadata
+  text_encoder_id: wan22ti2v5b
+  root: egoverse/lightwheel
+  adapter: human

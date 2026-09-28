@@ -1,0 +1,172 @@
+train:
+  _target_: wam.datasets.lerobot.robot_video_dataset.RobotVideoDataset
+  # Ebench is stored as 26 independent LeRobot v2.1 datasets.  They all use
+  # the same 15 Hz schema and are intentionally trained as one dataset group.
+  dataset_dirs: &ebench_dataset_dirs
+    - ${paths.ebench}/simple_pnp/task1
+    - ${paths.ebench}/simple_pnp/task2
+    - ${paths.ebench}/simple_pnp/task3
+    - ${paths.ebench}/simple_pnp/task4
+    - ${paths.ebench}/simple_pnp/task5
+    - ${paths.ebench}/simple_pnp/task6
+    - ${paths.ebench}/simple_pnp/task7
+    - ${paths.ebench}/simple_pnp/task8
+    - ${paths.ebench}/simple_pnp/task9
+    - ${paths.ebench}/simple_pnp/task10
+    - ${paths.ebench}/teleop_tasks/collect_coffee_beans
+    - ${paths.ebench}/teleop_tasks/flip_cup_collect_cookies
+    - ${paths.ebench}/teleop_tasks/frame_against_pen_holder
+    - ${paths.ebench}/teleop_tasks/install_gear
+    - ${paths.ebench}/teleop_tasks/peg_in_hole
+    - ${paths.ebench}/teleop_tasks/put_glass_in_glassbox
+    - ${paths.ebench}/teleop_tasks/tighten_nut
+    - ${paths.ebench}/long_horizon/bottle
+    - ${paths.ebench}/long_horizon/detergent
+    - ${paths.ebench}/long_horizon/dish
+    - ${paths.ebench}/long_horizon/dishwasher
+    - ${paths.ebench}/long_horizon/fruit
+    - ${paths.ebench}/long_horizon/make_sandwich
+    - ${paths.ebench}/long_horizon/microwave
+    - ${paths.ebench}/long_horizon/pen
+    - ${paths.ebench}/long_horizon/shop
+
+  shape_meta: &ebench_shape_meta
+    images:
+      - key: cam_high
+        lerobot_key: video.overlook_camera_view
+        raw_shape: [3, 480, 640]
+        shape: [3, 240, 320]
+      - key: cam_left_wrist
+        lerobot_key: video.left_camera_view
+        raw_shape: [3, 480, 640]
+        shape: [3, 240, 320]
+      - key: cam_right_wrist
+        lerobot_key: video.right_camera_view
+        raw_shape: [3, 480, 640]
+        shape: [3, 240, 320]
+    action:
+      - key: joints
+        lerobot_key: action.joints
+        raw_shape: 12
+        shape: 12
+      - key: gripper
+        lerobot_key: action.gripper
+        raw_shape: 4
+        # Two finger displacements per gripper become one physical aperture.
+        shape: 2
+      - key: base
+        lerobot_key: action.base_delta
+        raw_shape: 3
+        shape: 3
+    state:
+      - key: joints
+        lerobot_key: state.joints
+        raw_shape: 12
+        shape: 12
+      - key: gripper
+        lerobot_key: state.gripper
+        raw_shape: 4
+        shape: 2
+      - key: base
+        lerobot_key: state.base
+        raw_shape: 3
+        shape: 3
+
+  num_frames: 33
+  global_sample_stride: 1
+  memory_video_anchor_size: 1
+  memory_recent_frame_offset: 32
+  action_video_freq_ratio: 4
+  video_size: [384, 256]
+  camera_key: null
+  val_set_proportion: 0.0
+  is_training_set: true
+  pretrained_norm_stats: ${oc.env:EBENCH_NORM_STATS,${paths.ebench}/dataset_stats.json}
+  load_episode_stats: true
+  check_local_files: true
+  skip_padding_as_possible: false
+  concat_multi_camera: robotwin
+  single_canvas: true
+  return_vlm_current_images: true
+
+  processor:
+    _target_: wam.datasets.lerobot.processors.wam_processor.WAMProcessor
+    shape_meta: *ebench_shape_meta
+    num_obs_steps: 33
+    num_output_cameras: 3
+    action_output_dim: 80
+    proprio_output_dim: 80
+    # Only the mobile-base command is a delta.  Padded joint/gripper targets
+    # retain their last absolute value, while padded base deltas become zero.
+    delta_action_dim_mask:
+      joints: [false, false, false, false, false, false, false, false, false, false, false, false]
+      gripper: [false, false]
+      base: [true, true, true]
+    action_state_transforms:
+      - _target_: wam.datasets.lerobot.transforms.ebench_80d.EbenchParallelGripperTransform
+        action_key: gripper
+        state_key: gripper
+    use_stepwise_action_norm: false
+    norm_default_mode: z-score
+    norm_exception_mode: null
+    action_state_merger:
+      _target_: wam.datasets.lerobot.transforms.action_state_merger.ConcatLeftAlign
+      action_target_dim: 80
+      state_target_dim: 80
+      # Transformed order: left/right joints (12), apertures (2), base (3).
+      # The global base occupies the planar base dimensions [77,80).
+      action_target_slices: &ebench_80d_slices
+        - source_slice: [0, 6]
+          target_slice: [0, 6]
+        - source_slice: [6, 12]
+          target_slice: [40, 46]
+        - source_slice: [12, 13]
+          target_slice: [16, 17]
+        - source_slice: [13, 14]
+          target_slice: [56, 57]
+        - source_slice: [14, 17]
+          target_slice: [77, 80]
+      state_target_slices: *ebench_80d_slices
+    train_transforms:
+      - _target_: wam.datasets.lerobot.transforms.image.ToTensor
+      - _target_: torchvision.transforms.Resize
+        size: [240, 320]
+    val_transforms:
+      - _target_: wam.datasets.lerobot.transforms.image.ToTensor
+      - _target_: torchvision.transforms.Resize
+        size: [240, 320]
+
+  text_embedding_cache_dir: ${oc.env:EBENCH_TEXT_CACHE,${paths.cache}/text_embed/ebench}
+  context_len: 128
+
+val:
+  _target_: wam.datasets.lerobot.robot_video_dataset.RobotVideoDataset
+  dataset_dirs: *ebench_dataset_dirs
+  shape_meta: *ebench_shape_meta
+  num_frames: ${data.train.num_frames}
+  global_sample_stride: ${data.train.global_sample_stride}
+  memory_video_anchor_size: ${data.train.memory_video_anchor_size}
+  memory_recent_frame_offset: ${data.train.memory_recent_frame_offset}
+  action_video_freq_ratio: ${data.train.action_video_freq_ratio}
+  video_size: ${data.train.video_size}
+  camera_key: null
+  val_set_proportion: 0.0
+  is_training_set: false
+  pretrained_norm_stats: ${data.train.pretrained_norm_stats}
+  load_episode_stats: true
+  check_local_files: true
+  skip_padding_as_possible: false
+  concat_multi_camera: robotwin
+  single_canvas: true
+  return_vlm_current_images: true
+  processor: ${data.train.processor}
+  text_embedding_cache_dir: ${data.train.text_embedding_cache_dir}
+  context_len: ${data.train.context_len}
+
+video_latent_cache:
+  root: ${oc.env:WAM_VIDEO_LATENT_CACHE_ROOT,${paths.cache}/video_latent/ebench-80d-3cam-384x256}
+  max_cached_shards: 32
+  validation_mode: meta-only
+  validation_workers: 8
+  validation_max_inflight_bytes: 1073741824
+  validation_progress_interval_seconds: 30

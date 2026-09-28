@@ -1,0 +1,133 @@
+embodiments:
+  adapter_robocoin_dual_rpy_absolute:
+    control_schema: dual_arm
+    canonical_adapter:
+      layout: robot
+      pose_input: xyz_rpy
+      action_pose_semantics: absolute_target
+      state_pose_output: xyz_rot6d
+      action_pose_output: xyz_rotvec
+      missing_policy: pad_and_mask
+      frame_transform:
+        world_from_source: robot_to_opencv
+        source_ee_from_canonical_ee: identity
+      slots:
+        left:
+          ee:
+            state_key: eef_sim_pose_state
+            action_key: eef_sim_pose_action
+            raw_slice:
+            - 0
+            - 6
+            state_target_slice:
+            - 7
+            - 16
+            action_target_slice:
+            - 7
+            - 13
+          gripper:
+            state_key: gripper_open_scale_state
+            action_key: gripper_open_scale_action
+            raw_slice:
+            - 0
+            - 1
+            target_slice:
+            - 16
+            - 17
+        right:
+          ee:
+            state_key: eef_sim_pose_state
+            action_key: eef_sim_pose_action
+            raw_slice:
+            - 6
+            - 12
+            state_target_slice:
+            - 47
+            - 56
+            action_target_slice:
+            - 47
+            - 53
+          gripper:
+            state_key: gripper_open_scale_state
+            action_key: gripper_open_scale_action
+            raw_slice:
+            - 1
+            - 2
+            target_slice:
+            - 56
+            - 57
+    modalities:
+      state:
+        keys:
+        - eef_sim_pose_state
+        - gripper_open_scale_state
+      action:
+        keys:
+        - eef_sim_pose_action
+        - gripper_open_scale_action
+      video:
+        key: auto
+      language:
+        source: meta/tasks.jsonl
+      timestamp:
+        key: timestamp
+      frame_index:
+        key: frame_index
+      task_index:
+        key: task_index
+  adapter_robocoin_dual_rpy_absolute_no_gripper:
+    control_schema: dual_arm
+    canonical_adapter:
+      layout: robot
+      pose_input: xyz_rpy
+      action_pose_semantics: absolute_target
+      state_pose_output: xyz_rot6d
+      action_pose_output: xyz_rotvec
+      missing_policy: pad_and_mask
+      frame_transform:
+        world_from_source: robot_to_opencv
+        source_ee_from_canonical_ee: identity
+      slots:
+        left:
+          ee:
+            state_key: eef_sim_pose_state
+            action_key: eef_sim_pose_action
+            raw_slice:
+            - 0
+            - 6
+            state_target_slice:
+            - 7
+            - 16
+            action_target_slice:
+            - 7
+            - 13
+        right:
+          ee:
+            state_key: eef_sim_pose_state
+            action_key: eef_sim_pose_action
+            raw_slice:
+            - 6
+            - 12
+            state_target_slice:
+            - 47
+            - 56
+            action_target_slice:
+            - 47
+            - 53
+    modalities:
+      state:
+        keys:
+        - eef_sim_pose_state
+      action:
+        keys:
+        - eef_sim_pose_action
+      video:
+        key: auto
+      language:
+        source: meta/tasks.jsonl
+      timestamp:
+        key: timestamp
+      frame_index:
+        key: frame_index
+      task_index:
+        key: task_index

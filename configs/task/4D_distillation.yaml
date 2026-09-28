@@ -1,0 +1,39 @@
+# @package _global_
+defaults:
+  - pretrain
+  - _self_
+
+learning_rate: 5e-6
+min_learning_rate: 1e-6
+max_steps: 100000
+max_weight_checkpoints: 3
+eval_loss_samples_per_rank: 1
+# Weight-only initialization; use a training-state directory to resume instead.
+resume: ${oc.env:WAM_DISTILL_INIT_CHECKPOINT,checkpoints/pretrain.pt}
+
+model:
+  distillation:
+    enabled: true
+    query_decoder:
+      num_queries: 16
+      hidden_dim: 1024
+      num_layers: 2
+      num_heads: 16
+      ffn_dim: 4096
+      dropout: 0.0
+      source_layer: 14
+      clean_scope: all
+    teacher:
+      feature_dim: 1430
+    alignment:
+      loss_weight: 0.1
+      warmup_steps: 2000
+
+data:
+  train:
+    _target_: wam.datasets.distillation_dataset.DistillationDataset
+    dataset_config: ./configs/4D_distillation/dataset.yaml
+    epoch_length: 102400000
+    teacher_cache: ${oc.env:WAM_4D_CACHE,../cache/4D_distillation}
+    teacher_samples_per_batch: 1
+    teacher_seed: 42

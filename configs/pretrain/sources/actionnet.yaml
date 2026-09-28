@@ -1,0 +1,190 @@
+normalization_stats: ${oc.env:WAM_PRETRAIN_STATS,assets/stats/pretrain}/actionnet.json
+sources:
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - head
+      timestamp_source: timestamp
+    video_concat: single_masked
+  prompt_template: A video recorded from a robot's point of view.
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/actionnet/gr2_hand6_body_virtual_head/head_torso_rigid
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: actionnet_1
+  root: actionnet/gr2_hand6/torso_camera
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - head
+      timestamp_source: timestamp
+    video_concat: single_masked
+  prompt_template: A video recorded from a robot's point of view.
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/actionnet/gr2_hand6_body_virtual_head/legacy_recorded_fixed_head
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: actionnet_2
+  root: actionnet/gr2_hand6/fixed_camera
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - head
+      timestamp_source: timestamp
+    video_concat: single_masked
+  prompt_template: A video recorded from a robot's point of view.
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/actionnet/gr2_hand12_body_virtual_head/head_torso_rigid
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: actionnet_3
+  root: actionnet/gr2_hand12/torso_camera
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - head
+      timestamp_source: timestamp
+    video_concat: single_masked
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/actionnet/t1_hand6_body_virtual_head/legacy_recorded_fixed_head
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: actionnet_4
+  root: actionnet/t1_hand6
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.top
+      timestamp_source: timestamp
+    video_concat: single_masked
+  prompt_template: A video recorded from a robot's point of view.
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/actionnet_t1
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: actionnet_5
+  root: actionnet/t1/visual
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.top
+      timestamp_source: timestamp
+    video_concat: single_masked
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/actionnet_t1
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: actionnet_6
+  root: actionnet/t1/instructed
+  datasets_glob: '**'

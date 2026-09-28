@@ -1,0 +1,1314 @@
+normalization_stats: ${oc.env:WAM_PRETRAIN_STATS,assets/stats/pretrain}/egoverse_h2r.json
+sources:
+- name: egoverse_mobile_aloha_512x288_30
+  enabled: true
+  adapter: h2r_mobile_aloha
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps30/datasets/agilex_mobile_aloha_fl__left-right
+  stats_group: egoverse/mobile_aloha
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_mobile_aloha_512x384_30
+  enabled: true
+  adapter: h2r_mobile_aloha
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h384-fps30/datasets/agilex_mobile_aloha_fl__left-right
+  stats_group: egoverse/mobile_aloha
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_mobile_aloha_512x288_29
+  enabled: true
+  adapter: h2r_mobile_aloha
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps29/datasets/agilex_mobile_aloha_fl__left-right
+  stats_group: egoverse/mobile_aloha
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_mobile_aloha_512x288_28
+  enabled: true
+  adapter: h2r_mobile_aloha
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps28/datasets/agilex_mobile_aloha_fl__left-right
+  stats_group: egoverse/mobile_aloha
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_piper_512x288_30
+  enabled: true
+  adapter: h2r_piper
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps30/datasets/agilex_piper__left-right
+  stats_group: egoverse/piper
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_piper_512x384_30
+  enabled: true
+  adapter: h2r_piper
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h384-fps30/datasets/agilex_piper__left-right
+  stats_group: egoverse/piper
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_piper_512x288_29
+  enabled: true
+  adapter: h2r_piper
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps29/datasets/agilex_piper__left-right
+  stats_group: egoverse/piper
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_piper_512x288_28
+  enabled: true
+  adapter: h2r_piper
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps28/datasets/agilex_piper__left-right
+  stats_group: egoverse/piper
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_arx_l5_512x288_30
+  enabled: true
+  adapter: h2r_arx_l5
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps30/datasets/arx_l5__left-right
+  stats_group: egoverse/arx_l5
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_arx_l5_512x384_30
+  enabled: true
+  adapter: h2r_arx_l5
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h384-fps30/datasets/arx_l5__left-right
+  stats_group: egoverse/arx_l5
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_arx_l5_512x288_29
+  enabled: true
+  adapter: h2r_arx_l5
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps29/datasets/arx_l5__left-right
+  stats_group: egoverse/arx_l5
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_arx_l5_512x288_28
+  enabled: true
+  adapter: h2r_arx_l5
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps28/datasets/arx_l5__left-right
+  stats_group: egoverse/arx_l5
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_rizon4_512x288_30
+  enabled: true
+  adapter: h2r_rizon4
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps30/datasets/flexiv_rizon4_robotiq_2f85__left-right
+  stats_group: egoverse/rizon4
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_rizon4_512x384_30
+  enabled: true
+  adapter: h2r_rizon4
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h384-fps30/datasets/flexiv_rizon4_robotiq_2f85__left-right
+  stats_group: egoverse/rizon4
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_rizon4_512x288_29
+  enabled: true
+  adapter: h2r_rizon4
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps29/datasets/flexiv_rizon4_robotiq_2f85__left-right
+  stats_group: egoverse/rizon4
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_rizon4_512x288_28
+  enabled: true
+  adapter: h2r_rizon4
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps28/datasets/flexiv_rizon4_robotiq_2f85__left-right
+  stats_group: egoverse/rizon4
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_rizon4_512x288_27
+  enabled: true
+  adapter: h2r_rizon4
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps27/datasets/flexiv_rizon4_robotiq_2f85__left-right
+  stats_group: egoverse/rizon4
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_rizon4_512x288_25
+  enabled: true
+  adapter: h2r_rizon4
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps25/datasets/flexiv_rizon4_robotiq_2f85__left-right
+  stats_group: egoverse/rizon4
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_rizon4_512x288_24
+  enabled: true
+  adapter: h2r_rizon4
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps24/datasets/flexiv_rizon4_robotiq_2f85__left-right
+  stats_group: egoverse/rizon4
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_panda_512x288_30
+  enabled: true
+  adapter: h2r_panda
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps30/datasets/franka_emika_panda__left-right
+  stats_group: egoverse/panda
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_panda_512x384_30
+  enabled: true
+  adapter: h2r_panda
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h384-fps30/datasets/franka_emika_panda__left-right
+  stats_group: egoverse/panda
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_panda_512x288_29
+  enabled: true
+  adapter: h2r_panda
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps29/datasets/franka_emika_panda__left-right
+  stats_group: egoverse/panda
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_panda_512x288_28
+  enabled: true
+  adapter: h2r_panda
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps28/datasets/franka_emika_panda__left-right
+  stats_group: egoverse/panda
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_panda_512x288_27
+  enabled: true
+  adapter: h2r_panda
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps27/datasets/franka_emika_panda__left-right
+  stats_group: egoverse/panda
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_panda_512x288_24
+  enabled: true
+  adapter: h2r_panda
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps24/datasets/franka_emika_panda__left-right
+  stats_group: egoverse/panda
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_yam_512x288_30
+  enabled: true
+  adapter: h2r_yam
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps30/datasets/i2rt_yam__left-right
+  stats_group: egoverse/yam
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_yam_512x384_30
+  enabled: true
+  adapter: h2r_yam
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h384-fps30/datasets/i2rt_yam__left-right
+  stats_group: egoverse/yam
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_yam_512x288_29
+  enabled: true
+  adapter: h2r_yam
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps29/datasets/i2rt_yam__left-right
+  stats_group: egoverse/yam
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_yam_512x288_28
+  enabled: true
+  adapter: h2r_yam
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps28/datasets/i2rt_yam__left-right
+  stats_group: egoverse/yam
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_gen3_512x288_30
+  enabled: true
+  adapter: h2r_gen3
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps30/datasets/kinova_gen3_robotiq_2f85__left-right
+  stats_group: egoverse/gen3
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_gen3_512x384_30
+  enabled: true
+  adapter: h2r_gen3
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h384-fps30/datasets/kinova_gen3_robotiq_2f85__left-right
+  stats_group: egoverse/gen3
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_gen3_512x288_29
+  enabled: true
+  adapter: h2r_gen3
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps29/datasets/kinova_gen3_robotiq_2f85__left-right
+  stats_group: egoverse/gen3
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_gen3_512x288_28
+  enabled: true
+  adapter: h2r_gen3
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps28/datasets/kinova_gen3_robotiq_2f85__left-right
+  stats_group: egoverse/gen3
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_gen3_512x288_27
+  enabled: true
+  adapter: h2r_gen3
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps27/datasets/kinova_gen3_robotiq_2f85__left-right
+  stats_group: egoverse/gen3
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_gen3_512x288_24
+  enabled: true
+  adapter: h2r_gen3
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps24/datasets/kinova_gen3_robotiq_2f85__left-right
+  stats_group: egoverse/gen3
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_jaco2_512x288_30
+  enabled: true
+  adapter: h2r_jaco2
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps30/datasets/kinova_jaco2_j2n6s300__left-right
+  stats_group: egoverse/jaco2
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_jaco2_512x384_30
+  enabled: true
+  adapter: h2r_jaco2
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h384-fps30/datasets/kinova_jaco2_j2n6s300__left-right
+  stats_group: egoverse/jaco2
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_jaco2_512x288_29
+  enabled: true
+  adapter: h2r_jaco2
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps29/datasets/kinova_jaco2_j2n6s300__left-right
+  stats_group: egoverse/jaco2
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_jaco2_512x288_28
+  enabled: true
+  adapter: h2r_jaco2
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps28/datasets/kinova_jaco2_j2n6s300__left-right
+  stats_group: egoverse/jaco2
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_iiwa14_512x288_30
+  enabled: true
+  adapter: h2r_iiwa14
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps30/datasets/kuka_iiwa14_robotiq_2f85__left-right
+  stats_group: egoverse/iiwa14
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_iiwa14_512x384_30
+  enabled: true
+  adapter: h2r_iiwa14
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h384-fps30/datasets/kuka_iiwa14_robotiq_2f85__left-right
+  stats_group: egoverse/iiwa14
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_iiwa14_512x288_29
+  enabled: true
+  adapter: h2r_iiwa14
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps29/datasets/kuka_iiwa14_robotiq_2f85__left-right
+  stats_group: egoverse/iiwa14
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_iiwa14_512x288_28
+  enabled: true
+  adapter: h2r_iiwa14
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps28/datasets/kuka_iiwa14_robotiq_2f85__left-right
+  stats_group: egoverse/iiwa14
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_iiwa14_512x288_27
+  enabled: true
+  adapter: h2r_iiwa14
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps27/datasets/kuka_iiwa14_robotiq_2f85__left-right
+  stats_group: egoverse/iiwa14
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_iiwa14_512x288_24
+  enabled: true
+  adapter: h2r_iiwa14
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps24/datasets/kuka_iiwa14_robotiq_2f85__left-right
+  stats_group: egoverse/iiwa14
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_sawyer_512x288_30
+  enabled: true
+  adapter: h2r_sawyer
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps30/datasets/rethink_sawyer_electric_gripper__left-right
+  stats_group: egoverse/sawyer
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_sawyer_512x384_30
+  enabled: true
+  adapter: h2r_sawyer
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h384-fps30/datasets/rethink_sawyer_electric_gripper__left-right
+  stats_group: egoverse/sawyer
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_sawyer_512x288_29
+  enabled: true
+  adapter: h2r_sawyer
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps29/datasets/rethink_sawyer_electric_gripper__left-right
+  stats_group: egoverse/sawyer
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_sawyer_512x288_28
+  enabled: true
+  adapter: h2r_sawyer
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps28/datasets/rethink_sawyer_electric_gripper__left-right
+  stats_group: egoverse/sawyer
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_sawyer_512x288_27
+  enabled: true
+  adapter: h2r_sawyer
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps27/datasets/rethink_sawyer_electric_gripper__left-right
+  stats_group: egoverse/sawyer
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_sawyer_512x288_26
+  enabled: true
+  adapter: h2r_sawyer
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps26/datasets/rethink_sawyer_electric_gripper__left-right
+  stats_group: egoverse/sawyer
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_sawyer_512x288_24
+  enabled: true
+  adapter: h2r_sawyer
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps24/datasets/rethink_sawyer_electric_gripper__left-right
+  stats_group: egoverse/sawyer
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_vx300s_512x288_30
+  enabled: true
+  adapter: h2r_vx300s
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps30/datasets/trossen_vx300s__left-right
+  stats_group: egoverse/vx300s
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_vx300s_512x384_30
+  enabled: true
+  adapter: h2r_vx300s
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h384-fps30/datasets/trossen_vx300s__left-right
+  stats_group: egoverse/vx300s
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_vx300s_512x288_29
+  enabled: true
+  adapter: h2r_vx300s
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps29/datasets/trossen_vx300s__left-right
+  stats_group: egoverse/vx300s
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_vx300s_512x288_28
+  enabled: true
+  adapter: h2r_vx300s
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps28/datasets/trossen_vx300s__left-right
+  stats_group: egoverse/vx300s
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_vx300s_512x288_27
+  enabled: true
+  adapter: h2r_vx300s
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps27/datasets/trossen_vx300s__left-right
+  stats_group: egoverse/vx300s
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_wx250s_512x288_30
+  enabled: true
+  adapter: h2r_wx250s
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps30/datasets/trossen_wx250s__left-right
+  stats_group: egoverse/wx250s
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_wx250s_512x384_30
+  enabled: true
+  adapter: h2r_wx250s
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h384-fps30/datasets/trossen_wx250s__left-right
+  stats_group: egoverse/wx250s
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_wx250s_512x288_29
+  enabled: true
+  adapter: h2r_wx250s
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps29/datasets/trossen_wx250s__left-right
+  stats_group: egoverse/wx250s
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_wx250s_512x288_28
+  enabled: true
+  adapter: h2r_wx250s
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps28/datasets/trossen_wx250s__left-right
+  stats_group: egoverse/wx250s
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_xarm7_512x288_30
+  enabled: true
+  adapter: h2r_xarm7
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps30/datasets/ufactory_xarm7_gripper__left-right
+  stats_group: egoverse/xarm7
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_xarm7_512x384_30
+  enabled: true
+  adapter: h2r_xarm7
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h384-fps30/datasets/ufactory_xarm7_gripper__left-right
+  stats_group: egoverse/xarm7
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_xarm7_512x288_29
+  enabled: true
+  adapter: h2r_xarm7
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps29/datasets/ufactory_xarm7_gripper__left-right
+  stats_group: egoverse/xarm7
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_xarm7_512x288_28
+  enabled: true
+  adapter: h2r_xarm7
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps28/datasets/ufactory_xarm7_gripper__left-right
+  stats_group: egoverse/xarm7
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_xarm7_512x288_27
+  enabled: true
+  adapter: h2r_xarm7
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps27/datasets/ufactory_xarm7_gripper__left-right
+  stats_group: egoverse/xarm7
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_xarm7_512x288_26
+  enabled: true
+  adapter: h2r_xarm7
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps26/datasets/ufactory_xarm7_gripper__left-right
+  stats_group: egoverse/xarm7
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_xarm7_512x288_25
+  enabled: true
+  adapter: h2r_xarm7
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps25/datasets/ufactory_xarm7_gripper__left-right
+  stats_group: egoverse/xarm7
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_xarm7_512x288_24
+  enabled: true
+  adapter: h2r_xarm7
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps24/datasets/ufactory_xarm7_gripper__left-right
+  stats_group: egoverse/xarm7
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_ur10e_512x288_30
+  enabled: true
+  adapter: h2r_ur10e
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps30/datasets/ur10e_robotiq_2f85__left-right
+  stats_group: egoverse/ur10e
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_ur10e_512x384_30
+  enabled: true
+  adapter: h2r_ur10e
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h384-fps30/datasets/ur10e_robotiq_2f85__left-right
+  stats_group: egoverse/ur10e
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_ur10e_512x288_29
+  enabled: true
+  adapter: h2r_ur10e
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps29/datasets/ur10e_robotiq_2f85__left-right
+  stats_group: egoverse/ur10e
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_ur10e_512x288_28
+  enabled: true
+  adapter: h2r_ur10e
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps28/datasets/ur10e_robotiq_2f85__left-right
+  stats_group: egoverse/ur10e
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_ur10e_512x288_27
+  enabled: true
+  adapter: h2r_ur10e
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps27/datasets/ur10e_robotiq_2f85__left-right
+  stats_group: egoverse/ur10e
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_ur10e_512x288_26
+  enabled: true
+  adapter: h2r_ur10e
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps26/datasets/ur10e_robotiq_2f85__left-right
+  stats_group: egoverse/ur10e
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_ur10e_512x288_24
+  enabled: true
+  adapter: h2r_ur10e
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps24/datasets/ur10e_robotiq_2f85__left-right
+  stats_group: egoverse/ur10e
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_ur5e_512x288_30
+  enabled: true
+  adapter: h2r_ur5e
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps30/datasets/ur5e_wsg50_robotwin__left-right
+  stats_group: egoverse/ur5e
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_ur5e_512x384_30
+  enabled: true
+  adapter: h2r_ur5e
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h384-fps30/datasets/ur5e_wsg50_robotwin__left-right
+  stats_group: egoverse/ur5e
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_ur5e_512x288_29
+  enabled: true
+  adapter: h2r_ur5e
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps29/datasets/ur5e_wsg50_robotwin__left-right
+  stats_group: egoverse/ur5e
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_ur5e_512x288_28
+  enabled: true
+  adapter: h2r_ur5e
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps28/datasets/ur5e_wsg50_robotwin__left-right
+  stats_group: egoverse/ur5e
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_ur5e_512x288_27
+  enabled: true
+  adapter: h2r_ur5e
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps27/datasets/ur5e_wsg50_robotwin__left-right
+  stats_group: egoverse/ur5e
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells
+- name: egoverse_ur5e_512x288_24
+  enabled: true
+  adapter: h2r_ur5e
+  format_version: v2
+  action_loss_weight: 0.1
+  action_gripper_loss_weight: 0.01
+  root: egoverse_h2r/cohorts/w512-h288-fps24/datasets/ur5e_wsg50_robotwin__left-right
+  stats_group: egoverse/ur5e
+  modalities:
+    video_concat: single_masked
+  slow_motion_factor: 2.0
+  task_index_authority: episode_metadata
+  prompt_template: 'A video recorded from a robot''s first-person point of view executing the following
+    instruction: {task}'
+  sampling_family: ego2robot
+  action_loss_normalization: weighted_valid_cells

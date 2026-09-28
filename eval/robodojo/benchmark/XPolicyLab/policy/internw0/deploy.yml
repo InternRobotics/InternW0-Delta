@@ -1,0 +1,6 @@
+policy_name: internw0
+protocol: ws
+host: localhost
+eval_batch: false
+action_type: joint
+replan_steps: 10

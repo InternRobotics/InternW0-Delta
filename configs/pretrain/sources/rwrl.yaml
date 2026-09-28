@@ -1,0 +1,441 @@
+normalization_stats: ${oc.env:WAM_PRETRAIN_STATS,assets/stats/pretrain}/rwrl.json
+sources:
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.camera_top
+      - observation.images.camera_wrist_left
+      - observation.images.camera_wrist_right
+      timestamp_source: timestamp
+    video_concat: robotwin
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/rwrl_g2a/native_unidentified
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: rwrl_1
+  root: rwrl/g2a/native
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.camera_top
+      - observation.images.camera_wrist_left
+      - observation.images.camera_wrist_right
+      timestamp_source: timestamp
+    video_concat: robotwin
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/rwrl_g2a/negative_native
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: rwrl_2
+  root: rwrl/g2a/reversed
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.camera_top
+      - observation.images.camera_wrist_right
+      timestamp_source: timestamp
+    video_concat: head_right_wrist_masked
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/rwrl_g2a/feedback120_command1
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: rwrl_3
+  root: rwrl/g2a/head_right
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.camera_top
+      - observation.images.camera_wrist_left
+      - observation.images.camera_wrist_right
+      timestamp_source: timestamp
+    video_concat: robotwin
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/rwrl_g2a/feedback120_command1
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: rwrl_4
+  root: rwrl/g2a/three_camera
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.camera_top
+      timestamp_source: timestamp
+    video_concat: single_masked
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/rwrl_g2a/feedback120_command1
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: rwrl_5
+  root: rwrl/g2a/head_only
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.camera_top
+      - observation.images.camera_wrist_left
+      - observation.images.camera_wrist_right
+      timestamp_source: timestamp
+    video_concat: robotwin
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/rwrl_piperx
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: rwrl_6
+  root: rwrl/piperx
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.camera_top
+      - observation.images.camera_wrist_left
+      - observation.images.camera_wrist_right
+      timestamp_source: timestamp
+    video_concat: robotwin
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/rwrl_r1lite
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: rwrl_7
+  root: rwrl/r1lite
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.right_front
+      - observation.images.left_wrist
+      - observation.images.right_wrist
+      timestamp_source: timestamp
+    video_concat: robotwin
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/rwrl_so101/so101_return_tangram_pieces_original_state
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: rwrl_8
+  root: rwrl/so101/tangram
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.right_front
+      - observation.images.left_wrist
+      - observation.images.right_wrist
+      timestamp_source: timestamp
+    video_concat: robotwin
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/rwrl_so101/so101_fold_clothes_left_stack_right
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: rwrl_9
+  root: rwrl/so101/clothes
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.right_front
+      - observation.images.left_wrist
+      - observation.images.right_wrist
+      timestamp_source: timestamp
+    video_concat: robotwin
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/rwrl_so101/so101_insert_spray_pump_bottle_neck
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: rwrl_10
+  root: rwrl/so101/spray_pump
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.right_front
+      - observation.images.left_wrist
+      - observation.images.right_wrist
+      timestamp_source: timestamp
+    video_concat: robotwin
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/rwrl_so101/so101_put_chopsticks_cups_storage_bucket
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: rwrl_11
+  root: rwrl/so101/chopsticks
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.right_front
+      - observation.images.left_wrist
+      - observation.images.right_wrist
+      timestamp_source: timestamp
+    video_concat: robotwin
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/rwrl_so101/so101_put_stationery_table_into_bag
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: rwrl_12
+  root: rwrl/so101/stationery
+  datasets_glob: '**'
+- action_loss_normalization: legacy_per_sample
+  allow_padding_at_end: false
+  dataset_weight: 1.0
+  distribute_weights: false
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: derived.action80
+    frame_index:
+      key: frame_index
+    state:
+      key: derived.state80
+    task_index:
+      key: task_index
+    timestamp:
+      key: timestamp
+    video:
+      keys:
+      - observation.images.right_front
+      - observation.images.left_wrist
+      - observation.images.right_wrist
+      timestamp_source: timestamp
+    video_concat: robotwin
+  prompt_template: 'A video recorded from a robot''s point of view executing the following
+    instruction: {task}'
+  sampling_family: real
+  slow_motion_factor: 1.0
+  stats_group: processed/rwrl_so101/so101_plug_power_cord_socket
+  task_index_authority: episode_metadata
+  adapter: processed_pose80
+  name: rwrl_13
+  root: rwrl/so101/power_cord
+  datasets_glob: '**'

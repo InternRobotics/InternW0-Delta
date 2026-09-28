@@ -1,0 +1,87 @@
+# @package _global_
+
+defaults:
+- train
+- override /task: libero
+- override hydra/job_logging: disabled
+- override hydra/hydra_logging: disabled
+- _self_
+ckpt: ${oc.env:LIBERO_CHECKPOINT,${paths.checkpoints}/libero.pt}
+gpu_id: 0
+model:
+  load_text_encoder: true
+  skip_dit_load_from_pretrain: true
+  action_dit_pretrained_path: null
+EVALUATION:
+  auto_load_train_config: false
+  task_suite_name: libero_spatial
+  task_id: 0
+  num_trials: 1
+  output_dir: ${paths.output}/eval/libero_plus/${now:%Y%m%d_%H%M%S}
+  env_num: 1
+  num_steps_wait: 30
+  replan_steps: 10
+  binarize_gripper: true
+  use_action_ensembler: false
+  visualize_future_video: false
+  save_rollout_videos: true
+  subprocess_env: false
+  render_gpu_device_id: 0
+  env_worker_cuda_visible_devices: null
+  action_horizon: 32
+  action_hz: 20.0
+  num_inference_steps: ${eval_num_inference_steps}
+  sigma_shift: null
+  text_cfg_scale: 1.0
+  negative_prompt: ''
+  rand_device: cpu
+  tiled: false
+  dataset_stats_path: ${oc.env:LIBERO_NORM_STATS,assets/stats/libero.json}
+  device: cuda
+  write_individual_result_files: false
+  results_jsonl_path: null
+  worker_task_file: null
+  continue_on_task_error: true
+PAIR:
+  socket_path: null
+  task_file: null
+  gpu_id: 0
+  worker_label: ''
+  profiler_rank: 0
+  profiler_world_size: 1
+  log_file: ''
+  connect_timeout_s: 1800
+  client_id: null
+  server_id: null
+  max_clients: 1
+  persistent: false
+  health_path: null
+  health_interval_s: 5
+  request_timeout_s: 300
+MULTIRUN:
+  create_only: false
+  task_file: null
+  task_suite_names:
+  - libero_spatial
+  - libero_object
+  - libero_goal
+  - libero_10
+  num_gpus: auto
+  workers_per_gpu: 2
+  policy_server_mode: shared_per_gpu
+  shared_clients_per_server: 4
+  model_gpus: null
+  render_gpus: null
+  render_gpu_offset: null
+  launch_mode: subprocess
+  tmux_session: libero_plus
+  tmux_kill_existing: true
+  monitor_interval: 10
+  status_interval: 60
+  server_ready_timeout_s: 1800
+hydra:
+  job:
+    chdir: false
+  run:
+    dir: .
+  output_subdir: null

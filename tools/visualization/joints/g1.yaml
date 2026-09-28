@@ -1,0 +1,16 @@
+label: "Unitree G1 \xB7 joint replay reference"
+joints:
+  left_shoulder_pitch_joint: 0
+  left_shoulder_roll_joint: 1
+  left_shoulder_yaw_joint: 2
+  left_elbow_joint: 3
+  left_wrist_roll_joint: 4
+  left_wrist_pitch_joint: 5
+  left_wrist_yaw_joint: 6
+  right_shoulder_pitch_joint: 40
+  right_shoulder_roll_joint: 41
+  right_shoulder_yaw_joint: 42
+  right_elbow_joint: 43
+  right_wrist_roll_joint: 44
+  right_wrist_pitch_joint: 45
+  right_wrist_yaw_joint: 46

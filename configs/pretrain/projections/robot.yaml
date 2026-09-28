@@ -1,0 +1,80 @@
+canonical_action_space:
+  name: robot
+  dim: 80
+  slots:
+    left:
+      joint:
+      - 0
+      - 7
+      ee:
+      - 7
+      - 16
+      gripper:
+      - 16
+      - 17
+      hand:
+      - 17
+      - 29
+    right:
+      joint:
+      - 40
+      - 47
+      ee:
+      - 47
+      - 56
+      gripper:
+      - 56
+      - 57
+      hand:
+      - 57
+      - 69
+    body:
+      torso:
+      - 29
+      - 34
+      lift:
+      - 39
+      - 40
+      head:
+      - 74
+      - 77
+      base:
+      - 77
+      - 80
+    reserved:
+      left:
+      - 34
+      - 39
+      right:
+      - 69
+      - 74
+  missing_policy: pad_and_mask
+  pose:
+    state: xyz_rot6d
+    action: delta_xyz_rotvec
+  camera_frame_delta: false
+control_schemas:
+  robot:
+    target_dim: 80
+  dual_arm:
+    parent: robot
+    slots:
+    - left.joint
+    - left.ee
+    - left.gripper
+    - right.joint
+    - right.ee
+    - right.gripper
+  single_arm:
+    parent: robot
+    slots:
+    - right.joint
+    - right.ee
+    - right.gripper
+  dual_hand:
+    parent: robot
+    slots:
+    - left.ee
+    - left.hand
+    - right.ee
+    - right.hand

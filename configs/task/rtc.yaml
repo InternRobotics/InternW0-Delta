@@ -1,0 +1,45 @@
+# @package _global_
+defaults:
+  - override /data: acone
+  - override /model: wam
+  - _self_
+batch_size: 16
+num_workers: 8
+prefetch_factor: 1
+pin_memory: false
+lr_scheduler_type: cosine
+learning_rate: 5.0e-5
+vlm_learning_rate: 5.0e-5
+num_epochs: 10
+max_steps: null
+log_every: 10
+save_every: 2500
+eval_every: 500
+eval_num_inference_steps: 10
+eval_loss_samples_per_rank: 2
+eval_max_videos: 8
+gradient_accumulation_steps: 1
+mixed_precision: bf16
+seed: 42
+max_grad_norm: 1.0
+weight_decay: 0.01
+resume: ${oc.env:WAM_PRETRAIN_CHECKPOINT,${paths.checkpoints}/pretrain.pt}
+resume_strict: true
+video_latent_cache: 'off'
+model:
+  action_dit_pretrained_path: null
+  skip_dit_load_from_pretrain: true
+  mot_flex_block_size: 128
+  mot_checkpoint_mixed_attn: true
+  mot_checkpoint_layer_stride: 1
+  action_dit_config:
+    training_time_rtc:
+      enabled: true
+      max_delay_steps: 16
+  future_delta:
+    num_views: 1
+    num_tokens: 96
+  understanding:
+    enabled: true
+    train_vlm: false
+    use_fused_causal_conv1d: false

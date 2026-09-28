@@ -1,0 +1,79 @@
+embodiments:
+  adapter_umi_bimanual:
+    canonical_adapter:
+      action_pose_semantics: stored_delta
+      action_translation_frame: source
+      layout: robot
+      missing_policy: pad_and_mask
+      slots:
+        left:
+          gripper:
+            action_key: action
+            action_raw_slice:
+            - 6
+            - 7
+            action_target_slice:
+            - 16
+            - 17
+            action_validity_key: action_mask
+            state_key: observation.state
+            state_raw_slice:
+            - 9
+            - 10
+            state_target_slice:
+            - 16
+            - 17
+            state_validity_key: observation.state_mask
+          pose:
+            action_key: action
+            action_raw_slice:
+            - 0
+            - 6
+            action_target_slice:
+            - 7
+            - 13
+            action_validity_key: action_mask
+            state_key: observation.state
+            state_raw_slice:
+            - 0
+            - 9
+            state_target_slice:
+            - 7
+            - 16
+            state_validity_key: observation.state_mask
+        right:
+          gripper:
+            action_key: action
+            action_raw_slice:
+            - 13
+            - 14
+            action_target_slice:
+            - 56
+            - 57
+            action_validity_key: action_mask
+            state_key: observation.state
+            state_raw_slice:
+            - 19
+            - 20
+            state_target_slice:
+            - 56
+            - 57
+            state_validity_key: observation.state_mask
+          pose:
+            action_key: action
+            action_raw_slice:
+            - 7
+            - 13
+            action_target_slice:
+            - 47
+            - 53
+            action_validity_key: action_mask
+            state_key: observation.state
+            state_raw_slice:
+            - 10
+            - 19
+            state_target_slice:
+            - 47
+            - 56
+            state_validity_key: observation.state_mask
+      source_layout: hy_umi_compact_v1

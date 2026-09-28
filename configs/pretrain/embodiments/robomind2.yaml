@@ -1,0 +1,209 @@
+embodiments:
+  adapter_robomind_v2_dual6_quat_absolute:
+    control_schema: dual_arm
+    canonical_adapter:
+      layout: robot
+      pose_input: xyz_quat_xyzw
+      action_pose_semantics: absolute_target
+      state_pose_output: xyz_rot6d
+      action_pose_output: xyz_rotvec
+      missing_policy: pad_and_mask
+      frame_transform:
+        world_from_source: robot_to_opencv
+        source_ee_from_canonical_ee: identity
+      slots:
+        left:
+          joint:
+            state_key: observation.states.arm_left_position
+            action_key: actions.arm_left_position
+            raw_slice:
+            - 0
+            - 6
+            target_slice:
+            - 0
+            - 6
+          ee:
+            state_key: observation.states.end_effector_left_pose
+            action_key: actions.end_effector_left_pose
+            action_from_state_delta: true
+            raw_slice:
+            - 0
+            - 7
+            state_target_slice:
+            - 7
+            - 16
+            action_target_slice:
+            - 7
+            - 13
+          gripper:
+            state_key: observation.states.end_effector_left_position
+            action_key: actions.end_effector_left_position
+            raw_slice:
+            - 0
+            - 1
+            target_slice:
+            - 16
+            - 17
+        right:
+          joint:
+            state_key: observation.states.arm_right_position
+            action_key: actions.arm_right_position
+            raw_slice:
+            - 0
+            - 6
+            target_slice:
+            - 40
+            - 46
+          ee:
+            state_key: observation.states.end_effector_right_pose
+            action_key: actions.end_effector_right_pose
+            action_from_state_delta: true
+            raw_slice:
+            - 0
+            - 7
+            state_target_slice:
+            - 47
+            - 56
+            action_target_slice:
+            - 47
+            - 53
+          gripper:
+            state_key: observation.states.end_effector_right_position
+            action_key: actions.end_effector_right_position
+            raw_slice:
+            - 0
+            - 1
+            target_slice:
+            - 56
+            - 57
+    modalities:
+      state:
+        keys:
+        - observation.states.arm_left_position
+        - observation.states.end_effector_left_pose
+        - observation.states.end_effector_left_position
+        - observation.states.arm_right_position
+        - observation.states.end_effector_right_pose
+        - observation.states.end_effector_right_position
+      action:
+        keys:
+        - actions.arm_left_position
+        - actions.end_effector_left_pose
+        - actions.end_effector_left_position
+        - actions.arm_right_position
+        - actions.end_effector_right_pose
+        - actions.end_effector_right_position
+      video:
+        key: auto
+      language:
+        source: meta/tasks.jsonl
+      timestamp:
+        key: timestamp
+      frame_index:
+        key: frame_index
+      task_index:
+        key: task_index
+  adapter_robomind_v2_dual7_quat_absolute:
+    control_schema: dual_arm
+    canonical_adapter:
+      layout: robot
+      pose_input: xyz_quat_xyzw
+      action_pose_semantics: absolute_target
+      state_pose_output: xyz_rot6d
+      action_pose_output: xyz_rotvec
+      missing_policy: pad_and_mask
+      frame_transform:
+        world_from_source: robot_to_opencv
+        source_ee_from_canonical_ee: identity
+      slots:
+        left:
+          joint:
+            state_key: observation.states.arm_left_position
+            action_key: actions.arm_left_position
+            raw_slice:
+            - 0
+            - 7
+            target_slice:
+            - 0
+            - 7
+          ee:
+            state_key: observation.states.end_effector_left_pose
+            action_key: actions.end_effector_left_pose
+            action_from_state_delta: true
+            raw_slice:
+            - 0
+            - 7
+            state_target_slice:
+            - 7
+            - 16
+            action_target_slice:
+            - 7
+            - 13
+          gripper:
+            state_key: observation.states.end_effector_left_position
+            action_key: actions.end_effector_left_position
+            raw_slice:
+            - 0
+            - 1
+            target_slice:
+            - 16
+            - 17
+        right:
+          joint:
+            state_key: observation.states.arm_right_position
+            action_key: actions.arm_right_position
+            raw_slice:
+            - 0
+            - 7
+            target_slice:
+            - 40
+            - 47
+          ee:
+            state_key: observation.states.end_effector_right_pose
+            action_key: actions.end_effector_right_pose
+            action_from_state_delta: true
+            raw_slice:
+            - 0
+            - 7
+            state_target_slice:
+            - 47
+            - 56
+            action_target_slice:
+            - 47
+            - 53
+          gripper:
+            state_key: observation.states.end_effector_right_position
+            action_key: actions.end_effector_right_position
+            raw_slice:
+            - 0
+            - 1
+            target_slice:
+            - 56
+            - 57
+    modalities:
+      state:
+        keys:
+        - observation.states.arm_left_position
+        - observation.states.end_effector_left_pose
+        - observation.states.end_effector_left_position
+        - observation.states.arm_right_position
+        - observation.states.end_effector_right_pose
+        - observation.states.end_effector_right_position
+      action:
+        keys:
+        - actions.arm_left_position
+        - actions.end_effector_left_pose
+        - actions.end_effector_left_position
+        - actions.arm_right_position
+        - actions.end_effector_right_pose
+        - actions.end_effector_right_position
+      video:
+        key: auto
+      language:
+        source: meta/tasks.jsonl
+      timestamp:
+        key: timestamp
+      frame_index:
+        key: frame_index
+      task_index:
+        key: task_index

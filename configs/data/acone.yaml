@@ -1,0 +1,109 @@
+train:
+  _target_: wam.datasets.lerobot.robot_video_dataset.RobotVideoDataset
+  dataset_dirs:
+    - ${oc.env:ACONE_DATA_ROOT,${paths.data}/acone}
+  shape_meta:
+    images:
+      - key: head
+        lerobot_key: images.rgb.head
+        raw_shape: [3, 480, 640]
+        shape: [3, 192, 256]
+      - key: hand_left
+        lerobot_key: images.rgb.hand_left
+        raw_shape: [3, 480, 640]
+        shape: [3, 192, 256]
+      - key: hand_right
+        lerobot_key: images.rgb.hand_right
+        raw_shape: [3, 480, 640]
+        shape: [3, 192, 256]
+    action:
+      - key: default
+        lerobot_key: action
+        raw_shape: 14
+        shape: 14
+    state:
+      # Acone records commanded actions but no measured state. The command in
+      # the previous raw row is the non-leaking proprioceptive proxy.
+      - key: default
+        lerobot_key: action
+        query_offset: -1
+        raw_shape: 14
+        shape: 14
+
+  num_frames: 33
+  global_sample_stride: 1
+  action_hz: 30.0
+  memory_video_anchor_size: 1
+  memory_recent_frame_offset: 32
+  action_video_freq_ratio: 4
+  video_size: [384, 256]
+  camera_key: null
+  val_set_proportion: 0.05
+  is_training_set: true
+  skip_padding_as_possible: false
+  concat_multi_camera: robotwin
+  single_canvas: true
+  return_vlm_current_images: true
+  load_episode_stats: false
+  check_local_files: true
+  proprio_noise_std: 0.0
+  pretrained_norm_stats: ${oc.env:ACONE_STATS,${paths.cache}/stats/acone.json}
+  processor:
+    _target_: wam.datasets.lerobot.processors.wam_processor.WAMProcessor
+    shape_meta: ${data.train.shape_meta}
+    num_obs_steps: ${data.train.num_frames}
+    num_output_cameras: 3
+    action_output_dim: 80
+    proprio_output_dim: 80
+    delta_action_dim_mask: null
+    action_state_transforms: null
+    use_stepwise_action_norm: false
+    norm_default_mode: q01/q99
+    norm_exception_mode: null
+    action_state_merger:
+      _target_: wam.datasets.lerobot.transforms.action_state_merger.ConcatLeftAlign
+      action_target_dim: 80
+      state_target_dim: 80
+      action_target_slices: &acone_right80_slices
+        - source_slice: [0, 6]
+          target_slice: [0, 6]
+        - source_slice: [6, 7]
+          target_slice: [16, 17]
+        - source_slice: [7, 13]
+          target_slice: [40, 46]
+        - source_slice: [13, 14]
+          target_slice: [56, 57]
+      state_target_slices: *acone_right80_slices
+    train_transforms: &acone_image_transforms
+      - _target_: wam.datasets.lerobot.transforms.image.ToTensor
+      - _target_: torchvision.transforms.Resize
+        size: [192, 256]
+    val_transforms: *acone_image_transforms
+  text_embedding_cache_dir: ${oc.env:ACONE_TEXT_CACHE,${paths.cache}/text/acone}
+  context_len: 128
+
+val:
+  _target_: wam.datasets.lerobot.robot_video_dataset.RobotVideoDataset
+  dataset_dirs: ${data.train.dataset_dirs}
+  shape_meta: ${data.train.shape_meta}
+  num_frames: ${data.train.num_frames}
+  global_sample_stride: ${data.train.global_sample_stride}
+  action_hz: ${data.train.action_hz}
+  memory_video_anchor_size: ${data.train.memory_video_anchor_size}
+  memory_recent_frame_offset: ${data.train.memory_recent_frame_offset}
+  action_video_freq_ratio: ${data.train.action_video_freq_ratio}
+  video_size: ${data.train.video_size}
+  camera_key: null
+  val_set_proportion: ${data.train.val_set_proportion}
+  is_training_set: false
+  skip_padding_as_possible: false
+  concat_multi_camera: ${data.train.concat_multi_camera}
+  single_canvas: ${data.train.single_canvas}
+  return_vlm_current_images: true
+  load_episode_stats: false
+  check_local_files: true
+  proprio_noise_std: 0.0
+  pretrained_norm_stats: ${data.train.pretrained_norm_stats}
+  processor: ${data.train.processor}
+  text_embedding_cache_dir: ${data.train.text_embedding_cache_dir}
+  context_len: ${data.train.context_len}

@@ -1,0 +1,1592 @@
+--- /dev/null
++++ b/track4world/distillation_adapter.py
+@@ -0,0 +1,496 @@
++"""Stable Track4World feature contract for offline policy distillation.
++
++The adapter observes existing model internals with forward hooks.  Its default
++teacher-only path avoids materializing public inference outputs while preserving
++the ``track4world_da3_v1`` feature contract.  The legacy path remains available
++for numerical validation.
++"""
++
++from __future__ import annotations
++
++import warnings
++from dataclasses import dataclass
++from typing import Any
++
++import torch
++import torch.nn.functional as F
++
++
++FEATURE_API_VERSION = "track4world_da3_v1"
++FEATURE_BLOCK_DIMS = {
++    "geometry": 1024,
++    "motion_2d": 128,
++    "motion_3d": 256,
++    "camera": 18,
++    "visibility": 4,
++}
++FEATURE_DIM = sum(FEATURE_BLOCK_DIMS.values())
++
++
++class TeacherCompileFallbackError(RuntimeError):
++    """Signal that the complete teacher call must be replayed eagerly."""
++
++
++def _clone_compiled_output(value):
++    if isinstance(value, torch.Tensor):
++        return value.clone()
++    if isinstance(value, tuple):
++        return tuple(_clone_compiled_output(item) for item in value)
++    if isinstance(value, list):
++        return [_clone_compiled_output(item) for item in value]
++    if isinstance(value, dict):
++        return {key: _clone_compiled_output(item) for key, item in value.items()}
++    return value
++
++
++class CompileFallbackModule(torch.nn.Module):
++    """Use torch.compile when available and permanently fall back on failure."""
++
++    def __init__(self, module: torch.nn.Module, *, mode: str) -> None:
++        super().__init__()
++        self.eager = module
++        self.mode = str(mode)
++        self.compile_error: str | None = None
++        try:
++            self.compiled = torch.compile(
++                module,
++                mode=self.mode,
++                fullgraph=False,
++                dynamic=False,
++            )
++        except Exception as error:
++            self.compiled = None
++            self.compile_error = f"{type(error).__name__}: {error}"
++
++    @property
++    def compile_active(self) -> bool:
++        return self.compiled is not None
++
++    def forward(self, *args: Any, **kwargs: Any):
++        if self.compiled is None:
++            return self.eager(*args, **kwargs)
++        try:
++            # reduce-overhead may use CUDA Graphs whose output buffers are
++            # reused at the next recurrent call.  The caller keeps these
++            # hidden states alive, so detach them from graph-owned storage.
++            return _clone_compiled_output(self.compiled(*args, **kwargs))
++        except Exception as error:
++            self.compile_error = f"{type(error).__name__}: {error}"
++            self.compiled = None
++            warnings.warn(
++                "Track4World motion compile failed; using eager for all "
++                f"subsequent calls ({self.compile_error}).",
++                RuntimeWarning,
++            )
++            raise TeacherCompileFallbackError(self.compile_error) from error
++
++
++def enable_teacher_motion_compile(
++    model: torch.nn.Module,
++    *,
++    mode: str = "reduce-overhead",
++) -> dict[str, bool]:
++    """Compile fixed-shape recurrent motion cores with per-module fallback."""
++    status = {}
++    for name in ("flow_update_block", "flow3d_head"):
++        module = getattr(model, name)
++        if isinstance(module, CompileFallbackModule):
++            status[name] = module.compile_active
++            continue
++        wrapper = CompileFallbackModule(module, mode=mode)
++        setattr(model, name, wrapper)
++        status[name] = wrapper.compile_active
++    model._teacher_motion_compile_mode = str(mode)
++    return status
++
++
++def _pool_channels(tensor: torch.Tensor, channels: int) -> torch.Tensor:
++    value = tensor.detach().float()
++    channel_axes = [axis for axis, size in enumerate(value.shape) if size == channels]
++    if not channel_axes:
++        raise ValueError(
++            f"Cannot find channel dimension {channels} in tensor {tuple(value.shape)}."
++        )
++    channel_axis = channel_axes[-1] if value.shape[-1] == channels else channel_axes[0]
++    value = value.movedim(channel_axis, -1)
++    return value.reshape(-1, channels).mean(dim=0)
++
++
++def _pool_channels_batched(
++    tensor: torch.Tensor,
++    channels: int,
++    batch_size: int,
++    frames: int,
++) -> torch.Tensor:
++    """Pool spatial/token dimensions while preserving independent clips."""
++    value = tensor.detach().float()
++    channel_axes = [axis for axis, size in enumerate(value.shape) if size == channels]
++    if not channel_axes:
++        raise ValueError(
++            f"Cannot find channel dimension {channels} in tensor {tuple(value.shape)}."
++        )
++    channel_axis = channel_axes[-1] if value.shape[-1] == channels else channel_axes[0]
++    value = value.movedim(channel_axis, -1)
++    if int(value.shape[0]) == batch_size:
++        return value.reshape(batch_size, -1, channels).mean(dim=1)
++    if int(value.shape[0]) == batch_size * frames:
++        return value.reshape(batch_size, frames, -1, channels).mean(dim=(1, 2))
++    if batch_size == 1:
++        return value.reshape(1, -1, channels).mean(dim=1)
++    raise ValueError(
++        "Cannot recover teacher batch dimension from tensor "
++        f"{tuple(tensor.shape)} for B={batch_size}, T={frames}."
++    )
++
++
++def blockwise_l2_normalize(blocks: list[torch.Tensor]) -> torch.Tensor:
++    normalized = [
++        F.normalize(block.float(), dim=0, eps=1.0e-6)
++        for block in blocks
++    ]
++    return torch.cat(normalized, dim=0)
++
++
++def camera_pose_statistics(camera_poses: torch.Tensor) -> torch.Tensor:
++    poses = camera_poses.detach().float()
++    while poses.ndim > 3 and int(poses.shape[0]) == 1:
++        poses = poses[0]
++    if poses.ndim != 3 or tuple(poses.shape[-2:]) not in {(4, 4), (3, 4)}:
++        raise ValueError(f"Unexpected camera pose shape: {tuple(camera_poses.shape)}")
++    if tuple(poses.shape[-2:]) == (3, 4):
++        bottom = torch.zeros(
++            (int(poses.shape[0]), 1, 4), device=poses.device, dtype=poses.dtype
++        )
++        bottom[..., 0, 3] = 1.0
++        poses = torch.cat([poses, bottom], dim=-2)
++    relative = torch.linalg.inv(poses[:1]) @ poses
++    rotation_mean = relative[:, :3, :3].mean(dim=0).reshape(-1)
++    translation = relative[:, :3, 3]
++    translation_mean = translation.mean(dim=0)
++    translation_std = translation.std(dim=0, unbiased=False)
++    translation_final = translation[-1]
++    stats = torch.cat(
++        [rotation_mean, translation_mean, translation_std, translation_final], dim=0
++    )
++    if tuple(stats.shape) != (18,):
++        raise AssertionError(f"Camera statistics shape changed: {tuple(stats.shape)}")
++    return stats
++
++
++def visibility_statistics(
++    mask: torch.Tensor,
++    visconf: torch.Tensor,
++) -> torch.Tensor:
++    mask_value = mask.detach().float().mean()
++    values = visconf.detach().float()
++    if int(values.shape[-1]) == 2:
++        values = values.reshape(-1, 2)
++    elif values.ndim >= 3 and int(values.shape[-3]) == 2:
++        values = values.movedim(-3, -1).reshape(-1, 2)
++    else:
++        raise ValueError(f"Unexpected visibility tensor shape: {tuple(visconf.shape)}")
++    probabilities = torch.sigmoid(values)
++    visible = probabilities[:, 0]
++    confidence = probabilities[:, 1]
++    return torch.stack(
++        [
++            mask_value,
++            visible.mean(),
++            confidence.mean(),
++            confidence.std(unbiased=False),
++        ]
++    )
++
++
++@dataclass
++class Track4WorldFeatureResult:
++    teacher_feature: torch.Tensor
++    teacher_valid: bool
++    blocks: dict[str, torch.Tensor]
++
++
++class Track4WorldDistillationAdapter:
++    """Extract the public ``track4world_da3_v1`` 1430-D feature."""
++
++    feature_api_version = FEATURE_API_VERSION
++    feature_dim = FEATURE_DIM
++
++    def __init__(
++        self,
++        model: torch.nn.Module,
++        *,
++        iters: int = 4,
++        use_fast_path: bool = True,
++        motion_chunk_size: int = 12,
++    ) -> None:
++        self.model = model
++        self.iters = int(iters)
++        if self.iters <= 0:
++            raise ValueError(f"iters must be positive, got {self.iters}.")
++        self.use_fast_path = bool(use_fast_path)
++        self.motion_chunk_size = int(motion_chunk_size)
++        if self.motion_chunk_size <= 0:
++            raise ValueError("motion_chunk_size must be positive.")
++        self._geometry: list[torch.Tensor] = []
++        self._motion_2d: list[torch.Tensor] = []
++        self._motion_3d: list[torch.Tensor] = []
++        self._motion_2d_call_count = 0
++        self._motion_3d_call_count = 0
++        self._active_batch_size = 1
++        self._active_frames = 1
++        self._motion_2d_by_sample: list[list[torch.Tensor]] = [[]]
++        self._motion_3d_by_sample: list[list[torch.Tensor]] = [[]]
++        self._handles = [
++            model.dot_fc2.register_forward_pre_hook(self._capture_geometry),
++            model.flow_update_block.register_forward_hook(self._capture_motion_2d),
++            model.flow3d_head.register_forward_hook(self._capture_motion_3d),
++        ]
++
++    def close(self) -> None:
++        for handle in self._handles:
++            handle.remove()
++        self._handles.clear()
++
++    def __enter__(self):
++        return self
++
++    def __exit__(self, exc_type, exc, tb):
++        self.close()
++
++    def _capture_geometry(self, _module, args) -> None:
++        self._geometry.append(
++            _pool_channels_batched(
++                args[0],
++                FEATURE_BLOCK_DIMS["geometry"],
++                self._active_batch_size,
++                self._active_frames,
++            )
++        )
++
++    def _capture_motion_2d(self, _module, _args, output) -> None:
++        self._motion_2d_call_count += 1
++        if self._motion_2d_call_count % self.iters == 0:
++            sample_index = int(getattr(self.model, "_teacher_batch_index", 0))
++            for pooled in self._pool_virtual_motion_chunks(
++                output, FEATURE_BLOCK_DIMS["motion_2d"]
++            ):
++                self._motion_2d.append(pooled)
++                self._motion_2d_by_sample[sample_index].append(pooled)
++
++    def _capture_motion_3d(self, _module, _args, output) -> None:
++        self._motion_3d_call_count += 1
++        if self._motion_3d_call_count % self.iters != 0:
++            return
++        feature = output[1] if isinstance(output, (tuple, list)) else output
++        sample_index = int(getattr(self.model, "_teacher_batch_index", 0))
++        for pooled in self._pool_virtual_motion_chunks(
++            feature, FEATURE_BLOCK_DIMS["motion_3d"]
++        ):
++            self._motion_3d.append(pooled)
++            self._motion_3d_by_sample[sample_index].append(pooled)
++
++    def _pool_virtual_motion_chunks(
++        self, tensor: torch.Tensor, channels: int
++    ) -> list[torch.Tensor]:
++        sizes = getattr(self.model, "_teacher_motion_virtual_chunk_sizes", None)
++        if not sizes:
++            return [_pool_channels(tensor, channels)]
++        if sum(int(size) for size in sizes) != int(tensor.shape[0]):
++            raise ValueError(
++                "Virtual motion chunks do not cover the refinement batch: "
++                f"sizes={sizes}, tensor={tuple(tensor.shape)}."
++            )
++        pooled = []
++        start = 0
++        for size in sizes:
++            end = start + int(size)
++            pooled.append(_pool_channels(tensor[start:end], channels))
++            start = end
++        return pooled
++
++    def _reset(self, *, batch_size: int, frames: int) -> None:
++        self._geometry.clear()
++        self._motion_2d.clear()
++        self._motion_3d.clear()
++        self._motion_2d_call_count = 0
++        self._motion_3d_call_count = 0
++        self._active_batch_size = int(batch_size)
++        self._active_frames = int(frames)
++        self._motion_2d_by_sample = [[] for _ in range(batch_size)]
++        self._motion_3d_by_sample = [[] for _ in range(batch_size)]
++        self.model._teacher_batch_index = 0
++
++    def prepare_da3_local_prefix(
++        self,
++        images: torch.Tensor,
++        *,
++        frame_chunk_size: int = 32,
++        offload_to_cpu: bool = True,
++    ) -> torch.Tensor:
++        """Build an episode-local prefix tensor without crossing frame boundaries."""
++        if images.ndim != 5 or int(images.shape[0]) != 1 or int(images.shape[2]) != 3:
++            raise ValueError(
++                "DA3 episode prefix expects [1,T,3,H,W], got "
++                f"{tuple(images.shape)}."
++            )
++        frame_chunk_size = int(frame_chunk_size)
++        if frame_chunk_size <= 0:
++            raise ValueError("frame_chunk_size must be positive.")
++        prefixes = []
++        for start in range(0, int(images.shape[1]), frame_chunk_size):
++            chunk = images[:, start : start + frame_chunk_size]
++            with torch.inference_mode(), torch.autocast(
++                device_type=chunk.device.type, dtype=torch.float16
++            ):
++                prefix = self.model.prepare_da3_local_prefix(chunk)
++            prefix = prefix.detach()
++            if offload_to_cpu:
++                prefix = prefix.to(device="cpu")
++            prefixes.append(prefix)
++        return torch.cat(prefixes, dim=1)
++
++    def extract(self, images: torch.Tensor, **infer_kwargs: Any) -> Track4WorldFeatureResult:
++        """Extract a teacher feature using the configured inference path."""
++        if images.ndim != 5 or int(images.shape[0]) != 1:
++            raise ValueError(
++                "extract expects exactly one clip; use extract_batch for B > 1."
++            )
++        return self._extract_batch(
++            images,
++            teacher_only=self.use_fast_path,
++            infer_kwargs=infer_kwargs,
++        )[0]
++
++    def extract_batch(
++        self, images: torch.Tensor, **infer_kwargs: Any
++    ) -> list[Track4WorldFeatureResult]:
++        """Extract independent per-window features from a real batch."""
++        if not self.use_fast_path and int(images.shape[0]) != 1:
++            raise ValueError("Batched extraction requires the teacher-only fast path.")
++        return self._extract_batch(
++            images,
++            teacher_only=self.use_fast_path,
++            infer_kwargs=infer_kwargs,
++        )
++
++    def extract_legacy(
++        self, images: torch.Tensor, **infer_kwargs: Any
++    ) -> Track4WorldFeatureResult:
++        """Run the original public inference graph for equivalence checks."""
++        if images.ndim != 5 or int(images.shape[0]) != 1:
++            raise ValueError("Legacy teacher extraction only supports B=1.")
++        return self._extract_batch(
++            images, teacher_only=False, infer_kwargs=infer_kwargs
++        )[0]
++
++    def _extract_batch(
++        self,
++        images: torch.Tensor,
++        *,
++        teacher_only: bool,
++        infer_kwargs: dict[str, Any],
++    ) -> list[Track4WorldFeatureResult]:
++        if images.ndim != 5 or int(images.shape[0]) < 1 or int(images.shape[2]) != 3:
++            raise ValueError(
++                "Track4World distillation expects clips [B,T,3,H,W], got "
++                f"{tuple(images.shape)}."
++            )
++        batch_size, frames = int(images.shape[0]), int(images.shape[1])
++        if "teacher_only" in infer_kwargs:
++            raise ValueError("teacher_only is controlled by the distillation adapter.")
++        self._reset(batch_size=batch_size, frames=frames)
++        call_kwargs = {
++            "iters": self.iters,
++            "sw": None,
++            "is_training": False,
++            "tracking3d": True,
++            "apply_mask": False,
++            "force_projection": True,
++            "teacher_only": teacher_only,
++            "motion_chunk_size": self.motion_chunk_size,
++            **infer_kwargs,
++        }
++        output = None
++        for _attempt in range(3):
++            try:
++                output = self.model.infer_pair(images, **call_kwargs)
++                break
++            except TeacherCompileFallbackError:
++                # A module may fail after earlier compiled recurrent calls have
++                # produced CUDA-Graph-owned tensors.  Restart from raw frames so
++                # eager never consumes potentially overwritten intermediate state.
++                self._reset(batch_size=batch_size, frames=frames)
++        if output is None:
++            raise RuntimeError("Teacher compile fallback did not converge to eager.")
++        if not self._geometry or not self._motion_2d or not self._motion_3d:
++            raise RuntimeError(
++                "Track4World hooks did not observe all required feature blocks."
++            )
++        if (
++            self._motion_2d_call_count % self.iters != 0
++            or self._motion_3d_call_count % self.iters != 0
++        ):
++            raise RuntimeError(
++                "Track4World refinement hook count is not divisible by iters."
++            )
++        if not self._motion_2d or not self._motion_3d:
++            raise RuntimeError("No final Track4World refinement features were captured.")
++        geometry = torch.stack(self._geometry).mean(dim=0)
++        if teacher_only:
++            camera_poses = output["camera_poses"]
++            mask = output["mask"]
++            visconf_maps_e = output["visconf_maps_e"]
++        else:
++            camera_poses = output[0]["camera_poses"]
++            mask = output[0]["mask"]
++            visconf_maps_e = output[1]["visconf_maps_e"]
++        if camera_poses.ndim == 3:
++            camera_poses = camera_poses.unsqueeze(0)
++            mask = mask.unsqueeze(0) if mask.ndim == 3 else mask
++            visconf_maps_e = (
++                visconf_maps_e.unsqueeze(0)
++                if visconf_maps_e.ndim == 4
++                else visconf_maps_e
++            )
++        results = []
++        for sample_index in range(batch_size):
++            if not self._motion_2d_by_sample[sample_index]:
++                raise RuntimeError(
++                    f"No final 2D motion feature for batch item {sample_index}."
++                )
++            if not self._motion_3d_by_sample[sample_index]:
++                raise RuntimeError(
++                    f"No final 3D motion feature for batch item {sample_index}."
++                )
++            blocks = {
++                "geometry": geometry[sample_index],
++                "motion_2d": torch.stack(
++                    self._motion_2d_by_sample[sample_index]
++                ).mean(dim=0),
++                "motion_3d": torch.stack(
++                    self._motion_3d_by_sample[sample_index]
++                ).mean(dim=0),
++                "camera": camera_pose_statistics(camera_poses[sample_index]),
++                "visibility": visibility_statistics(
++                    mask[sample_index], visconf_maps_e[sample_index]
++                ),
++            }
++            for name, expected_dim in FEATURE_BLOCK_DIMS.items():
++                if tuple(blocks[name].shape) != (expected_dim,):
++                    raise ValueError(
++                        f"Track4World block {name!r} expected {expected_dim}, "
++                        f"got {tuple(blocks[name].shape)}."
++                    )
++            teacher_feature = blockwise_l2_normalize(list(blocks.values()))
++            valid = bool(
++                tuple(teacher_feature.shape) == (FEATURE_DIM,)
++                and torch.isfinite(teacher_feature).all().item()
++            )
++            results.append(
++                Track4WorldFeatureResult(
++                    teacher_feature=teacher_feature,
++                    teacher_valid=valid,
++                    blocks=blocks,
++                )
++            )
++        return results
+--- a/track4world/nets/external/depth_anything_3/api.py
++++ b/track4world/nets/external/depth_anything_3/api.py
+@@ -38,7 +38,6 @@
+ from depth_anything_3.cfg import create_object, load_config
+ from depth_anything_3.registry import MODEL_REGISTRY
+ from depth_anything_3.specs import Prediction
+-from depth_anything_3.utils.export import export
+ from depth_anything_3.utils.geometry import affine_inverse
+ from depth_anything_3.utils.io.input_processor import InputProcessor
+ from depth_anything_3.utils.io.output_processor import OutputProcessor
+@@ -113,6 +112,7 @@
+         infer_gs: bool = False,
+         use_ray_pose: bool = False,
+         ref_view_strategy: str = "saddle_balanced",
++        local_prefix: torch.Tensor | None = None,
+     ) -> dict[str, torch.Tensor]:
+         """
+         Forward pass through the model.
+@@ -134,7 +134,14 @@
+         with torch.no_grad():
+             with torch.autocast(device_type=image.device.type, dtype=autocast_dtype):
+                 return self.model(
+-                    image, extrinsics, intrinsics, export_feat_layers, infer_gs, use_ray_pose, ref_view_strategy
++                    image,
++                    extrinsics,
++                    intrinsics,
++                    export_feat_layers,
++                    infer_gs,
++                    use_ray_pose,
++                    ref_view_strategy,
++                    local_prefix,
+                 )
+ 
+     def inference_v2(
+@@ -154,6 +161,7 @@
+         export_dir: str | None = None,
+         export_format: str = "mini_npz",
+         export_feat_layers: Sequence[int] | None = None,
++        local_prefix: torch.Tensor | None = None,
+         # GLB export parameters
+         conf_thresh_percentile: float = 40.0,
+         num_max_points: int = 1_000_000,
+@@ -201,7 +209,14 @@
+         export_feat_layers = list(export_feat_layers) if export_feat_layers is not None else []
+ 
+         raw_output = self._run_model_forward(
+-            imgs, ex_t_norm, in_t, export_feat_layers, infer_gs, use_ray_pose, ref_view_strategy
++            imgs,
++            ex_t_norm,
++            in_t,
++            export_feat_layers,
++            infer_gs,
++            use_ray_pose,
++            ref_view_strategy,
++            local_prefix,
+         )
+ 
+         # Convert raw output to prediction
+@@ -452,6 +467,7 @@
+         infer_gs: bool = False,
+         use_ray_pose: bool = False,
+         ref_view_strategy: str = "saddle_balanced",
++        local_prefix: torch.Tensor | None = None,
+     ) -> dict[str, torch.Tensor]:
+         """Run model forward pass."""
+         # device = imgs.device
+@@ -460,7 +476,16 @@
+         #     torch.cuda.synchronize(device)
+         # start_time = time.time()
+         feat_layers = list(export_feat_layers) if export_feat_layers is not None else None
+-        output = self.forward(imgs, ex_t, in_t, feat_layers, infer_gs, use_ray_pose, ref_view_strategy)
++        output = self.forward(
++            imgs,
++            ex_t,
++            in_t,
++            feat_layers,
++            infer_gs,
++            use_ray_pose,
++            ref_view_strategy,
++            local_prefix,
++        )
+         # if need_sync:
+         #     torch.cuda.synchronize(device)
+         # end_time = time.time()
+@@ -495,6 +520,7 @@
+     ) -> None:
+         """Export results to specified format and directory."""
+         start_time = time.time()
++        from depth_anything_3.utils.export import export
+         export(prediction, export_format, export_dir, **kwargs)
+         end_time = time.time()
+         logger.info(f"Export Results Done. Time: {end_time - start_time} seconds")
+--- a/track4world/nets/external/depth_anything_3/model/da3.py
++++ b/track4world/nets/external/depth_anything_3/model/da3.py
+@@ -138,6 +138,7 @@
+         infer_gs: bool = False,
+         use_ray_pose: bool = False,
+         ref_view_strategy: str = "saddle_balanced",
++        local_prefix: torch.Tensor | None = None,
+     ) -> Dict[str, torch.Tensor]:
+         """
+         Forward pass through the network.
+@@ -162,7 +163,11 @@
+             cam_token = None
+ 
+         feats, aux_feats = self.backbone(
+-            x, cam_token=cam_token, export_feat_layers=export_feat_layers, ref_view_strategy=ref_view_strategy
++            x,
++            cam_token=cam_token,
++            export_feat_layers=export_feat_layers,
++            ref_view_strategy=ref_view_strategy,
++            local_prefix=local_prefix,
+         )
+         # feats = [[item for item in feat] for feat in feats]
+         H, W = x.shape[-2], x.shape[-1]
+@@ -190,24 +195,35 @@
+         """Process mono sky estimation."""
+         if "sky" not in output:
+             return output
+-        non_sky_mask = compute_sky_mask(output.sky, threshold=0.3)
+-        if non_sky_mask.sum() <= 10:
+-            return output
+-        if (~non_sky_mask).sum() <= 10:
+-            return output
+-        
+-        non_sky_depth = output.depth[non_sky_mask]
+-        if non_sky_depth.numel() > 100000:
+-            idx = torch.randint(0, non_sky_depth.numel(), (100000,), device=non_sky_depth.device)
+-            sampled_depth = non_sky_depth[idx]
+-        else:
+-            sampled_depth = non_sky_depth
+-        non_sky_max = torch.quantile(sampled_depth, 0.99)
+-
+-        # Set sky regions to maximum depth and high confidence
+-        output.depth, _ = set_sky_regions_to_max_depth(
+-            output.depth, None, non_sky_mask, max_depth=non_sky_max
+-        )
++        # Each leading item is an independent clip.  Computing one quantile
++        # over the full batch couples otherwise independent cache windows.
++        depths = []
++        for batch_index in range(int(output.depth.shape[0])):
++            depth = output.depth[batch_index]
++            non_sky_mask = compute_sky_mask(
++                output.sky[batch_index], threshold=0.3
++            )
++            if non_sky_mask.sum() <= 10 or (~non_sky_mask).sum() <= 10:
++                depths.append(depth)
++                continue
++
++            non_sky_depth = depth[non_sky_mask]
++            if non_sky_depth.numel() > 100000:
++                idx = torch.randint(
++                    0,
++                    non_sky_depth.numel(),
++                    (100000,),
++                    device=non_sky_depth.device,
++                )
++                sampled_depth = non_sky_depth[idx]
++            else:
++                sampled_depth = non_sky_depth
++            non_sky_max = torch.quantile(sampled_depth, 0.99)
++            depth, _ = set_sky_regions_to_max_depth(
++                depth, None, non_sky_mask, max_depth=non_sky_max
++            )
++            depths.append(depth)
++        output.depth = torch.stack(depths, dim=0)
+         return output
+ 
+     def _process_ray_pose_estimation(
+@@ -374,6 +390,7 @@
+         infer_gs: bool = False,
+         use_ray_pose: bool = False,
+         ref_view_strategy: str = "saddle_balanced",
++        local_prefix: torch.Tensor | None = None,
+     ) -> Dict[str, torch.Tensor]:
+         """
+         Forward pass through both branches with metric scaling alignment.
+@@ -392,7 +409,14 @@
+         """
+         # Get predictions from both branches
+         output = self.da3(
+-            x, extrinsics, intrinsics, export_feat_layers=export_feat_layers, infer_gs=infer_gs, use_ray_pose=use_ray_pose, ref_view_strategy=ref_view_strategy
++            x,
++            extrinsics,
++            intrinsics,
++            export_feat_layers=export_feat_layers,
++            infer_gs=infer_gs,
++            use_ray_pose=use_ray_pose,
++            ref_view_strategy=ref_view_strategy,
++            local_prefix=local_prefix,
+         )
+         metric_output = self.da3_metric(x)
+ 
+@@ -418,32 +442,43 @@
+         self, output: Dict[str, torch.Tensor], metric_output: Dict[str, torch.Tensor]
+     ) -> Dict[str, torch.Tensor]:
+         """Apply depth alignment using least squares scaling."""
+-        # Compute non-sky mask
+-        non_sky_mask = compute_sky_mask(metric_output.sky, threshold=0.3)
+-
+-        # Ensure we have enough non-sky pixels
+-        assert non_sky_mask.sum() > 10, "Insufficient non-sky pixels for alignment"
+-
+-        # Sample depth confidence for quantile computation
+-        depth_conf_ns = output.depth_conf[non_sky_mask]
+-        depth_conf_sampled = sample_tensor_for_quantile(depth_conf_ns, max_samples=100000)
+-        median_conf = torch.quantile(depth_conf_sampled, 0.5)
+-
+-        # Compute alignment mask
+-        align_mask = compute_alignment_mask(
+-            output.depth_conf, non_sky_mask, output.depth, metric_output.depth, median_conf
++        scale_factors = []
++        for batch_index in range(int(output.depth.shape[0])):
++            depth = output.depth[batch_index]
++            depth_conf = output.depth_conf[batch_index]
++            metric_depth = metric_output.depth[batch_index]
++            non_sky_mask = compute_sky_mask(
++                metric_output.sky[batch_index], threshold=0.3
++            )
++            assert non_sky_mask.sum() > 10, (
++                f"Insufficient non-sky pixels for alignment in batch item "
++                f"{batch_index}"
++            )
++            depth_conf_ns = depth_conf[non_sky_mask]
++            depth_conf_sampled = sample_tensor_for_quantile(
++                depth_conf_ns, max_samples=100000
++            )
++            median_conf = torch.quantile(depth_conf_sampled, 0.5)
++            align_mask = compute_alignment_mask(
++                depth_conf,
++                non_sky_mask,
++                depth,
++                metric_depth,
++                median_conf,
++            )
++            scale_factor = least_squares_scale_scalar(
++                metric_depth[align_mask], depth[align_mask]
++            )
++            output.depth[batch_index] *= scale_factor
++            output.extrinsics[batch_index, :, :3, 3] *= scale_factor
++            scale_factors.append(scale_factor)
++
++        output.is_metric = 1
++        output.scale_factor = (
++            scale_factors[0].item()
++            if len(scale_factors) == 1
++            else torch.stack(scale_factors)
+         )
+-
+-        # Compute scale factor using least squares
+-        valid_depth = output.depth[align_mask]
+-        valid_metric_depth = metric_output.depth[align_mask]
+-        scale_factor = least_squares_scale_scalar(valid_metric_depth, valid_depth)
+-
+-        # Apply scaling to depth and extrinsics
+-        output.depth *= scale_factor
+-        output.extrinsics[:, :, :3, 3] *= scale_factor
+-        output.is_metric = 1
+-        output.scale_factor = scale_factor.item()
+ 
+         return output
+ 
+@@ -454,21 +489,32 @@
+         sky_depth_def: float = 200.0,
+     ) -> Dict[str, torch.Tensor]:
+         """Handle sky regions by setting them to maximum depth."""
+-        non_sky_mask = compute_sky_mask(metric_output.sky, threshold=0.3)
+-
+-        # Compute maximum depth for non-sky regions
+-        # Use sampling to safely compute quantile on large tensors
+-        non_sky_depth = output.depth[non_sky_mask]
+-        if non_sky_depth.numel() > 100000:
+-            idx = torch.randint(0, non_sky_depth.numel(), (100000,), device=non_sky_depth.device)
+-            sampled_depth = non_sky_depth[idx]
+-        else:
+-            sampled_depth = non_sky_depth
+-        non_sky_max = min(torch.quantile(sampled_depth, 0.99), sky_depth_def)
+-
+-        # Set sky regions to maximum depth and high confidence
+-        output.depth, output.depth_conf = set_sky_regions_to_max_depth(
+-            output.depth, output.depth_conf, non_sky_mask, max_depth=non_sky_max
+-        )
+-
+-        return output
++        depths = []
++        depth_confs = []
++        for batch_index in range(int(output.depth.shape[0])):
++            depth = output.depth[batch_index]
++            depth_conf = output.depth_conf[batch_index]
++            non_sky_mask = compute_sky_mask(
++                metric_output.sky[batch_index], threshold=0.3
++            )
++            non_sky_depth = depth[non_sky_mask]
++            if non_sky_depth.numel() > 100000:
++                idx = torch.randint(
++                    0,
++                    non_sky_depth.numel(),
++                    (100000,),
++                    device=non_sky_depth.device,
++                )
++                sampled_depth = non_sky_depth[idx]
++            else:
++                sampled_depth = non_sky_depth
++            non_sky_max = min(torch.quantile(sampled_depth, 0.99), sky_depth_def)
++            depth, depth_conf = set_sky_regions_to_max_depth(
++                depth, depth_conf, non_sky_mask, max_depth=non_sky_max
++            )
++            depths.append(depth)
++            depth_confs.append(depth_conf)
++        output.depth = torch.stack(depths, dim=0)
++        output.depth_conf = torch.stack(depth_confs, dim=0)
++
++        return output
+--- a/track4world/nets/external/depth_anything_3/model/dinov2/vision_transformer.py
++++ b/track4world/nets/external/depth_anything_3/model/dinov2/vision_transformer.py
+@@ -297,14 +297,77 @@
+                 pos_nodiff = torch.cat([pos_special, pos_nodiff], dim=2)
+         return pos, pos_nodiff
+ 
++    def prepare_local_prefix(self, x, stop_before=None):
++        """Run the strictly per-frame prefix before reference selection.
++
++        For the DA3 Giant any-view backbone ``alt_start=13``.  Reference-view
++        selection happens immediately before block 12, so only patch embedding
++        and blocks 0..11 can be reused safely across overlapping windows.
++        """
++        if self.alt_start <= 1:
++            raise ValueError("This backbone has no reusable local prefix.")
++        boundary = self.alt_start - 1 if stop_before is None else int(stop_before)
++        if boundary < 0 or boundary > self.alt_start - 1:
++            raise ValueError(
++                f"Local prefix must stop no later than block {self.alt_start - 2}, "
++                f"got stop_before={boundary}."
++            )
++        B, S, _, H, W = x.shape
++        x = self.prepare_tokens_with_masks(x)
++        pos, _ = self._prepare_rope(B, S, H, W, x.device)
++        for index in range(boundary):
++            local_pos = (
++                pos
++                if self.rope is not None and index >= self.rope_start
++                else None
++            )
++            x = self.process_attention(
++                x, self.blocks[index], "local", pos=local_pos
++            )
++        return x
++
+     def _get_intermediate_layers_not_chunked(self, x, n=1, export_feat_layers=[], **kwargs):
+         B, S, _, H, W = x.shape
+-        x = self.prepare_tokens_with_masks(x)
++        local_prefix = kwargs.pop("local_prefix", None)
++        if local_prefix is None:
++            x = self.prepare_tokens_with_masks(x)
++            first_block = 0
++        else:
++            first_block = self.alt_start - 1
++            expected = (B, S)
++            if self.alt_start <= 1:
++                raise ValueError("This backbone cannot consume a local prefix.")
++            if tuple(local_prefix.shape[:2]) != expected:
++                raise ValueError(
++                    f"Local prefix expected leading shape {expected}, got "
++                    f"{tuple(local_prefix.shape[:2])}."
++                )
++            if int(local_prefix.shape[-1]) != int(self.embed_dim):
++                raise ValueError(
++                    f"Local prefix channel dimension must be {self.embed_dim}, "
++                    f"got {local_prefix.shape[-1]}."
++                )
++            if local_prefix.device != x.device:
++                raise ValueError(
++                    f"Local prefix is on {local_prefix.device}, input is on {x.device}."
++                )
++            x = local_prefix.to(dtype=x.dtype)
+         output, total_block_len, aux_output = [], len(self.blocks), []
+         blocks_to_take = range(total_block_len - n, total_block_len) if isinstance(n, int) else n
++        if local_prefix is not None:
++            unavailable = [index for index in blocks_to_take if index < first_block]
++            unavailable += [index for index in export_feat_layers if index < first_block]
++            if unavailable:
++                raise ValueError(
++                    "Requested outputs from blocks hidden behind local prefix: "
++                    f"{sorted(set(unavailable))}."
++                )
+         pos, pos_nodiff = self._prepare_rope(B, S, H, W, x.device)
++        local_x = x
+ 
+         for i, blk in enumerate(self.blocks):
++            if i < first_block:
++                continue
+             if i < self.rope_start or self.rope is None:
+                 g_pos, l_pos = None, None
+             else:
+--- a/track4world/nets/external/depth_anything_3/model/dpt.py
++++ b/track4world/nets/external/depth_anything_3/model/dpt.py
+@@ -177,20 +177,24 @@
+         """
+         B, S, N, C = feats[0][0].shape
+         feats = [feat[0].reshape(B * S, N, C) for feat in feats]
++        total_frames = B * S
+ 
+         # update image info, used by the GS-DPT head
+         extra_kwargs = {}
+         if "images" in kwargs:
+             extra_kwargs.update({"images": rearrange(kwargs["images"], "B S ... -> (B S) ...")})
+ 
+-        if chunk_size is None or chunk_size >= S:
++        if chunk_size is None or chunk_size >= total_frames:
+             out_dict = self._forward_impl(feats, H, W, patch_start_idx, **extra_kwargs)
+             out_dict = {k: v.view(B, S, *v.shape[1:]) for k, v in out_dict.items()}
+             return Dict(out_dict)
+ 
+         out_dicts: List[TyDict[str, torch.Tensor]] = []
+-        for s0 in range(0, S, chunk_size):
+-            s1 = min(s0 + chunk_size, S)
++        # ``feats`` and optional images are flattened as (B*S).  Iterating
++        # only to S silently dropped every batch item after the first and made
++        # the final reshape invalid for B > 1.
++        for s0 in range(0, total_frames, chunk_size):
++            s1 = min(s0 + chunk_size, total_frames)
+             kw = {}
+             if "images" in extra_kwargs:
+                 kw.update({"images": extra_kwargs["images"][s0:s1]})
+--- a/track4world/nets/model.py
++++ b/track4world/nets/model.py
+@@ -1,6 +1,7 @@
+ from typing import List, Tuple, Union, Optional, Dict, Literal
+ from numbers import Number
+ import importlib
++import os
+ import warnings
+ import sys
+ 
+@@ -24,7 +25,6 @@
+ )
+ from track4world.utils import misc
+ from track4world.nets.global_aggregator import Global_Aggregator
+-from track4world.nets.external.pi3.models.pi3 import Pi3
+ from track4world.nets.external.pi3x.models.pi3x import Pi3X
+ from track4world.nets.external.depth_anything_3.api import DepthAnything3
+ from track4world.utils.geometry_torch import mask_aware_nearest_resize
+@@ -154,8 +154,10 @@
+     # Stack to obtain camera-space points: (B, T, 3, H*W)
+     cam_points_flat = torch.stack([X_cam, Y_cam, Z_cam], dim=2)
+ 
+-    # Reshape for output: (B, T, 3, H, W) -> squeeze B -> (T, 3, H, W)
+-    camera_points = cam_points_flat.reshape(B, T, 3, H, W).squeeze(0)
++    # Track4World's flow path consumes frame-major tensors.  Flatten B and T
++    # without dropping the batch dimension so independent windows can be
++    # evaluated together.
++    camera_points = cam_points_flat.reshape(B * T, 3, H, W)
+ 
+     # ==========================================
+     # 3. Compute camera poses (W2C -> C2W)
+@@ -174,8 +176,8 @@
+     # Invert to obtain Camera-to-World (C2W) poses
+     c2w_4x4 = torch.inverse(w2c_4x4)
+ 
+-    # Output camera poses: (T, 4, 4)
+-    camera_poses = c2w_4x4.squeeze(0)
++    # Output camera poses: (B*T, 4, 4)
++    camera_poses = c2w_4x4.reshape(B * T, 4, 4)
+ 
+     # ==========================================
+     # 4. Compute world-space points
+@@ -192,8 +194,8 @@
+     # (B, T, 3, 3) @ (B, T, 3, H*W) -> (B, T, 3, H*W)
+     world_points_flat = torch.matmul(R_c2w, cam_points_flat) + t_c2w
+ 
+-    # Reshape to output format: (T, 3, H, W)
+-    world_points = world_points_flat.reshape(B, T, 3, H, W).squeeze(0)
++    # Reshape to frame-major output format: (B*T, 3, H, W)
++    world_points = world_points_flat.reshape(B * T, 3, H, W)
+ 
+     return world_points, camera_points, camera_poses
+ 
+@@ -677,7 +679,15 @@
+             self.flow_depth = 8
+             
+         elif use_model == 'depthanythingv3':
+-            self.backbone = DepthAnything3.from_pretrained("depth-anything/DA3NESTED-GIANT-LARGE-1.1")
++            # A local Track4World DA3 checkpoint already contains the complete DA3
++            # backbone.  Allow callers to construct only the architecture so
++            # inference does not require downloading a second copy from the Hub.
++            if os.environ.get("TRACK4WORLD_OFFLINE_BACKBONE") == "1":
++                self.backbone = DepthAnything3(model_name="da3nested-giant-large")
++            else:
++                self.backbone = DepthAnything3.from_pretrained(
++                    "depth-anything/DA3NESTED-GIANT-LARGE-1.1"
++                )
+             self.patch_start_idx = 0
+             self.dim_feature = 1024
+             self.flow3d_dim = 256
+@@ -705,7 +715,15 @@
+             CNBlockConfig(192, 384, 3, False),
+             CNBlockConfig(384, None, 9, False),
+         ]
+-        self.ctx_encoder = ConvNeXt(block_setting, stochastic_depth_prob=0.0, init_weights=True)
++        # The released Track4World checkpoint contains every ctx_encoder weight.
++        # Skip torchvision's ImageNet bootstrap in offline/cache jobs so model
++        # construction never attempts a network download before the checkpoint
++        # is restored.
++        self.ctx_encoder = ConvNeXt(
++            block_setting,
++            stochastic_depth_prob=0.0,
++            init_weights=os.environ.get("TRACK4WORLD_OFFLINE_BACKBONE") != "1",
++        )
+         self.dot_conv = conv1x1(384, 128)
+         self.dot_fc1 = nn.Linear(self.dim_feature, self.flow_dim)
+         if use_3d:
+@@ -813,6 +831,23 @@
+             else:
+                 new_state_dict[k] = v
+ 
++        # ``time_emb`` and ``time_emb3d`` are deterministic sinusoidal
++        # buffers generated from ``seqlen`` in ``__init__``.  The released
++        # checkpoint was exported with seqlen=16, while cache generation may
++        # intentionally instantiate the same learned model at H32.  Keep the
++        # freshly generated H32 buffers instead of asking load_state_dict to
++        # copy incompatible H16 shapes.  Do not generalize this exception to
++        # learned parameters: every other shape mismatch must still fail.
++        current_state = self.state_dict()
++        for key in ("time_emb", "time_emb3d"):
++            value = new_state_dict.get(key)
++            if (
++                value is not None
++                and key in current_state
++                and tuple(value.shape) != tuple(current_state[key].shape)
++            ):
++                del new_state_dict[key]
++
+         missing, unexpected = self.load_state_dict(new_state_dict, strict=False)
+         return missing, unexpected
+ 
+@@ -838,12 +873,39 @@
+             raise ValueError(f"Invalid remap output type: {self.remap_output}")
+         return points
+ 
++    def prepare_da3_local_prefix(self, images: torch.Tensor) -> torch.Tensor:
++        """Compute the reusable, strictly frame-local DA3 Giant prefix."""
++        if self.use_model != 'depthanythingv3':
++            raise ValueError("DA3 local-prefix caching requires depthanythingv3.")
++        if images.ndim != 5 or int(images.shape[2]) != 3:
++            raise ValueError(
++                "Expected raw RGB clips [B,T,3,H,W], got "
++                f"{tuple(images.shape)}."
++            )
++        B, T, _, H, W = images.shape
++        normalized = images.to(torch.float16) / 255.0
++        normalized = (normalized - self.image_mean) / self.image_std
++        flattened = normalized.contiguous().reshape(B * T, 3, H, W)
++        flattened = InputPadder(flattened.shape).pad(flattened)[0]
++        padded_h, padded_w = flattened.shape[-2:]
++        grid_h, grid_w = padded_h // 14 * 14, padded_w // 14 * 14
++        image_14 = F.interpolate(
++            flattened,
++            (grid_h, grid_w),
++            mode="bilinear",
++            align_corners=False,
++            antialias=True,
++        ).reshape(B, T, 3, grid_h, grid_w)
++        vit = self.backbone.model.da3.backbone.pretrained
++        return vit.prepare_local_prefix(image_14)
++
+     def forward_point(
+         self, 
+         image: torch.Tensor, 
+         current_batch_size: int = 4, 
+         for_flow: bool = False,
+-        num_tokens: int = None
++        num_tokens: int = None,
++        da3_local_prefix: torch.Tensor = None,
+     ) -> Union[Dict[str, torch.Tensor], Tuple[torch.Tensor, ...]]:
+         """
+         Unified feature and geometry extraction interface.
+@@ -942,7 +1004,12 @@
+                 camera_poses[..., :3, 3] /= (scale + 1e-6)
+ 
+             elif self.use_model == 'depthanythingv3':
+-                results = self.backbone.inference_v2(image_14[None])
++                da3_images = image_14.reshape(
++                    current_batch_size, T, 3, H_14, W_14
++                )
++                results = self.backbone.inference_v2(
++                    da3_images, local_prefix=da3_local_prefix
++                )
+                 world_points, points, camera_poses = process_geometry(
+                     results["depth"], results["extrinsics"], results["intrinsics"]
+                 )
+@@ -953,17 +1020,31 @@
+                 # Save DA3 intrinsics as normalized focal for downstream use.
+                 # normalized_focal = fx_px * 2 / diagonal_pixels
+                 da3_intrinsics = results["intrinsics"]  # (B, T, 3, 3)
+-                fx_px = da3_intrinsics[..., 0, 0].mean()
++                fx_px = da3_intrinsics[..., 0, 0].mean(dim=1)
+                 H14, W14 = results["depth"].shape[-2:]
+                 diag = (H14 ** 2 + W14 ** 2) ** 0.5
+                 self._da3_focal = (fx_px * 2 / diag).detach()
+ 
+-                # Scale normalization (save metric scale for recovery)
+-                scale = torch.norm(points, dim=1).mean()
++                # Scale-normalize every independent clip separately.  A single
++                # global scalar would couple otherwise independent batch items.
++                points_batched = points.reshape(
++                    current_batch_size, T, 3, *points.shape[-2:]
++                )
++                world_points_batched = world_points.reshape_as(points_batched)
++                camera_poses_batched = camera_poses.reshape(
++                    current_batch_size, T, 4, 4
++                )
++                scale = torch.norm(points_batched, dim=2).mean(dim=(1, 2, 3))
+                 self._metric_scale = scale.detach()
+-                points = points / (scale + 1e-6)
+-                world_points = world_points / (scale + 1e-6)
+-                camera_poses[..., :3, 3] /= (scale + 1e-6)
++                scale_5d = scale[:, None, None, None, None]
++                points = (points_batched / (scale_5d + 1e-6)).reshape_as(points)
++                world_points = (
++                    world_points_batched / (scale_5d + 1e-6)
++                ).reshape_as(world_points)
++                camera_poses_batched[..., :3, 3] /= (
++                    scale[:, None, None] + 1e-6
++                )
++                camera_poses = camera_poses_batched.reshape(-1, 4, 4)
+ 
+         # -----------------------------------------
+         # 3. Unified upsampling and post-processing
+@@ -1275,12 +1356,18 @@
+         return pairs
+ 
+     def forward_sliding1(
+-        self, images, iters=4, sw=None, is_training=False, 
+-        window_len=None, stride=None, tracking3d=False
++        self, images, iters=4, sw=None, is_training=False,
++        window_len=None, stride=None, tracking3d=False, teacher_only=False,
++        da3_local_prefix=None,
++        motion_chunk_size=12,
+     ):
+         """
+         Variant of forward pass using sliding window/pairwise estimation 
+         with memory optimizations by splitting the batch dimension.
++
++        ``teacher_only`` preserves the final numerical outputs needed by the
++        distillation feature contract while avoiding intermediate full-resolution
++        predictions and CPU staging.
+         """
+         B, T, C, H, W = images.shape
+         device = images.device
+@@ -1303,7 +1390,12 @@
+         # Feature Extraction
+         (fmaps, ctxfeats, fmaps3d_detail, pms, 
+          points, masks, world_points, camera_poses) = self.get_fmaps(
+-            images_, B, T, sw, is_training
++            images_,
++            B,
++            T,
++            sw,
++            is_training,
++            da3_local_prefix=da3_local_prefix,
+         )
+         
+         # Reshape to (B, T, C, H, W)
+@@ -1321,8 +1413,60 @@
+         B_pair, T_pair = fmaps.shape[0], fmaps.shape[1]
+         
+         # --- Chunking along the Batch (B) dimension ---
+-        chunk_size = 12 
+-        num_chunks = (B_pair + chunk_size - 1) // chunk_size
++        chunk_size = 12
++        if teacher_only:
++            # Pack complete historical 12-pair chunks into larger motion calls.
++            # Historical chunks are never split, allowing the adapter to keep
++            # the exact equal-weight 12+12+8 pooling contract at H32.
++            motion_chunk_size = int(motion_chunk_size)
++            if motion_chunk_size <= 0:
++                raise ValueError("motion_chunk_size must be positive.")
++            chunk_ranges = []
++            pairs_per_sample = T - 1
++            for batch_index in range(B):
++                sample_start = batch_index * pairs_per_sample
++                historical = [
++                    (
++                        sample_start + local_start,
++                        min(
++                            sample_start + local_start + chunk_size,
++                            sample_start + pairs_per_sample,
++                        ),
++                    )
++                    for local_start in range(0, pairs_per_sample, chunk_size)
++                ]
++                packed = []
++                packed_pairs = 0
++                for start_idx, end_idx in historical:
++                    historical_size = end_idx - start_idx
++                    if packed and packed_pairs + historical_size > motion_chunk_size:
++                        chunk_ranges.append(
++                            (
++                                batch_index,
++                                packed[0][0],
++                                packed[-1][1],
++                                [end - start for start, end in packed],
++                            )
++                        )
++                        packed = []
++                        packed_pairs = 0
++                    packed.append((start_idx, end_idx))
++                    packed_pairs += historical_size
++                if packed:
++                    chunk_ranges.append(
++                        (
++                            batch_index,
++                            packed[0][0],
++                            packed[-1][1],
++                            [end - start for start, end in packed],
++                        )
++                    )
++        else:
++            chunk_ranges = [
++                (0, start_idx, min(start_idx + chunk_size, B_pair), None)
++                for start_idx in range(0, B_pair, chunk_size)
++            ]
++        num_chunks = len(chunk_ranges)
+         
+         # Iteration history containers
+         all_flow_preds_chunks, all_visconf_preds_chunks = [], []
+@@ -1333,15 +1477,23 @@
+         full_flows3d_list = [] if tracking3d else None
+         points_list, masks_list, world_points_list, camera_poses_list = [], [], [], []
+         
+-        # Split point/pose data to match batch chunks
+-        points_chunks = list(torch.split(points, chunk_size, dim=0))
+-        masks_chunks = list(torch.split(masks, chunk_size, dim=0))
+-        world_points_chunks = list(torch.split(world_points, chunk_size, dim=0))
+-        camera_poses_chunks = list(torch.split(camera_poses, chunk_size, dim=0)) 
+-        
+-        for i in range(num_chunks):
+-            start_idx, end_idx = i * chunk_size, min((i + 1) * chunk_size, B_pair)
++        # The legacy public path keeps its historical point chunk assembly.
++        # Teacher-only inference consumes the complete frame-major tensors.
++        if not teacher_only:
++            points_chunks = list(torch.split(points, chunk_size, dim=0))
++            masks_chunks = list(torch.split(masks, chunk_size, dim=0))
++            world_points_chunks = list(torch.split(world_points, chunk_size, dim=0))
++            camera_poses_chunks = list(torch.split(camera_poses, chunk_size, dim=0))
++
++        for i, (
++            batch_index,
++            start_idx,
++            end_idx,
++            virtual_chunk_sizes,
++        ) in enumerate(chunk_ranges):
+             b_chunk = end_idx - start_idx
++            self._teacher_batch_index = batch_index
++            self._teacher_motion_virtual_chunk_sizes = virtual_chunk_sizes
+             
+             # 1. Slice chunk-specific inputs
+             fmaps_chunk = fmaps[start_idx:end_idx]
+@@ -1370,7 +1522,8 @@
+                 flow2ds8=f2d_init, flow3ds8=f3d_init,
+                 cxt1_single=ctxfeat_anchor_chunk, cxt2=ctxfeats_chunk[:, 1:2],
+                 pm1_single=pm_anchor_chunk.detach(), pm2=pms_chunk[:, 1:2].detach(),
+-                is_training=is_training, tracking3d=tracking3d
++                is_training=is_training, tracking3d=tracking3d,
++                final_prediction_only=teacher_only,
+             )
+             
+             # 5. Result post-processing for current chunk
+@@ -1389,35 +1542,59 @@
+                     f3d_k = padder.unpad(flow3d_preds[k]).reshape(b_chunk, 3, H, W)
+                     chunk_flow3d_preds.append(f3d_k)
+ 
+-            # 6. Store and detach to CPU to save VRAM
+-            full_flows_list.append(chunk_flow_preds[-1].detach().cpu())
+-            full_visconfs_list.append(chunk_visconf_preds[-1].detach().cpu())
+-            points_list.append(padder.unpad(points_chunks[i]))
+-            masks_list.append(padder.unpad(masks_chunks[i]))
+-            world_points_list.append(padder.unpad(world_points_chunks[i]))
+-            camera_poses_list.append(camera_poses_chunks[i])
++            # 6. The public inference path stages dense outputs on CPU to save
++            # VRAM.  Distillation consumes them immediately, so keep only the
++            # final tensors on-device and avoid a GPU -> CPU -> GPU round trip.
++            final_flow = chunk_flow_preds[-1].detach()
++            final_visconf = chunk_visconf_preds[-1].detach()
++            if not teacher_only:
++                final_flow = final_flow.cpu()
++                final_visconf = final_visconf.cpu()
++            full_flows_list.append(final_flow)
++            full_visconfs_list.append(final_visconf)
++            if not teacher_only:
++                points_list.append(padder.unpad(points_chunks[i]))
++                masks_list.append(padder.unpad(masks_chunks[i]))
++                world_points_list.append(padder.unpad(world_points_chunks[i]))
++                camera_poses_list.append(camera_poses_chunks[i])
+             
+             if tracking3d:
+-                full_flows3d_list.append(chunk_flow3d_preds[-1].cpu())
++                final_flow3d = chunk_flow3d_preds[-1].detach()
++                if not teacher_only:
++                    final_flow3d = final_flow3d.cpu()
++                full_flows3d_list.append(final_flow3d)
+ 
+             # Clear memory for next chunk
+-            all_flow_preds_chunks.append(chunk_flow_preds)
+-            all_visconf_preds_chunks.append(chunk_visconf_preds)
+-            if tracking3d:
+-                all_flow3d_preds_chunks.append(chunk_flow3d_preds)
++            if not teacher_only:
++                all_flow_preds_chunks.append(chunk_flow_preds)
++                all_visconf_preds_chunks.append(chunk_visconf_preds)
++                if tracking3d:
++                    all_flow3d_preds_chunks.append(chunk_flow3d_preds)
+ 
+             del fmaps_chunk, ctxfeats_chunk, pms_chunk, fmaps3d_detail_chunk
+-            torch.cuda.empty_cache()
+-
+-        # The loop runs num_chunks = ceil((T-1)/chunk_size) times, but points/masks/
+-        # world_points/camera_poses are split into ceil(T/chunk_size) chunks. When
+-        # T ≡ 1 (mod chunk_size) the last chunk is dropped, leaving points one frame
+-        # short (causes a shape mismatch in infer_pair). Append the leftover chunks.
+-        for j in range(num_chunks, len(points_chunks)):
+-            points_list.append(padder.unpad(points_chunks[j]))
+-            masks_list.append(padder.unpad(masks_chunks[j]))
+-            world_points_list.append(padder.unpad(world_points_chunks[j]))
+-            camera_poses_list.append(camera_poses_chunks[j])
++            if not teacher_only:
++                torch.cuda.empty_cache()
++
++        self._teacher_batch_index = 0
++        self._teacher_motion_virtual_chunk_sizes = None
++        if teacher_only:
++            output_points = padder.unpad(points)
++            output_masks = padder.unpad(masks)
++            output_world_points = padder.unpad(world_points)
++            output_camera_poses = camera_poses
++        else:
++            # The loop runs num_chunks = ceil((T-1)/chunk_size) times, but
++            # geometry is split into ceil(T/chunk_size) chunks.  Append the
++            # leftover frame chunk when T ≡ 1 (mod chunk_size).
++            for j in range(num_chunks, len(points_chunks)):
++                points_list.append(padder.unpad(points_chunks[j]))
++                masks_list.append(padder.unpad(masks_chunks[j]))
++                world_points_list.append(padder.unpad(world_points_chunks[j]))
++                camera_poses_list.append(camera_poses_chunks[j])
++            output_points = torch.cat(points_list, 0)
++            output_masks = torch.cat(masks_list, 0)
++            output_world_points = torch.cat(world_points_list, 0)
++            output_camera_poses = torch.cat(camera_poses_list, 0)
+ 
+         # --- Aggregate Chunks into Final Tensors ---
+         all_flow_preds, all_visconf_preds = [], []
+@@ -1436,9 +1613,8 @@
+         if tracking3d:
+             full_f3d = torch.cat(full_flows3d_list, 0).reshape(B_pair, 3, H, W)
+             return (full_flows, full_visconfs, all_flow_preds, all_visconf_preds, 
+-                    full_f3d, all_flow3d_preds, torch.cat(points_list, 0), 
+-                    torch.cat(masks_list, 0), torch.cat(world_points_list, 0), 
+-                    torch.cat(camera_poses_list, 0))
++                    full_f3d, all_flow3d_preds, output_points,
++                    output_masks, output_world_points, output_camera_poses)
+         
+         return (full_flows, full_visconfs, all_flow_preds, all_visconf_preds)
+ 
+@@ -1734,7 +1910,7 @@
+         self, fmap1_single, fmap2, visconfs8, iters=None, flow2ds8=None,
+         flow3ds8=None, cxt1_single=None, cxt2=None, pm1_single=None,
+         pm2=None, fmaps3d_detail1_single=None, fmaps3d_detail2=None, 
+-        is_training=False, tracking3d=False
++        is_training=False, tracking3d=False, final_prediction_only=False
+     ):
+         """
+         Unified iterative flow update (RAFT-style).
+@@ -1856,27 +2032,32 @@
+                 )
+                 flow3ds8 = flow3ds8 + flow3d_update
+             
+-            # Predict Upsampling Weights
+-            temperature = 0.25 
+-            weight_update = temperature * self.flow_upsample_weight(flowfeat)
+-            if tracking3d:
+-                weight_update_3d = temperature * self.flow_3d_upsample_weight(fmaps3d_detail1)
+-            
+             visconfs8 = visconfs8 + visconf_update
+ 
+-            # Upsample and Collect Predictions
+-            flow2d_predictions.append(
+-                self.upsample_data(flow2ds8, weight_update, dim1=2)
+-            )
+-            if tracking3d:
+-                flow3d_predictions.append(
+-                    self.upsample_3d_data(flow3ds8, weight_update_3d, dim1=3)
+-                )
+-            visconf_predictions.append(
+-                self.upsample_data(visconfs8, weight_update, dim1=2)
+-            )
+-            
+-            torch.cuda.empty_cache()
++            # The teacher contract consumes hidden features from the final
++            # iteration and dense maps only for final visibility statistics.
++            # Earlier full-resolution predictions do not affect recurrent state.
++            if (not final_prediction_only) or itr == iters - 1:
++                temperature = 0.25
++                weight_update = temperature * self.flow_upsample_weight(flowfeat)
++                if tracking3d:
++                    weight_update_3d = temperature * self.flow_3d_upsample_weight(
++                        fmaps3d_detail1
++                    )
++
++                flow2d_predictions.append(
++                    self.upsample_data(flow2ds8, weight_update, dim1=2)
++                )
++                if tracking3d:
++                    flow3d_predictions.append(
++                        self.upsample_3d_data(flow3ds8, weight_update_3d, dim1=3)
++                    )
++                visconf_predictions.append(
++                    self.upsample_data(visconfs8, weight_update, dim1=2)
++                )
++
++            if not final_prediction_only:
++                torch.cuda.empty_cache()
+ 
+         return (
+             flow2d_predictions, flow3d_predictions, visconf_predictions, 
+@@ -1943,7 +2124,15 @@
+             
+         return images, T, indices
+ 
+-    def get_fmaps(self, images_, B, T, sw, is_training):
++    def get_fmaps(
++        self,
++        images_,
++        B,
++        T,
++        sw,
++        is_training,
++        da3_local_prefix=None,
++    ):
+         """
+         Extract feature maps for all frames.
+         Processes frames in chunks to manage memory usage.
+@@ -1976,7 +2165,12 @@
+              pt_c, m_c, wp_c, cp_c) = self.forward_point(
+                 images_chunk, 
+                 current_batch_size=B, 
+-                for_flow=True
++                for_flow=True,
++                da3_local_prefix=(
++                    None
++                    if da3_local_prefix is None
++                    else da3_local_prefix[:, t : t + images_chunk.shape[1]]
++                ),
+             )
+             
+             # Append reshaped outputs
+@@ -2446,6 +2640,9 @@
+         no_shift: bool = False,
+         use_da3_focal: bool = True,
+         aligned_scene_flow: bool = True,
++        teacher_only: bool = False,
++        da3_local_prefix: torch.Tensor = None,
++        motion_chunk_size: int = 12,
+     ) -> Dict[str, torch.Tensor]:
+         """
+         Pairwise inference function designed for consecutive-frame processing.
+@@ -2505,7 +2702,14 @@
+             world_points,            # (T, 3, H, W): world-coordinate points
+             camera_poses             # (T, ...): camera poses
+         ) = self.forward_sliding1(
+-            images, iters=iters, sw=sw, is_training=is_training, tracking3d=tracking3d
++            images,
++            iters=iters,
++            sw=sw,
++            is_training=is_training,
++            tracking3d=tracking3d,
++            teacher_only=teacher_only,
++            da3_local_prefix=da3_local_prefix,
++            motion_chunk_size=motion_chunk_size,
+         )
+         
+         # -------------------------------------------------------------
+@@ -2513,27 +2717,77 @@
+         # -------------------------------------------------------------
+         B, T, C, H, W = images.shape
+         aspect_ratio = W / H
++
++        if teacher_only:
++            output_device = points.device
++            flows_e = flows_e.reshape(B, T - 1, 2, H, W)
++            visconf_maps_e = visconf_maps_e.reshape(B, T - 1, 2, H, W)
++            flows3d_e = flows3d_e.reshape(B, T - 1, 3, H, W)
++            points = points.reshape(B, T, 3, H, W)
++            mask = mask.reshape(B, T, 1, H, W)
++            camera_poses = camera_poses.reshape(B, T, 4, 4)
++
++            grid_xy = track4world.utils.basic.gridcloud2d(
++                1, H, W, norm=False, device=output_device
++            ).float()
++            grid_xy = grid_xy.permute(0, 2, 1).reshape(1, 1, 2, H, W)
++            flow2d = flows_e.to(dtype=torch.float16) + grid_xy
++            visconf_maps_e = visconf_maps_e.to(dtype=torch.float16)
++            flow3d = flows3d_e.to(dtype=torch.float16) + points[:, :-1]
++            flow3d = flow3d.permute(0, 1, 3, 4, 2)
++            points_geometry = points.permute(0, 1, 3, 4, 2)
++            mask_binary = mask[:, :, 0] > self.mask_threshold
++            flow2d_c = flow2d.permute(0, 1, 3, 4, 2)
++
++            if aligned_scene_flow:
++                flow3d = get_aligned_scene_flow_temporal(
++                    flow2d_c,
++                    flow3d,
++                    points_geometry,
++                    visconf_maps_e.permute(0, 1, 3, 4, 2),
++                    mode='align_dir',
++                )
++                visconf_maps_e = refine_confidence_with_geometric_consistency(
++                    flow2d_c,
++                    flow3d,
++                    points_geometry,
++                    visconf_maps_e.permute(0, 1, 3, 4, 2),
++                )
++
++            _ms = getattr(self, '_metric_scale', None) if self.use_metric_scale else None
++            if _ms is not None:
++                camera_poses = camera_poses.clone()
++                camera_poses[..., :3, 3] *= _ms[:, None, None]
++            return {
++                'camera_poses': camera_poses,
++                'mask': mask_binary,
++                'visconf_maps_e': visconf_maps_e,
++            }
+         
+         # -------------------------------------------------------------
+         # Build an absolute pixel grid for converting flow offsets
+         # into absolute image coordinates
+         # -------------------------------------------------------------
++        output_device = points.device
+         grid_xy = track4world.utils.basic.gridcloud2d(
+-            1, H, W, norm=False, device='cuda:0'
++            1, H, W, norm=False, device=output_device
+         ).float()
+         grid_xy = grid_xy.permute(0, 2, 1).reshape(1, 1, 2, H, W)
+         
+         # -------------------------------------------------------------
+         # Convert 2D flow from displacement to absolute pixel positions
+         # -------------------------------------------------------------
+-        flow2d = flows_e[None].to(torch.float16).cuda() + grid_xy
+-        visconf_maps_e = visconf_maps_e[None].to(torch.float16)
++        flow2d = flows_e[None].to(device=output_device, dtype=torch.float16) + grid_xy
++        visconf_maps_e = visconf_maps_e[None].to(
++            device=output_device, dtype=torch.float16
++        )
+ 
+         # -------------------------------------------------------------
+         # Convert relative 3D flow to absolute 3D positions
+         # (reference frame + scene flow)
+         # -------------------------------------------------------------
+-        flow3d = flows3d_e.to(torch.float16).cuda()[None] + points[None, 0:-1]
++        flow3d = flows3d_e.to(device=output_device, dtype=torch.float16)[None]
++        flow3d = flow3d + points[None, 0:-1]
+         flow3d = flow3d.permute(0, 1, 3, 4, 2)  # (B, T-1, H, W, 3)
+         
+         return_dict = []
+@@ -2542,7 +2796,8 @@
+         # Reformat tensors to a geometry-friendly layout
+         # -------------------------------------------------------------
+         points = points[None].permute(0, 1, 3, 4, 2)[:, :T]
+-        world_points = world_points[None].permute(0, 1, 3, 4, 2)[:, :T]
++        if not teacher_only:
++            world_points = world_points[None].permute(0, 1, 3, 4, 2)[:, :T]
+         mask = mask[None].permute(0, 1, 3, 4, 2)[..., 0][:, :T]
+ 
+         flow2d_c = flow2d.clone().permute(0, 1, 3, 4, 2)
+@@ -2556,15 +2811,16 @@
+                 flow2d_c,
+                 flow3d,
+                 points,
+-                visconf_maps_e.cuda().permute(0, 1, 3, 4, 2),
++                visconf_maps_e.permute(0, 1, 3, 4, 2),
+                 mode='align_dir'
+             )
+             visconf_maps_e = refine_confidence_with_geometric_consistency(
+                 flow2d_c, 
+                 flow3d, 
+                 points, 
+-                visconf_maps_e.cuda().permute(0, 1, 3, 4, 2),
+-            )
++                visconf_maps_e.permute(0, 1, 3, 4, 2),
++            )
++
+         # -------------------------------------------------------------
+         # Geometry processing in float16 for numerical stability
+         # -------------------------------------------------------------

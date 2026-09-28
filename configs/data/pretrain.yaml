@@ -1,0 +1,66 @@
+train:
+  _target_: wam.datasets.pretrain_wam_dataset.PretrainWAMDataset
+  dataset_config: ./configs/pretrain/dataset.yaml
+  num_frames: ${oc.load:${.dataset_config},sampling.num_frames}
+  action_size: ${oc.load:${.dataset_config},sampling.action_size}
+  global_sample_stride: ${oc.load:${.dataset_config},sampling.global_sample_stride}
+  action_video_freq_ratio: ${oc.load:${.dataset_config},sampling.action_video_freq_ratio}
+  memory_video_anchor_size: ${oc.load:${.dataset_config},sampling.memory_video_anchor_size}
+  memory_recent_frame_offset: ${oc.load:${.dataset_config},sampling.memory_recent_frame_offset}
+  video_size: [384, 256]
+  vlm_max_pixels: ${model.understanding.max_pixels}
+  # Four starts form one sampling block; each rank batch mixes blocks.
+  training_block_size: ${oc.load:${.dataset_config},mixture.training_block_size}
+  training_batch_size_per_rank: ${batch_size}
+  optimizer_gradient_accumulation_steps: ${gradient_accumulation_steps}
+  is_training_set: true
+  text_context_required: true
+  skip_bad_videos: true
+  max_decode_retries: 8
+  # Camera keys are source/embodiment-specific and should be selected in
+  # configs/pretrain/sources/*.yaml via modalities.video. This config only fixes
+  # the final training canvas size through video_size.
+  shape_meta:
+    action:
+      - key: default
+        raw_shape: 80
+        shape: 80
+    state:
+      - key: default
+        raw_shape: 80
+        shape: 80
+  processor:
+    num_output_cameras: 1
+    action_output_dim: 80
+    proprio_output_dim: 80
+
+val:
+  _target_: wam.datasets.pretrain_wam_dataset.PretrainWAMDataset
+  dataset_config: ${data.train.dataset_config}
+  num_frames: ${oc.load:${.dataset_config},sampling.num_frames}
+  action_size: ${oc.load:${.dataset_config},sampling.action_size}
+  global_sample_stride: ${oc.load:${.dataset_config},sampling.global_sample_stride}
+  action_video_freq_ratio: ${oc.load:${.dataset_config},sampling.action_video_freq_ratio}
+  memory_video_anchor_size: ${oc.load:${.dataset_config},sampling.memory_video_anchor_size}
+  memory_recent_frame_offset: ${oc.load:${.dataset_config},sampling.memory_recent_frame_offset}
+  video_size: [384, 256]
+  vlm_max_pixels: ${model.understanding.max_pixels}
+  is_training_set: false
+  text_context_required: true
+  skip_bad_videos: true
+  eval_fixed_per_dataset: false
+  eval_scope: source_type
+  eval_total_samples: 1000
+  shape_meta:
+    action:
+      - key: default
+        raw_shape: 80
+        shape: 80
+    state:
+      - key: default
+        raw_shape: 80
+        shape: 80
+  processor:
+    num_output_cameras: 1
+    action_output_dim: 80
+    proprio_output_dim: 80

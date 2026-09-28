@@ -1,0 +1,338 @@
+embodiments:
+  processed_pose80:
+    control_schema: robot
+    canonical_adapter:
+      action_pose_semantics: stored_delta
+      action_translation_frame: source
+      layout: robot
+      missing_policy: pad_and_mask
+      required_semantics:
+        key: derived.contract
+        value: internw0.pose80.v1
+      slots:
+        left:
+          gripper:
+            action_key: derived.action80
+            action_raw_slice:
+            - 16
+            - 17
+            action_target_slice:
+            - 16
+            - 17
+            action_validity_key: derived.action_mask80
+            action_validity_raw_slice:
+            - 16
+            - 17
+            state_key: derived.state80
+            state_raw_slice:
+            - 16
+            - 17
+            state_target_slice:
+            - 16
+            - 17
+            state_validity_key: derived.state_mask80
+            state_validity_raw_slice:
+            - 16
+            - 17
+          hand:
+            action_key: derived.action80
+            action_raw_slice:
+            - 17
+            - 29
+            action_target_slice:
+            - 17
+            - 29
+            action_validity_key: derived.action_mask80
+            action_validity_raw_slice:
+            - 17
+            - 29
+            state_key: derived.state80
+            state_raw_slice:
+            - 17
+            - 29
+            state_target_slice:
+            - 17
+            - 29
+            state_validity_key: derived.state_mask80
+            state_validity_raw_slice:
+            - 17
+            - 29
+          joint:
+            action_key: derived.action80
+            action_raw_slice:
+            - 0
+            - 7
+            action_target_slice:
+            - 0
+            - 7
+            action_validity_key: derived.action_mask80
+            action_validity_raw_slice:
+            - 0
+            - 7
+            state_key: derived.state80
+            state_raw_slice:
+            - 0
+            - 7
+            state_target_slice:
+            - 0
+            - 7
+            state_validity_key: derived.state_mask80
+            state_validity_raw_slice:
+            - 0
+            - 7
+          pose:
+            action_key: derived.action80
+            action_raw_slice:
+            - 7
+            - 13
+            action_target_slice:
+            - 7
+            - 13
+            action_validity_key: derived.action_mask80
+            action_validity_raw_slice:
+            - 7
+            - 13
+            state_key: derived.state80
+            state_raw_slice:
+            - 7
+            - 16
+            state_target_slice:
+            - 7
+            - 16
+            state_validity_key: derived.state_mask80
+            state_validity_raw_slice:
+            - 7
+            - 16
+        right:
+          gripper:
+            action_key: derived.action80
+            action_raw_slice:
+            - 56
+            - 57
+            action_target_slice:
+            - 56
+            - 57
+            action_validity_key: derived.action_mask80
+            action_validity_raw_slice:
+            - 56
+            - 57
+            state_key: derived.state80
+            state_raw_slice:
+            - 56
+            - 57
+            state_target_slice:
+            - 56
+            - 57
+            state_validity_key: derived.state_mask80
+            state_validity_raw_slice:
+            - 56
+            - 57
+          hand:
+            action_key: derived.action80
+            action_raw_slice:
+            - 57
+            - 69
+            action_target_slice:
+            - 57
+            - 69
+            action_validity_key: derived.action_mask80
+            action_validity_raw_slice:
+            - 57
+            - 69
+            state_key: derived.state80
+            state_raw_slice:
+            - 57
+            - 69
+            state_target_slice:
+            - 57
+            - 69
+            state_validity_key: derived.state_mask80
+            state_validity_raw_slice:
+            - 57
+            - 69
+          joint:
+            action_key: derived.action80
+            action_raw_slice:
+            - 40
+            - 47
+            action_target_slice:
+            - 40
+            - 47
+            action_validity_key: derived.action_mask80
+            action_validity_raw_slice:
+            - 40
+            - 47
+            state_key: derived.state80
+            state_raw_slice:
+            - 40
+            - 47
+            state_target_slice:
+            - 40
+            - 47
+            state_validity_key: derived.state_mask80
+            state_validity_raw_slice:
+            - 40
+            - 47
+          pose:
+            action_key: derived.action80
+            action_raw_slice:
+            - 47
+            - 53
+            action_target_slice:
+            - 47
+            - 53
+            action_validity_key: derived.action_mask80
+            action_validity_raw_slice:
+            - 47
+            - 53
+            state_key: derived.state80
+            state_raw_slice:
+            - 47
+            - 56
+            state_target_slice:
+            - 47
+            - 56
+            state_validity_key: derived.state_mask80
+            state_validity_raw_slice:
+            - 47
+            - 56
+        body:
+          torso:
+            action_key: derived.action80
+            action_raw_slice:
+            - 29
+            - 34
+            action_target_slice:
+            - 29
+            - 34
+            action_validity_key: derived.action_mask80
+            action_validity_raw_slice:
+            - 29
+            - 34
+            state_key: derived.state80
+            state_raw_slice:
+            - 29
+            - 34
+            state_target_slice:
+            - 29
+            - 34
+            state_validity_key: derived.state_mask80
+            state_validity_raw_slice:
+            - 29
+            - 34
+          lift:
+            action_key: derived.action80
+            action_raw_slice:
+            - 39
+            - 40
+            action_target_slice:
+            - 39
+            - 40
+            action_validity_key: derived.action_mask80
+            action_validity_raw_slice:
+            - 39
+            - 40
+            state_key: derived.state80
+            state_raw_slice:
+            - 39
+            - 40
+            state_target_slice:
+            - 39
+            - 40
+            state_validity_key: derived.state_mask80
+            state_validity_raw_slice:
+            - 39
+            - 40
+          head:
+            action_key: derived.action80
+            action_raw_slice:
+            - 74
+            - 77
+            action_target_slice:
+            - 74
+            - 77
+            action_validity_key: derived.action_mask80
+            action_validity_raw_slice:
+            - 74
+            - 77
+            state_key: derived.state80
+            state_raw_slice:
+            - 74
+            - 77
+            state_target_slice:
+            - 74
+            - 77
+            state_validity_key: derived.state_mask80
+            state_validity_raw_slice:
+            - 74
+            - 77
+          base:
+            action_key: derived.action80
+            action_raw_slice:
+            - 77
+            - 80
+            action_target_slice:
+            - 77
+            - 80
+            action_validity_key: derived.action_mask80
+            action_validity_raw_slice:
+            - 77
+            - 80
+            state_key: derived.state80
+            state_raw_slice:
+            - 77
+            - 80
+            state_target_slice:
+            - 77
+            - 80
+            state_validity_key: derived.state_mask80
+            state_validity_raw_slice:
+            - 77
+            - 80
+        reserved:
+          left:
+            action_key: derived.action80
+            action_raw_slice:
+            - 34
+            - 39
+            action_target_slice:
+            - 34
+            - 39
+            action_validity_key: derived.action_mask80
+            action_validity_raw_slice:
+            - 34
+            - 39
+            state_key: derived.state80
+            state_raw_slice:
+            - 34
+            - 39
+            state_target_slice:
+            - 34
+            - 39
+            state_validity_key: derived.state_mask80
+            state_validity_raw_slice:
+            - 34
+            - 39
+          right:
+            action_key: derived.action80
+            action_raw_slice:
+            - 69
+            - 74
+            action_target_slice:
+            - 69
+            - 74
+            action_validity_key: derived.action_mask80
+            action_validity_raw_slice:
+            - 69
+            - 74
+            state_key: derived.state80
+            state_raw_slice:
+            - 69
+            - 74
+            state_target_slice:
+            - 69
+            - 74
+            state_validity_key: derived.state_mask80
+            state_validity_raw_slice:
+            - 69
+            - 74

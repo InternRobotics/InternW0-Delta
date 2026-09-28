@@ -1,0 +1,39 @@
+# @package _global_
+defaults:
+- train
+- override /task: robodojo
+- override hydra/job_logging: disabled
+- override hydra/hydra_logging: disabled
+- _self_
+
+ckpt: ${oc.env:ROBODOJO_CHECKPOINT,${paths.checkpoints}/robodojo.pt}
+seed: 0
+model:
+  model_id: ${oc.env:WAM_WAN_PATH,${paths.checkpoints}/Wan2.2-TI2V-5B}
+  tokenizer_model_id: ${model.model_id}
+  redirect_common_files: false
+  load_text_encoder: true
+  skip_dit_load_from_pretrain: true
+  action_dit_pretrained_path: null
+EVALUATION:
+  action_horizon: 32
+  replan_steps: 10
+  num_inference_steps: 10
+  action_hz: 25.0
+  sigma_shift: null
+  rand_device: cpu
+  tiled: false
+  timing_enabled: false
+  device: cuda:0
+  dataset_stats_path: ${data.train.pretrained_norm_stats}
+data:
+  train:
+    image_color_jitter:
+      enabled: false
+      apply_to_vlm: false
+hydra:
+  job:
+    chdir: false
+  run:
+    dir: .
+  output_subdir: null

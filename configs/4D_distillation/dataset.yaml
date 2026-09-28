@@ -1,0 +1,35 @@
+# Shared transforms and per-source statistics follow the pretraining release.
+extends: ../pretrain/dataset.yaml
+sampling:
+  num_frames: 33
+  action_size: 32
+  global_sample_stride: 1
+  action_video_freq_ratio: 4
+  memory_video_anchor_size: 1
+  memory_recent_frame_offset: 32
+mixture:
+  training_block_size: 4
+  seed: 20260901
+  allow_padding_at_end: true
+  family_weights:
+    real: 0.75
+    ego2robot: 0.20
+    ego: 0.05
+    umi: 0.0
+  bucket_wave_cyclic_families: [ego2robot, ego]
+source_files:
+  - ../pretrain/sources/egodex.yaml
+  - ../pretrain/sources/egoverse.yaml
+  - ../pretrain/sources/intern_a1.yaml
+  - ../pretrain/sources/agibotworld.yaml
+  - ../pretrain/sources/galaxea.yaml
+  - ../pretrain/sources/robomind.yaml
+  - ../pretrain/sources/robomind2.yaml
+  - ../pretrain/sources/ABC.yaml
+  - ../pretrain/sources/roboset.yaml
+  - ../pretrain/sources/molomoact2.yaml
+  - ../pretrain/sources/RoboCOIN.yaml
+  - ../pretrain/sources/rdt1b.yaml
+  - ../pretrain/sources/rh20t.yaml
+  - ../pretrain/sources/egodex_h2r.yaml
+  - ../pretrain/sources/egoverse_h2r.yaml

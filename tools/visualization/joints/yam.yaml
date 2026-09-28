@@ -1,0 +1,24 @@
+label: "YAM \xB7 two independent arm references"
+instances:
+- base_position:
+  - 0
+  - 0.34
+  - 0
+  joints:
+    joint1: 0
+    joint2: 1
+    joint3: 2
+    joint4: 3
+    joint5: 4
+    joint6: 5
+- base_position:
+  - 0
+  - -0.34
+  - 0
+  joints:
+    joint1: 40
+    joint2: 41
+    joint3: 42
+    joint4: 43
+    joint5: 44
+    joint6: 45

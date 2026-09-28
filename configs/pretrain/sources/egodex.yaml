@@ -1,0 +1,32 @@
+normalization_stats: ${oc.env:WAM_PRETRAIN_STATS,assets/stats/pretrain}/egodex.json
+sources:
+- action_gripper_loss_weight: 0.01
+  action_loss_normalization: weighted_valid_cells
+  action_loss_weight: 0.1
+  allow_padding_at_end: false
+  context_len: 128
+  control_schema: wrist_only_opencv_rdf
+  datasets:
+  - name: egodex
+  distribute_weights: false
+  embodiment: human_bimanual
+  enabled: true
+  format_version: v2
+  modalities:
+    action:
+      key: action
+    state:
+      key: observation.state
+    video:
+      key: observation.images.rgb
+    video_concat: single_masked
+  name: egodex
+  prompt_template: 'A video recorded from a human''s point of view executing the following instruction:
+    {task}'
+  sampling_family: ego
+  slow_motion_factor: 2.0
+  stats_group: egodex
+  task_index_authority: episode_metadata
+  text_encoder_id: wan22ti2v5b
+  root: egodex
+  adapter: human
