@@ -8,8 +8,8 @@ window.WAM_CONTENT = {
   year: '2026',
   authors: [],
   affiliations: [],
-  links: { paper: '', code: 'https://github.com/InternRobotics/InternW0-Delta', models: 'https://huggingface.co/collections/InternRobotics/internw0' },
-  linkLabels: { code: 'View repository ↗', models: 'View collection ↗' },
+  links: { paper: 'https://arxiv.org/abs/2609.31394', code: 'https://github.com/InternRobotics/InternW0-Delta', models: 'https://huggingface.co/collections/InternRobotics/internw0' },
+  linkLabels: { paper: 'Read on arXiv ↗', code: 'View repository ↗', models: 'View collection ↗' },
   citation: '',
   hero: { title: 'Project video', subtitle: 'Real-robot demonstrations, model overview, and benchmark results.', src: 'assets/videos/web/main-20260927/main-demo.mp4', poster: 'assets/videos/posters/main-20260927/main-demo-cover.jpg' },
   figures: [
