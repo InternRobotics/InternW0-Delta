@@ -106,8 +106,6 @@ window.WAM_ZH = {
   'Scroll to previous demos': '向左浏览演示',
   'Scroll to next demos': '向右浏览演示',
   'Demonstration videos': '演示视频',
-  'Qualitative demonstrations. Playback-speed annotations, where shown, are part of the supplied footage.': '定性演示。视频中若有播放速度标注，均来自所提供的原始素材。',
-  'These slots are placeholders and do not represent experimental results or measured performance.': '这些内容为占位展示，不代表实验结果或实测性能。',
   'Grippers': '夹爪',
   'Dexterous hands': '灵巧手',
   'Everyday and laboratory tasks with gripper-equipped robots.': '使用夹爪完成日常操作与实验室任务。',

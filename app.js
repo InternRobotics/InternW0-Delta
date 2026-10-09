@@ -134,12 +134,24 @@
   const demoScrollControls = $('#demo-scroll-controls');
   const demoPrevious = $('#demo-prev');
   const demoNext = $('#demo-next');
+  const demoGroups = [];
+  let activeDemoCategory = -1;
+  function demoGroupOffset(index) {
+    return demoGroups[index].offsetLeft - demoGroups[0].offsetLeft;
+  }
   function updateDemoScroll() {
     const limit = Math.max(0, demoStrip.scrollWidth - demoStrip.clientWidth);
     demoScrollControls.hidden = limit <= 2;
     demoPrevious.disabled = demoStrip.scrollLeft <= 2;
     demoNext.disabled = demoStrip.scrollLeft >= limit - 2;
     demoStrip.tabIndex = limit > 2 ? 0 : -1;
+    // Follow the category of the card nearest the leading edge of the strip.
+    // A single continuous row lets touch, trackpad and arrows cross categories.
+    if (!demoGroups.length) return;
+    const leadingEdge = demoStrip.scrollLeft + demoGroups[0].getBoundingClientRect().width / 2;
+    let index = 0;
+    demoGroups.forEach((card, i) => { if (demoGroupOffset(i) <= leadingEdge) index = i; });
+    activateDemoCategory(index);
   }
   function scrollDemos(direction) {
     const card = $('.demo-card', demoStrip);
@@ -174,22 +186,25 @@
     tabsRoot.append(button);
     return button;
   });
-  function selectDemo(index, focus = false) {
+  function activateDemoCategory(index) {
+    if (activeDemoCategory === index) return;
+    activeDemoCategory = index;
     tabs.forEach((tab, i) => { tab.setAttribute('aria-selected', String(i === index)); tab.tabIndex = i === index ? 0 : -1; });
-    if (focus) tabs[index].focus();
     $('#demo-panel').setAttribute('aria-labelledby', tabs[index].id);
     const category = content.demos[index];
     $('#demo-description').textContent = category.description;
-    demoStrip.scrollTo({ left: 0, behavior: 'instant' });
-    inlineMedia.dispose(demoStrip);
-    demoStrip.replaceChildren();
-    demoStrip.setAttribute('aria-label', category.label + ' demonstrations');
-    const hasPublishedVideos = category.items.some(demo => Boolean(safeUrl(demo.src)));
-    $('.demo-disclaimer').textContent = hasPublishedVideos
-      ? 'Qualitative demonstrations. Playback-speed annotations, where shown, are part of the supplied footage.'
-      : 'These slots are placeholders and do not represent experimental results or measured performance.';
+  }
+  function selectDemo(index, focus = false) {
+    // Category shortcuts jump within the same strip; players are never rebuilt.
+    if (focus) tabs[index].focus({ preventScroll: true });
+    demoStrip.scrollTo({ left: demoGroupOffset(index), behavior: 'instant' });
+    updateDemoScroll();
+  }
+  content.demos.forEach(category => {
     category.items.forEach((demo, demoIndex) => {
       const card = make('article', 'demo-card');
+      card.dataset.demoCategory = category.id;
+      if (demoIndex === 0) demoGroups.push(card);
       const media = make('div', 'demo-media has-media');
       const title = make('h3', 'demo-card-title', demo.title);
       const caption = make('p', 'demo-caption', demo.subtitle);
@@ -201,10 +216,7 @@
       card.append(media, title, caption);
       demoStrip.append(card);
     });
-    demoStrip.scrollTo({ left: 0, behavior: 'instant' });
-    updateDemoScroll();
-    requestAnimationFrame(updateDemoScroll);
-  }
+  });
   tabs.forEach((tab, i) => tab.addEventListener('click', () => selectDemo(i)));
   tabsRoot.addEventListener('keydown', e => {
     const index = tabs.indexOf(document.activeElement);
@@ -213,6 +225,7 @@
     if (target !== null) { e.preventDefault(); selectDemo(target, true); }
   });
   selectDemo(0);
+  requestAnimationFrame(updateDemoScroll);
   // Filtering clips play in place too; the category explanation remains above them.
   const filterExamples = content.dataFiltering?.examples || [];
   if (filterExamples.length) {
